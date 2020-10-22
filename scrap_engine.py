@@ -61,6 +61,10 @@ class Object():
 
     def remove(self):
         self.map.map[self.y][self.x]=self.backup
+        for i in range(len(self.map.obs)):
+            if self.map.obs[i] == self:
+                del self.map.obs[i]
+                break
         self.added=False
 
 class ObjectGroup():
