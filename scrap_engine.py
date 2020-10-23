@@ -14,10 +14,12 @@ class Map():
         self.obs=[]
 
     def show(self):
+        out=""
         for arr in self.map:
             for i in arr:
-                print(i, end="")
-            print("")
+                out+=i
+            out+="\n"
+        print(out, end="")
 
 class Object():
     def __init__(self, char, state="solid"):
