@@ -6,18 +6,28 @@ import threading
 import time
 import os
 
+luisframe=0
+luisview="r"
+framenum=0
 ev=0
 obcount=0
 
+
 map=se.Map(background=" ")
+lui=se.Object(char="L")
 player=se.Object(char="T")
 rock=se.Object(char="A")
 
 player.add(map, 0,0)
+lui.add(map, 20, 10)
+rock.add(map, 10, 10)
 
 class Pad(se.Object):
     def action(self):
         player.remove()
+
+pad=Pad(char="i", state="float")
+pad.add(map, 10, 20)
 
 def recogniser():
     global ev
@@ -36,14 +46,8 @@ def recogniser():
             elif event.key == keyboard.KeyCode.from_char('q'):
                 ev="q"
 
-pad=Pad(char="i", state="float")
-
-rock.add(map, 10, 10)
-
-pad.add(map, 10, 20)
-
-t=threading.Thread(target=recogniser)
-t.start()
+recognising=threading.Thread(target=recogniser)
+recognising.start()
 
 map.show()
 
@@ -67,4 +71,17 @@ while True:
         ev=0
     elif ev == 0:
         time.sleep(0.05)
+    # lui
+    if luisframe+20 == framenum:
+        if lui.x == 20 and luisview == "l":
+            lui.set(19, 10)
+            luisview="r"
+        elif lui.x == 20 and luisview == "r":
+            lui.set(21, 10)
+            luisview="l"
+        elif lui.x == 19 or lui.x == 21:
+            lui.set(20, 10)
+        luisframe+=20
+
     map.show()
+    framenum+=1
