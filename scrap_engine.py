@@ -6,20 +6,27 @@ width, height = os.get_terminal_size()
 
 
 class Map():
-    def __init__(self, height=height-1, width=width, background="#"):
+    def __init__(self, height=height-1, width=width, background="#", dynfps="on"):
         a="["+width*("'"+background+"',")+"],"
         self.height=height
         self.width=width
+        self.dynfps=dynfps
         exec("self.map=["+height*a+"]")
         self.obs=[]
 
     def show(self):
-        out=""
+        try:
+            self.out_old
+        except:
+            self.out_old="test"
+        self.out=""
         for arr in self.map:
             for i in arr:
-                out+=i
-            out+="\n"
-        print(out, end="")
+                self.out+=i
+            self.out+="\n"
+        if self.out_old != self.out or self.dynfps == "off":
+            print(self.out, end="")
+            self.out_old=self.out
 
 class Object():
     def __init__(self, char, state="solid"):
@@ -83,6 +90,15 @@ class ObjectGroup():
     def remove(self):
         for ob in self.obs:
             ob.remove()
+
+class Text(ObjectGroup):
+    def __init__(self, text, map, x, y, state="solid"):
+        self.obs=[]
+        for i, char in enumerate(text):
+            exec("self.ob_"+str(i)+"=Object(char, state)")
+            exec("self.ob_"+str(i)+".add(map, x+i, y)")
+            exec("self.obs.append(self.ob_"+str(i)+")")
+
 
 # map=Map(background=" ")
 # ob=Object("i")
