@@ -94,6 +94,8 @@ class ObjectGroup():
 class Text(ObjectGroup):
     def __init__(self, text, map, x, y, state="solid"):
         self.obs=[]
+        self.x=x
+        self.y=y
         for i, char in enumerate(text):
             exec("self.ob_"+str(i)+"=Object(char, state)")
             exec("self.ob_"+str(i)+".add(map, x+i, y)")
