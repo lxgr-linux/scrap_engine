@@ -37,6 +37,7 @@ pad.add(map, 10, 20)
 def menu():
     global ev
     ev=0
+    menumap.blur_in(map)
     menumap.show(init=True)
     while True:
         if ev == "'m'":
@@ -54,7 +55,7 @@ def menu():
             elif menuind.y == menutext2.y:
                 exit()
             ev=0
-        elif ev == 0:
+        else:
             time.sleep(0.05)
         menumap.show()
 
@@ -99,7 +100,7 @@ while True:
         menu()
         map.show(init=True)
         ev=0
-    elif ev == 0:
+    else:
         time.sleep(0.05)
     # lui
     if luisframe+20 == framenum:
