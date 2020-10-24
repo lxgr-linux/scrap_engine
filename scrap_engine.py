@@ -14,7 +14,7 @@ class Map():
         exec("self.map=["+height*a+"]")
         self.obs=[]
 
-    def show(self):
+    def show(self, init=False):
         try:
             self.out_old
         except:
@@ -24,7 +24,7 @@ class Map():
             for i in arr:
                 self.out+=i
             self.out+="\n"
-        if self.out_old != self.out or self.dynfps == "off":
+        if self.out_old != self.out or self.dynfps == "off" or init == True:
             print(self.out, end="")
             self.out_old=self.out
 
