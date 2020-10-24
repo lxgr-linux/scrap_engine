@@ -18,9 +18,12 @@ menumap=se.Map(background=" ")
 lui=se.Object(char="L")
 player=se.Object(char="T")
 rock=se.Object(char="A")
-menutext1=se.Text("test", menumap, 11, 3, float)
+menutext1=se.Text("Resume", menumap, int(round(menumap.width)/2-2), int(round(menumap.height)/2-3), float)
+menutext2=se.Text("Exit", menumap, int(round(menumap.width)/2-2), int(round(menumap.height)/2+3), float)
+menuind=se.Object("*")
+menuind.add(menumap, int(round(menumap.width)/2-4), int(round(menumap.height)/2-3))
 
-player.add(map, 0,0)
+player.add(map, 0, 0)
 lui.add(map, 20, 10)
 rock.add(map, 10, 10)
 
@@ -39,6 +42,18 @@ def menu():
         if ev == "'m'":
             ev=0
             break
+        elif ev == "'w'":
+            menuind.set(menuind.x, menutext1.y)
+            ev=0
+        elif ev == "'s'":
+            menuind.set(menuind.x, menutext2.y)
+            ev=0
+        elif ev == "Key.enter":
+            if menuind.y == menutext1.y:
+                return
+            elif menuind.y == menutext2.y:
+                exit()
+            ev=0
         elif ev == 0:
             time.sleep(0.05)
         menumap.show()
@@ -54,6 +69,7 @@ def recogniser():
             listener.join()
 
 recognising=threading.Thread(target=recogniser)
+recognising.daemon = True
 recognising.start()
 
 text=se.Text("hello", map, 11, 3, float)
