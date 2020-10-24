@@ -11,8 +11,15 @@ class Map():
         self.height=height
         self.width=width
         self.dynfps=dynfps
+        self.background=background
         exec("self.map=["+height*a+"]")
         self.obs=[]
+
+    def blur_in(self, blurmap):
+        for l in range(self.height):
+            for i in range(self.width):
+                if self.map[l][i] == self.background:
+                    self.map[l][i]="\033[37m"+blurmap.map[l][i]+"\033[0m"
 
     def show(self, init=False):
         try:
