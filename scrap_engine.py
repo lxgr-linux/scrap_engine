@@ -18,19 +18,26 @@ class Map():
     def blur_in(self, blurmap):
         for l in range(self.height):
             for i in range(self.width):
-                if self.map[l][i] == self.background:
+                if blurmap.map[l][i] != " ":
                     self.map[l][i]="\033[37m"+blurmap.map[l][i]+"\033[0m"
+                else:
+                    self.map[l][i]=" "
+        for ob in self.obs:
+            ob.redraw()
 
     def show(self, init=False):
         try:
             self.out_old
         except:
             self.out_old="test"
-        self.out=""
+        self.out="\n"
         for arr in self.map:
+            self.out_line=""
             for i in arr:
-                self.out+=i
-            self.out+="\n"
+                self.out_line+=i
+            if self.out_line == self.width*" ":
+                self.out_line=" "
+            self.out+=self.out_line+"\n"
         if self.out_old != self.out or self.dynfps == "off" or init == True:
             print(self.out, end="")
             self.out_old=self.out
@@ -72,6 +79,12 @@ class Object():
             if ob.x==x and ob.y==y and ob.state=="float":
                 ob.action()
 
+    def redraw(self):
+        if self.added == False:
+            return
+        self.backup=self.map.map[self.y][self.x]
+        self.map.map[self.y][self.x]=self.char
+
     def action(self):
         return
 
@@ -107,6 +120,17 @@ class Text(ObjectGroup):
             exec("self.ob_"+str(i)+"=Object(char, state)")
             exec("self.ob_"+str(i)+".add(map, x+i, y)")
             exec("self.obs.append(self.ob_"+str(i)+")")
+
+class Square(ObjectGroup):
+    def __init__(self, char, map, width, height, x, y, state="solid"):
+        self.obs=[]
+        self.x=x
+        self.y=y
+        for l in range(height):
+            for i in range(width):
+                exec("self.ob_"+str(i)+str(l)+"=Object(char, state)")
+                exec("self.ob_"+str(i)+str(l)+".add(map, x+i, y+l)")
+                exec("self.obs.append(self.ob_"+str(i)+str(l)+")")
 
 
 # map=Map(background=" ")
