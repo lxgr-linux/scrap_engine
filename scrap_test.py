@@ -12,7 +12,6 @@ framenum=0
 ev=0
 obcount=0
 
-
 map=se.Map(background=" ")
 menumap=se.Map(background=" ")
 lui=se.Object(char="L")
@@ -74,11 +73,12 @@ recognising.daemon = True
 recognising.start()
 
 text=se.Text("hello", map, 11, 3, float)
+square=se.Square("#", map, 2, 3, 20, 20, float)
+square=se.Square("#", map, 10, 5, 60, 10, float)
 
 map.show()
 while True:
     if ev == "'w'":
-        print(1)
         player.set(player.x, player.y-1)
         ev=0
     elif ev == "'a'":
