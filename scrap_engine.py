@@ -64,10 +64,19 @@ class Object():
             return
         for ob in self.map.obs:
             if ob.x==x and ob.y==y and ob.state=="solid":
+                self.bump(self.x-x, self.y-y)
                 return
-        if x > self.map.width-1 or x < 0:
+        if x > self.map.width-1:
+            self.bump_right()
             return
-        if y > self.map.height-1 or y < 0:
+        if x < 0:
+            self.bump_left()
+            return
+        if y > self.map.height-1:
+            self.bump_bottom()
+            return
+        if y < 0:
+            self.bump_top()
             return
         self.map.map[self.y][self.x]=self.backup
         self.backup=self.map.map[y][x]
@@ -85,6 +94,21 @@ class Object():
         self.map.map[self.y][self.x]=self.char
 
     def action(self):
+        return
+
+    def bump(self, x, y):
+        return
+
+    def bump_right(self):
+        return
+
+    def bump_left(self):
+        return
+
+    def bump_top(self):
+        return
+
+    def bump_bottom(self):
         return
 
     def remove(self):
