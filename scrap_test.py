@@ -19,44 +19,55 @@ obcount=0
 # Adding Maps
 map=se.Map(background=" ") # Maps are kind of the "playground" which you can add Objects and Groups to
 menumap=se.Map(background=" ")
-
-# Creating Objects
-lui=se.Object(char="L") # Objects are just objects that can be added to a map
-player=se.Object(char="T")
-rock=se.Object(char="A")
-menuind=se.Object("*")
-
-# Creating Groups
-menutext1=se.Text("Resume", float) # The Text class creates a Group with the text in it
-menutext2=se.Text("Exit", float)
-text=se.Text("hello", float)
-square1=se.Square("#", 2, 3, float)
-square2=se.Square("#", 10, 5) # The Square class creates a square of a specific character
-
-# Adding Objects and Groups to their Maps
-menuind.add(menumap, int(round(menumap.width)/2-4), int(round(menumap.height)/2-3))
-player.add(map, 0, 0)
-lui.add(map, 20, 10)
-rock.add(map, 10, 10)
-menutext1.add(menumap, int(round(menumap.width)/2-2), int(round(menumap.height)/2-3))
-menutext2.add(menumap, int(round(menumap.width)/2-2), int(round(menumap.height)/2+3))
-text.add(map, 11, 3)
-square2.add(map, 60, 10)
-square1.add(map, 20, 20)
+howtomap=se.Map(background=" ")
 
 # Defining the "action" function for the Pad class wich is a modified Object class, which is triggert, when another Object is in the same spot as the Object it self
 class Pad(se.Object):
     def action(self):
         player.remove()
 
-# Defining and adding pad
+# Same as above, but the player is set to the middle of the map when he bumps into an solid Object
+class Player(se.Object):
+    def bump(self, x, y):
+        self.set(round(self.map.width/2), round(self.map.height/2))
+
+# Creating Objects
+lui=se.Object(char="L") # Objects are just objects that can be added to a map
+rock=se.Object(char="A")
+menuind=se.Object("*")
+player=Player(char="T")
 pad=Pad(char="i", state="float") # The state="float" means that other Objects can be placed over it, default is "solid"
+
+# Creating Groups
+menutext1=se.Text("Resume", float) # The Text class creates a Group with the text in it
+menutext2=se.Text("How to play", float)
+menutext3=se.Text("Exit", float)
+howtotext=se.Text("How to play this game ou ask?\nIf you haven't already understood,\nyou can move your character with w, a, s and d.\nTo open the menu press m", float)
+text=se.Text("hello", float)
+text2=se.Text("this\nis\nmultiline text!", float)
+square1=se.Square("#", 2, 3, float)
+square2=se.Square("#", 10, 5) # The Square class creates a square of a specific character
+
+# Adding Objects and Groups to their Maps
+player.add(map, 0, 0)
+lui.add(map, 20, 10)
+rock.add(map, 10, 10)
+howtotext.add(howtomap, int(round(howtomap.width-47)/2), int(round(howtomap.height/2)-2))
+menutext1.add(menumap, int(round(menumap.width/2)-2), int(round(menumap.height/2)-4))
+menutext3.add(menumap, int(round(menumap.width/2)-2), int(round(menumap.height/2)+4))
+menutext2.add(menumap, int(round(menumap.width/2)-2), int(round(menumap.height/2)))
+menuind.add(menumap, int(round(menumap.width/2)-4), menutext1.y)
+text.add(map, 11, 3)
+text2.add(map, 11, 4)
+square2.add(map, 60, 10)
+square1.add(map, 20, 20)
 pad.add(map, 10, 20)
 
 # Menu function
 def menu():
     global ev
     ev=0
+    menuind.index=1
     menumap.blur_in(map) # Blurs in the map Map into the background of the menumap Map
     menumap.show(init=True)
     while True:
@@ -64,22 +75,44 @@ def menu():
             ev=0
             break
         elif ev == "'w'":
-            menuind.set(menuind.x, menutext1.y)
+            if menuind.index != 1:
+                menuind.index-=1
+            exec("menuind.set(menuind.x, menutext"+str(menuind.index)+".y)")
             ev=0
         elif ev == "'s'":
-            menuind.set(menuind.x, menutext2.y)
+            if menuind.index != 3:
+                menuind.index+=1
+            exec("menuind.set(menuind.x, menutext"+str(menuind.index)+".y)")
             ev=0
         elif ev == "Key.enter":
             if menuind.y == menutext1.y:
                 return
             elif menuind.y == menutext2.y:
+                howtoplay()
+                menumap.show(init=True)
+            elif menuind.y == menutext3.y:
                 exit()
             ev=0
         else:
             time.sleep(0.05)
         menumap.show() # Showing menumap
 
-# Adding functions for capturing the keyboard and controling the game
+# How to play menuentry function
+def howtoplay():
+    global ev
+    ev=0
+    #howtomap.blur_in(menumap) # Blurs in the menumap Map into the background of the howtomap Map
+    howtomap.show(init=True)
+    while True:
+        if ev == "'m'":
+            ev=0
+            break
+        else:
+            time.sleep(0.05)
+        howtomap.show() # Showing howtomap
+
+
+# Adding functions for capturing the keyboard and controling the game, you may recicle this in your applications
 def on_press(key):
     global ev
     ev=str(key)
