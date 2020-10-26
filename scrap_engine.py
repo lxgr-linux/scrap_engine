@@ -137,15 +137,20 @@ class ObjectGroup():
 class Text(ObjectGroup):
     def __init__(self, text, state="solid"):
         self.obs=[]
-        for i, char in enumerate(text):
-            exec("self.ob_"+str(i)+"=Object(char, state)")
-            exec("self.obs.append(self.ob_"+str(i)+")")
+        self.text=text
+        for text in text.split("\n"):
+            for i, char in enumerate(text):
+                exec("self.ob_"+str(i)+"=Object(char, state)")
+                exec("self.obs.append(self.ob_"+str(i)+")")
 
     def add(self, map, x, y):
         self.x=x
         self.y=y
-        for i, ob in enumerate(self.obs):
-            ob.add(map, x+i, y)
+        count=0
+        for l, text in enumerate(self.text.split("\n")):
+            for i, ob in enumerate(self.obs[count:count+len(text)]):
+                ob.add(map, x+i, y+l)
+            count+=len(text)
 
 class Square(ObjectGroup):
     def __init__(self, char, width, height, state="solid"):
