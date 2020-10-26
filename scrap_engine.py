@@ -4,9 +4,8 @@ import os
 
 width, height = os.get_terminal_size()
 
-
 class Map():
-    def __init__(self, height=height-1, width=width, background="#", dynfps="on"):
+    def __init__(self, height=height-1, width=width, background="#", dynfps=True):
         a="["+width*("'"+background+"',")+"],"
         self.height=height
         self.width=width
@@ -38,7 +37,7 @@ class Map():
             if self.out_line == self.width*" ":
                 self.out_line=" "
             self.out+=self.out_line+"\n"
-        if self.out_old != self.out or self.dynfps == "off" or init == True:
+        if self.out_old != self.out or self.dynfps == False or init == True:
             print(self.out, end="")
             self.out_old=self.out
 
@@ -100,7 +99,7 @@ class ObjectGroup():
     def __init__(self, obs):
         self.obs=obs
 
-    def add(self, ob):
+    def add_ob(self, ob):
         self.obs.append(ob)
 
     def move(self, x=0, y=0):
@@ -112,25 +111,34 @@ class ObjectGroup():
             ob.remove()
 
 class Text(ObjectGroup):
-    def __init__(self, text, map, x, y, state="solid"):
+    def __init__(self, text, state="solid"):
         self.obs=[]
-        self.x=x
-        self.y=y
         for i, char in enumerate(text):
             exec("self.ob_"+str(i)+"=Object(char, state)")
-            exec("self.ob_"+str(i)+".add(map, x+i, y)")
             exec("self.obs.append(self.ob_"+str(i)+")")
 
-class Square(ObjectGroup):
-    def __init__(self, char, map, width, height, x, y, state="solid"):
-        self.obs=[]
+    def add(self, map, x, y):
         self.x=x
         self.y=y
+        for i, ob in enumerate(self.obs):
+            ob.add(map, x+i, y)
+
+class Square(ObjectGroup):
+    def __init__(self, char, width, height, state="solid"):
+        self.obs=[]
+        self.width=width
+        self.height=height
         for l in range(height):
             for i in range(width):
                 exec("self.ob_"+str(i)+str(l)+"=Object(char, state)")
-                exec("self.ob_"+str(i)+str(l)+".add(map, x+i, y+l)")
                 exec("self.obs.append(self.ob_"+str(i)+str(l)+")")
+
+    def add(self, map, x, y):
+        self.x=x
+        self.y=y
+        for l in range(self.height):
+            for i in range(self.width):
+                exec("self.ob_"+str(i)+str(l)+".add(map, x+i, y+l)")
 
 
 # map=Map(background=" ")
