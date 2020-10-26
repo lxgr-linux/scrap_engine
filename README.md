@@ -2,4 +2,11 @@
 by LXGR <lxgr@protonmail.com>
 
 # Installation
-Copy scrap_engine to /usr/lib/python3.8
+Linux:
+Copy scrap_engine.py to /usr/lib/python3.8
+
+Windoofs:
+Idk, you will figure it out.
+
+# Usage
+See scrap_test.py
