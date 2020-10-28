@@ -157,6 +157,13 @@ class Text(ObjectGroup):
                 ob.add(map, x+i, y+l)
             count+=len(text)
 
+    def rechar(self, text):
+        mtext=""
+        for t in text.split("\n"):
+            mtext+=t
+        for ob, char in zip(self.obs, mtext):
+            ob.rechar(char)
+
 class Square(ObjectGroup):
     def __init__(self, char, width, height, state="solid"):
         self.obs=[]
