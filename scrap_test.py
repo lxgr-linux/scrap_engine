@@ -30,6 +30,10 @@ class Pad(se.Object):
 class Player(se.Object):
     def bump(self, x, y):
         self.set(round(self.map.width/2), round(self.map.height/2))
+        if self.char == "T":
+            self.rechar("t")
+        else:
+            self.rechar("T")
 
 # Creating Objects
 lui=se.Object(char="L") # Objects are just objects that can be added to a map
@@ -141,6 +145,10 @@ while True:
         ev=0
     elif ev == "'d'":
         player.set(player.x+1, player.y) # Doing yet another different thing on keypress d
+        ev=0
+    elif ev == "'e'":
+        text2.rechar("thus\nus\nmultiline mext!")
+        square2.rechar("A") # Doing some weird shit on keypress e
         ev=0
     elif ev == "'q'":
         # Creating and adding some Object on keypress q
