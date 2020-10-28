@@ -117,6 +117,9 @@ class Object():
         self.redraw()
 
     def remove(self):
+        for ob in self.map.obs:
+            if ob.x == self.x and ob.y == self.y:
+                ob.backup=self.backup
         self.map.map[self.y][self.x]=self.backup
         for i in range(len(self.map.obs)):
             if self.map.obs[i] == self:
