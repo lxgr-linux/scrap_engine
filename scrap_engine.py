@@ -181,6 +181,9 @@ class Square(ObjectGroup):
             for i in range(self.width):
                 exec("self.ob_"+str(i)+str(l)+".add(map, x+i, y+l)")
 
+    def rechar(self, char):
+        for ob in self.obs:
+            ob.rechar(char)
 
 # map=Map(background=" ")
 # ob=Object("i")
