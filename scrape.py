@@ -4,14 +4,53 @@ import scrap_engine as se
 from pynput.keyboard import Key, Listener
 import threading
 import time
+import random
 
 framenum=0
 ev=0
 walkframe=0
+genframe=0
+
+class Start(se.Object):
+    def bump_action(self):
+        snake.remove()
+
+    def bump(self, x, y):
+        self.bump_action()
+
+    def bump_right(self):
+        self.bump_action()
+
+    def bump_left(self):
+        self.bump_action()
+
+    def bump_top(self):
+        self.bump_action()
+
+    def bump_bottom(self):
+        self.bump_action()
+
+class Apple(se.Object):
+    def action(self):
+        global runner_num
+        exec("runner"+str(runner_num)+"=se.Object('#')")
+        exec("runner"+str(runner_num)+".add(map, snake.obs[-1].oldx, snake.obs[-1].oldy)")
+        exec("snake.add_ob(runner"+str(runner_num)+")")
+        runner_num+=1
+        self.remove()
 
 map=se.Map(background=" ")
-start=se.Object("#")
+start=Start("#")
+runner0=se.Object("#")
+runner1=se.Object("#")
+apple0=Apple("a", state="float")
+apple0.add(map, 10, 10)
+apple_num=1
 start.add(map, round(map.width/2), round(map.height/2))
+runner0.add(map, round(map.width/2), round(map.height/2)+1)
+runner1.add(map, round(map.width/2), round(map.height/2)+2)
+runner_num=2
+snake=se.ObjectGroup([start, runner0, runner1])
 start.direction="t"
 
 def on_press(key):
@@ -31,20 +70,26 @@ recognising.start()
 map.show()
 while True:
     if ev == "'w'":
-        start.direction="t"
+        if start.direction != "b":
+            start.direction="t"
         ev=0
     elif ev == "'a'":
-        start.direction="l"
+        if start.direction != "r":
+            start.direction="l"
         ev=0
     elif ev == "'s'":
-        start.direction="b"
+        if start.direction != "t":
+            start.direction="b"
         ev=0
     elif ev == "'d'":
-        start.direction="r"
+        if start.direction != "l":
+            start.direction="r"
         ev=0
     else:
         time.sleep(0.01)
     if walkframe+5 == framenum:
+        oldx=start.x
+        oldy=start.y
         if start.direction == "t":
             start.set(start.x, start.y-1)
         if start.direction == "b":
@@ -53,6 +98,17 @@ while True:
             start.set(start.x-1, start.y)
         if start.direction == "r":
             start.set(start.x+1, start.y)
+        for ob in snake.obs[1:]:
+            ob.oldx=ob.x
+            ob.oldy=ob.y
+            ob.set(oldx, oldy)
+            oldx=ob.oldx
+            oldy=ob.oldy
         walkframe+=5
+    if genframe+100 == framenum:
+        exec("apple"+str(apple_num)+"=Apple('a', state='float')")
+        exec("apple"+str(apple_num)+".add(map, random.randint(0, map.width-1), random.randint(0, map.height-1))")
+        apple_num+=1
+        genframe+=100
     map.show()
     framenum+=1
