@@ -111,6 +111,11 @@ class Object():
     def bump_bottom(self):
         return
 
+    def rechar(self, char):
+        self.map.map[self.y][self.x]=self.backup
+        self.char=char
+        self.redraw()
+
     def remove(self):
         self.map.map[self.y][self.x]=self.backup
         for i in range(len(self.map.obs)):
