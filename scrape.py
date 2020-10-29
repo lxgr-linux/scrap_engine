@@ -107,21 +107,26 @@ def dead():
 
 menumap=se.Map(background=" ")
 
+menutext=se.Text("Menu:")
 menutext1=se.Text("Resume")
 menutext2=se.Text("Restart")
 menutext3=se.Text("Exit")
 menuind=se.Object("*")
-# curscore=se.Text("You scored "+str(len(snake.obs))+" points")
-# curscore.add(menumap, round(deadmap.width/2-8-len(str(len(snake.obs)))/2), round(deadmap.height/2-4))
-menutext1.add(menumap, round(menumap.width/2)-3, round(menumap.height/2)-2)
-menutext2.add(menumap, round(menumap.width/2)-3, round(menumap.height/2))
-menutext3.add(menumap, round(menumap.width/2)-2, round(menumap.height/2)+2)
+curscore=se.Text("Current score: 0 points")
+curscore.add(menumap, round(menumap.width/2-11), round(menumap.height/2)-4)
+menutext1.add(menumap, round(menumap.width/2)-3, round(menumap.height/2)+1)
+menutext2.add(menumap, round(menumap.width/2)-3, round(menumap.height/2)+3)
+menutext3.add(menumap, round(menumap.width/2)-2, round(menumap.height/2)+5)
+menutext.add(menumap, round(menumap.width/2)-2, round(menumap.height/2)-6)
 menuind.add(menumap, menutext1.x-2, menutext1.y)
 
 def menu():
-    global ev
+    global ev, curscore
     ev=0
     menuind.index=1
+    curscore.remove()
+    curscore=se.Text("Current score: "+str(len(snake.obs))+" points")
+    curscore.add(menumap, round(menumap.width/2-10-len(str(len(snake.obs)))/2), round(menumap.height/2)-4)
     menumap.blur_in(map)
     menumap.show(init=True)
     while True:
