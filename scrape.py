@@ -37,8 +37,18 @@ class Apple(se.Object):
         runner_num+=1
         self.remove()
 
+class Berry(se.Object):
+    def action(self):
+        global runner_num, walkstep
+        snake.obs[-1].remove()
+        del snake.obs[-1]
+        runner_num-=1
+        if walkstep > 0:
+            walkstep-=1
+        self.remove()
+
 def applegen():
-    global apple_num, genframe
+    global apple_num
     x=random.randint(0, map.width-1)
     y=random.randint(0, map.height-1)
     for ob in map.obs:
@@ -48,6 +58,16 @@ def applegen():
     exec("apple"+str(apple_num)+".add(map, x, y)")
     apple_num+=1
 
+def berrygen():
+    global berry_num
+    x=random.randint(0, map.width-1)
+    y=random.randint(0, map.height-1)
+    for ob in map.obs:
+        if ob.x == x and ob.y == y:
+            return
+    exec("berry"+str(berry_num)+"=Berry('s', state='float')")
+    exec("berry"+str(berry_num)+".add(map, x, y)")
+    berry_num+=1
 
 def on_press(key):
     global ev
@@ -153,15 +173,18 @@ def menu():
             ev=0
         else:
             time.sleep(0.05)
-        menumap.show() # Showing menumap
+        menumap.show()
 
 def main():
-    global ev, apple_num, runner_num, snake, map
+    global ev, apple_num, berry_num, runner_num, snake, map, walkstep
     walkframe=0
-    genframe=0
+    genframe0=0
+    genframe1=0
     apple_num=0
+    berry_num=0
     runner_num=2
     framenum=0
+    walkstep=5
 
     map=se.Map(background=" ")
 
@@ -199,7 +222,7 @@ def main():
             ev=0
         else:
             time.sleep(0.01)
-        if walkframe+5 == framenum:
+        if walkframe+walkstep == framenum:
             oldx=start.x
             oldy=start.y
             if start.direction == "t":
@@ -216,10 +239,13 @@ def main():
                 ob.set(oldx, oldy)
                 oldx=ob.oldx
                 oldy=ob.oldy
-            walkframe+=5
-        if genframe+100 == framenum:
+            walkframe+=walkstep
+        if genframe0+150 == framenum:
             applegen()
-            genframe+=100
+            genframe0+=150
+        if genframe1+400 == framenum:
+            berrygen()
+            genframe1+=400
         map.show()
         framenum+=1
 
