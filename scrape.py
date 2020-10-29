@@ -49,16 +49,26 @@ def applegen():
     apple_num+=1
 
 
+def on_press(key):
+    global ev
+    ev=str(key)
+
+def recogniser():
+    global ev
+    while True:
+        with Listener(on_press=on_press) as listener:
+            listener.join()
+
 deadmap=se.Map(background=" ")
 
-menutext1=se.Text("Try again")
-menutext2=se.Text("Exit")
+deadmenutext1=se.Text("Try again")
+deadmenutext2=se.Text("Exit")
 deadtext=se.Text("You dead!")
 deadmenuind=se.Object("*")
-menutext1.add(deadmap, round(deadmap.width/2)-4, round(deadmap.height/2)+3)
-menutext2.add(deadmap, round(deadmap.width/2)-2, round(deadmap.height/2)+5)
+deadmenutext1.add(deadmap, round(deadmap.width/2)-4, round(deadmap.height/2)+3)
+deadmenutext2.add(deadmap, round(deadmap.width/2)-2, round(deadmap.height/2)+5)
 deadtext.add(deadmap, round(deadmap.width/2)-4, round(deadmap.height/2-6))
-deadmenuind.add(deadmap, menutext1.x-2, menutext1.y)
+deadmenuind.add(deadmap, deadmenutext1.x-2, deadmenutext1.y)
 scoretext=se.Text("You scored 0 points")
 scoretext.add(deadmap, round(deadmap.width/2-8-1), round(deadmap.height/2-4))
 
@@ -78,32 +88,67 @@ def dead():
         elif ev == "'w'":
             if deadmenuind.index != 1:
                 deadmenuind.index-=1
-            exec("deadmenuind.set(menutext"+str(deadmenuind.index)+".x-2, menutext"+str(deadmenuind.index)+".y)")
+            exec("deadmenuind.set(deadmenutext"+str(deadmenuind.index)+".x-2, deadmenutext"+str(deadmenuind.index)+".y)")
             ev=0
         elif ev == "'s'":
             if deadmenuind.index != 2:
                 deadmenuind.index+=1
-            exec("deadmenuind.set(menutext"+str(deadmenuind.index)+".x-2, menutext"+str(deadmenuind.index)+".y)")
+            exec("deadmenuind.set(deadmenutext"+str(deadmenuind.index)+".x-2, deadmenutext"+str(deadmenuind.index)+".y)")
             ev=0
         elif ev == "Key.enter":
-            if deadmenuind.y == menutext1.y:
+            if deadmenuind.y == deadmenutext1.y:
                 main()
-            elif deadmenuind.y == menutext2.y:
+            elif deadmenuind.y == deadmenutext2.y:
                 exit()
             ev=0
         else:
             time.sleep(0.05)
         deadmap.show()
 
-def on_press(key):
-    global ev
-    ev=str(key)
+menumap=se.Map(background=" ")
 
-def recogniser():
+menutext1=se.Text("Resume")
+menutext2=se.Text("Restart")
+menutext3=se.Text("Exit")
+menuind=se.Object("*")
+# curscore=se.Text("You scored "+str(len(snake.obs))+" points")
+# curscore.add(menumap, round(deadmap.width/2-8-len(str(len(snake.obs)))/2), round(deadmap.height/2-4))
+menutext1.add(menumap, round(menumap.width/2)-3, round(menumap.height/2)-2)
+menutext2.add(menumap, round(menumap.width/2)-3, round(menumap.height/2))
+menutext3.add(menumap, round(menumap.width/2)-2, round(menumap.height/2)+2)
+menuind.add(menumap, menutext1.x-2, menutext1.y)
+
+def menu():
     global ev
+    ev=0
+    menuind.index=1
+    menumap.blur_in(map)
+    menumap.show(init=True)
     while True:
-        with Listener(on_press=on_press) as listener:
-            listener.join()
+        if ev == "'m'":
+            ev=0
+            break
+        elif ev == "'w'":
+            if menuind.index != 1:
+                menuind.index-=1
+            exec("menuind.set(menutext"+str(menuind.index)+".x-2, menutext"+str(menuind.index)+".y)")
+            ev=0
+        elif ev == "'s'":
+            if menuind.index != 3:
+                menuind.index+=1
+            exec("menuind.set(menutext"+str(menuind.index)+".x-2, menutext"+str(menuind.index)+".y)")
+            ev=0
+        elif ev == "Key.enter":
+            if menuind.y == menutext1.y:
+                return
+            elif menuind.y == menutext2.y:
+                main()
+            elif menuind.y == menutext3.y:
+                exit()
+            ev=0
+        else:
+            time.sleep(0.05)
+        menumap.show() # Showing menumap
 
 def main():
     global ev, apple_num, runner_num, snake, map
@@ -142,6 +187,10 @@ def main():
         elif ev == "'d'":
             if start.direction != "l":
                 start.direction="r"
+            ev=0
+        elif ev == "'m'":
+            menu()
+            map.show(init=True)
             ev=0
         else:
             time.sleep(0.01)
