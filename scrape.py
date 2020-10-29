@@ -30,6 +30,18 @@ class Start(se.Object):
     def bump_bottom(self):
         self.bump_action()
 
+def applegen():
+    global apple_num, genframe
+    x=random.randint(0, map.width-1)
+    y=random.randint(0, map.height-1)
+    for ob in map.obs:
+        if ob.x == x and ob.y == y:
+            return
+    exec("apple"+str(apple_num)+"=Apple('a', state='float')")
+    exec("apple"+str(apple_num)+".add(map, x, y)")
+    apple_num+=1
+
+
 class Apple(se.Object):
     def action(self):
         global runner_num
@@ -106,9 +118,7 @@ while True:
             oldy=ob.oldy
         walkframe+=5
     if genframe+100 == framenum:
-        exec("apple"+str(apple_num)+"=Apple('a', state='float')")
-        exec("apple"+str(apple_num)+".add(map, random.randint(0, map.width-1), random.randint(0, map.height-1))")
-        apple_num+=1
+        applegen()
         genframe+=100
     map.show()
     framenum+=1
