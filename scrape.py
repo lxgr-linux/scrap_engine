@@ -54,18 +54,18 @@ deadmap=se.Map(background=" ")
 menutext1=se.Text("Try again")
 menutext2=se.Text("Exit")
 deadtext=se.Text("You dead!")
-menuind=se.Object("*")
+deadmenuind=se.Object("*")
 menutext1.add(deadmap, round(deadmap.width/2)-4, round(deadmap.height/2)+3)
 menutext2.add(deadmap, round(deadmap.width/2)-2, round(deadmap.height/2)+5)
 deadtext.add(deadmap, round(deadmap.width/2)-4, round(deadmap.height/2-6))
-menuind.add(deadmap, menutext1.x-2, menutext1.y)
+deadmenuind.add(deadmap, menutext1.x-2, menutext1.y)
 scoretext=se.Text("You scored 0 points")
 scoretext.add(deadmap, round(deadmap.width/2-8-1), round(deadmap.height/2-4))
 
 def dead():
     global ev, scoretext
     ev=0
-    menuind.index=1
+    deadmenuind.index=1
     scoretext.remove()
     scoretext=se.Text("You scored "+str(len(snake.obs))+" points")
     scoretext.add(deadmap, round(deadmap.width/2-8-len(str(len(snake.obs)))/2), round(deadmap.height/2-4))
@@ -76,19 +76,19 @@ def dead():
             ev=0
             exit()
         elif ev == "'w'":
-            if menuind.index != 1:
-                menuind.index-=1
-            exec("menuind.set(menutext"+str(menuind.index)+".x-2, menutext"+str(menuind.index)+".y)")
+            if deadmenuind.index != 1:
+                deadmenuind.index-=1
+            exec("deadmenuind.set(menutext"+str(deadmenuind.index)+".x-2, menutext"+str(deadmenuind.index)+".y)")
             ev=0
         elif ev == "'s'":
-            if menuind.index != 2:
-                menuind.index+=1
-            exec("menuind.set(menutext"+str(menuind.index)+".x-2, menutext"+str(menuind.index)+".y)")
+            if deadmenuind.index != 2:
+                deadmenuind.index+=1
+            exec("deadmenuind.set(menutext"+str(deadmenuind.index)+".x-2, menutext"+str(deadmenuind.index)+".y)")
             ev=0
         elif ev == "Key.enter":
-            if menuind.y == menutext1.y:
+            if deadmenuind.y == menutext1.y:
                 main()
-            elif menuind.y == menutext2.y:
+            elif deadmenuind.y == menutext2.y:
                 exit()
             ev=0
         else:
