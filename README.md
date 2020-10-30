@@ -10,3 +10,6 @@ Idk, you will figure it out.
 
 # Usage
 See scrap_test.py
+
+# Dependencies
+scrap_test.py and scrape.py both requier pynput
