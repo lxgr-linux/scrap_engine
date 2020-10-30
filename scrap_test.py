@@ -13,6 +13,8 @@ import time
 luisframe=0
 luisview="r"
 framenum=0
+bullet_num=0
+bullets=[]
 ev=0
 obcount=0
 
@@ -34,6 +36,28 @@ class Player(se.Object):
             self.rechar("t")
         else:
             self.rechar("T")
+
+class Bullet(se.Object):
+    def bump_action(self):
+        for ob in bullets:
+            if ob == self:
+                del ob
+        self.remove()
+
+    def bump(self, x, y):
+        self.bump_action()
+
+    def bump_right(self):
+        self.bump_action()
+
+    def bump_left(self):
+        self.bump_action()
+
+    def bump_top(self):
+        self.bump_action()
+
+    def bump_bottom(self):
+        self.bump_action()
 
 # Creating Objects
 lui=se.Object(char="L") # Objects are just objects that can be added to a map
@@ -66,6 +90,7 @@ text2.add(map, 11, 4)
 square2.add(map, 60, 10)
 square1.add(map, 20, 20)
 pad.add(map, 10, 20)
+player.direction="r"
 
 # Menu function
 def menu():
@@ -135,15 +160,19 @@ recognising.start()
 map.show() # showing map Map
 while True:
     if ev == "'w'":
+        player.direction="t"
         player.set(player.x, player.y-1) # Doing something on keypress w
         ev=0
     elif ev == "'a'":
+        player.direction="l"
         player.set(player.x-1, player.y) # Doing something different on keypress a
         ev=0
     elif ev == "'s'":
+        player.direction="b"
         player.set(player.x, player.y+1) # Doing something more different on keypress s
         ev=0
     elif ev == "'d'":
+        player.direction="r"
         player.set(player.x+1, player.y) # Doing yet another different thing on keypress d
         ev=0
     elif ev == "'e'":
@@ -160,6 +189,19 @@ while True:
         menu() # Running the menu function on keypress q to open the menu
         map.show(init=True) # The init=True option ensures, the map Map is drawn after closing the menu, even if no changes accured in the map
         ev=0
+    elif ev == "Key.space":
+        exec("bullet"+str(bullet_num)+"=Bullet('*', state='float')")
+        exec("bullet"+str(bullet_num)+".direction=player.direction")
+        if player.direction == "t":
+            exec("bullet"+str(bullet_num)+".add(map, player.x, player.y-1)")
+        elif player.direction == "l":
+            exec("bullet"+str(bullet_num)+".add(map, player.x-1, player.y)")
+        elif player.direction == "b":
+            exec("bullet"+str(bullet_num)+".add(map, player.x, player.y+1)")
+        elif player.direction == "r":
+            exec("bullet"+str(bullet_num)+".add(map, player.x+1, player.y)")
+        exec("bullets.append(bullet"+str(bullet_num)+")")
+        ev=0
     else:
         time.sleep(0.05) # Else just wait 0.05 seconds
     # Let lui run
@@ -173,5 +215,14 @@ while True:
         elif lui.x == 19 or lui.x == 21:
             lui.set(20, 10)
         luisframe+=20
+    for ob in bullets:
+        if ob.direction == "t":
+            ob.set(ob.x, ob.y-1)
+        elif ob.direction == "l":
+            ob.set(ob.x-1, ob.y)
+        elif ob.direction == "b":
+            ob.set(ob.x, ob.y+1)
+        elif ob.direction == "r":
+            ob.set(ob.x+1, ob.y)
     map.show() # Draw the frame
     framenum+=1
