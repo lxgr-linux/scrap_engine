@@ -145,11 +145,15 @@ class ObjectGroup():
             ob.remove()
 
 class Text(ObjectGroup):
-    def __init__(self, text, state="solid"):
+    def __init__(self, text, state="solid", exitc=""):
         self.obs=[]
         self.text=text
         for text in text.split("\n"):
             for i, char in enumerate(text):
+                if i == 0:
+                    char=exitc+char
+                if i == len(text)-1 and exit != "":
+                    char+="\033[0m"
                 exec("self.ob_"+str(i)+"=Object(char, state)")
                 exec("self.obs.append(self.ob_"+str(i)+")")
 
