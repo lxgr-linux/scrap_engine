@@ -18,7 +18,7 @@ class Map():
         for l in range(self.height):
             for i in range(self.width):
                 if blurmap.map[l][i] != " ":
-                    self.map[l][i]="\033[37m"+blurmap.map[l][i]+"\033[0m"
+                    self.map[l][i]="\033[37m"+blurmap.map[l][i].replace("\033[0m", "")[-1]+"\033[0m"
                 else:
                     self.map[l][i]=" "
         for ob in self.obs:
@@ -152,7 +152,7 @@ class Text(ObjectGroup):
             for i, char in enumerate(text):
                 if i == 0:
                     char=exitc+char
-                if i == len(text)-1 and exit != "":
+                if i == len(text)-1 and exitc != "":
                     char+="\033[0m"
                 exec("self.ob_"+str(i)+"=Object(char, state)")
                 exec("self.obs.append(self.ob_"+str(i)+")")
