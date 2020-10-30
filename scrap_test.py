@@ -71,7 +71,7 @@ menutext1=se.Text("Resume", float) # The Text class creates a Group with the tex
 menutext2=se.Text("How to play", float)
 menutext3=se.Text("Exit", float)
 howtotext=se.Text("How to play this game ou ask?\nIf you haven't already understood,\nyou can move your character with w, a, s and d.\nTo open the menu press m", float)
-text=se.Text("hello", float)
+text=se.Text("hello", float, exitc="\033[1m")
 text2=se.Text("this\nis\nmultiline text!", float)
 square1=se.Square("#", 2, 3, float)
 square2=se.Square("#", 10, 5) # The Square class creates a square of a specific character
