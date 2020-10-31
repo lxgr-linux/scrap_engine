@@ -43,7 +43,7 @@ class Berry(se.Object):
         snake.obs[-1].remove()
         del snake.obs[-1]
         runner_num-=1
-        if walkstep > 0:
+        if walkstep > 1:
             walkstep-=1
         self.remove()
 
