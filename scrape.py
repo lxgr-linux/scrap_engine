@@ -10,7 +10,6 @@ ev=0
 
 class Start(se.Object):
     def bump_action(self):
-        # snake.remove()
         dead()
 
     def bump(self, x, y):
@@ -54,7 +53,7 @@ def applegen():
     for ob in map.obs:
         if ob.x == x and ob.y == y:
             return
-    exec("apple"+str(apple_num)+"=Apple('a', state='float')")
+    exec("apple"+str(apple_num)+"=Apple('\033[32;1ma\033[0m', state='float')")
     exec("apple"+str(apple_num)+".add(map, x, y)")
     apple_num+=1
 
@@ -65,7 +64,7 @@ def berrygen():
     for ob in map.obs:
         if ob.x == x and ob.y == y:
             return
-    exec("berry"+str(berry_num)+"=Berry('s', state='float')")
+    exec("berry"+str(berry_num)+"=Berry('\033[31;1ms\033[0m', state='float')")
     exec("berry"+str(berry_num)+".add(map, x, y)")
     berry_num+=1
 
@@ -199,22 +198,27 @@ def main():
     start.direction="t"
 
     map.show()
+    set=False
     while True:
         if ev == "'w'":
-            if start.direction != "b":
+            if start.direction != "b" and set == False:
                 start.direction="t"
+                set=True
             ev=0
         elif ev == "'a'":
-            if start.direction != "r":
+            if start.direction != "r" and set == False:
                 start.direction="l"
+                set=True
             ev=0
         elif ev == "'s'":
-            if start.direction != "t":
+            if start.direction != "t" and set == False:
                 start.direction="b"
+                set=True
             ev=0
         elif ev == "'d'":
-            if start.direction != "l":
+            if start.direction != "l" and set == False:
                 start.direction="r"
+                set=True
             ev=0
         elif ev == "'m'":
             menu()
@@ -239,6 +243,7 @@ def main():
                 ob.set(oldx, oldy)
                 oldx=ob.oldx
                 oldy=ob.oldy
+            set=False
             walkframe+=walkstep
         if genframe0+150 == framenum:
             applegen()
