@@ -90,7 +90,7 @@ deadmenutext2.add(deadmap, round(deadmap.width/2)-2, round(deadmap.height/2)+5)
 deadtext.add(deadmap, round(deadmap.width/2)-4, round(deadmap.height/2-6))
 deadmenuind.add(deadmap, deadmenutext1.x-2, deadmenutext1.y)
 scoretext=se.Text("You scored 0 points")
-scoretext.add(deadmap, round(deadmap.width/2-8-1), round(deadmap.height/2-4))
+scoretext.add(deadmap, round(deadmap.width/2-8-1), round(deadmap.height/2)-4)
 
 def dead():
     global ev, scoretext
@@ -99,7 +99,7 @@ def dead():
     scoretext.remove()
     scoretext=se.Text("You scored "+str(len(snake.obs))+" points")
     scoretext.add(deadmap, round(deadmap.width/2-8-len(str(len(snake.obs)))/2), round(deadmap.height/2-4))
-    deadmap.blur_in(map)
+    deadmap.blur_in(map, esccode="\033[31m")
     deadmap.show(init=True)
     while True:
         if ev == "'m'":
@@ -230,6 +230,8 @@ def main():
         if walkframe+walkstep == framenum:
             oldx=start.x
             oldy=start.y
+            start.oldx=start.x
+            start.oldy=start.y
             if start.direction == "t":
                 start.set(start.x, start.y-1)
             if start.direction == "b":
@@ -244,6 +246,8 @@ def main():
                 ob.set(oldx, oldy)
                 oldx=ob.oldx
                 oldy=ob.oldy
+            if len(snake.obs) == 0:
+                dead()
             set=False
             walkframe+=walkstep
         if genframe0+150 == framenum:
