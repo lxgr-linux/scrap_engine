@@ -38,11 +38,12 @@ class Apple(se.Object):
 
 class Berry(se.Object):
     def action(self):
-        global runner_num, walkstep
+        global runner_num, walkstep, walkframe
         snake.obs[-1].remove()
         del snake.obs[-1]
         runner_num-=1
         if walkstep > 1:
+            walkframe+=1
             walkstep-=1
         self.remove()
 
@@ -175,7 +176,7 @@ def menu():
         menumap.show()
 
 def main():
-    global ev, apple_num, berry_num, runner_num, snake, map, walkstep
+    global ev, apple_num, berry_num, runner_num, snake, map, walkstep, walkframe
     walkframe=0
     genframe0=0
     genframe1=0
