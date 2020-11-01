@@ -14,11 +14,11 @@ class Map():
         exec("self.map=["+height*a+"]")
         self.obs=[]
 
-    def blur_in(self, blurmap):
+    def blur_in(self, blurmap, esccode="\033[37m"):
         for l in range(self.height):
             for i in range(self.width):
                 if blurmap.map[l][i] != " ":
-                    self.map[l][i]="\033[37m"+blurmap.map[l][i].replace("\033[0m", "")[-1]+"\033[0m"
+                    self.map[l][i]=esccode+blurmap.map[l][i].replace("\033[0m", "")[-1]+"\033[0m"
                 else:
                     self.map[l][i]=" "
         for ob in self.obs:
