@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+# This is snake, but worse
 
 import scrap_engine as se
 from pynput.keyboard import Key, Listener
@@ -6,7 +7,6 @@ import threading
 import time
 import random
 
-ev=0
 
 class Start(se.Object):
     def bump_action(self):
@@ -259,6 +259,7 @@ def main():
         map.show()
         framenum+=1
 
+ev=0
 recognising=threading.Thread(target=recogniser)
 recognising.daemon=True
 recognising.start()
