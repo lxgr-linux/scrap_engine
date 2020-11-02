@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-import time
-import os
+import time, os
 
 width, height = os.get_terminal_size()
 

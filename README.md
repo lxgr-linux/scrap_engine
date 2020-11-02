@@ -3,7 +3,7 @@ by LXGR <lxgr@protonmail.com>
 
 # Installation
 Linux:
-Copy scrap_engine.py to /usr/lib/python3.8
+Copy scrap_engine.py to /usr/lib/python3.8/site-packages
 
 Windoofs:
 Idk, you will figure it out.
