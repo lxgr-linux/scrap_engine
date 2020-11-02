@@ -29,19 +29,16 @@ class Start(se.Object):
 
 class Apple(se.Object):
     def action(self):
-        global runner_num
-        exec("runner"+str(runner_num)+"=se.Object('#')")
-        exec("runner"+str(runner_num)+".add(map, snake.obs[-1].oldx, snake.obs[-1].oldy)")
-        exec("snake.add_ob(runner"+str(runner_num)+")")
-        runner_num+=1
+        exec("runner"+str(len(snake.obs))+"=se.Object('#')")
+        exec("runner"+str(len(snake.obs))+".add(map, snake.obs[-1].oldx, snake.obs[-1].oldy)")
+        exec("snake.add_ob(runner"+str(len(snake.obs))+")")
         self.remove()
 
 class Berry(se.Object):
     def action(self):
-        global runner_num, walkstep, walkframe
+        global walkstep, walkframe
         snake.obs[-1].remove()
         del snake.obs[-1]
-        runner_num-=1
         if walkstep > 1:
             walkframe+=1
             walkstep-=1
@@ -176,14 +173,8 @@ def menu():
         menumap.show()
 
 def main():
-    global ev, apple_num, berry_num, runner_num, snake, map, walkstep, walkframe
-    walkframe=0
-    genframe0=0
-    genframe1=0
-    apple_num=0
-    berry_num=0
-    runner_num=2
-    framenum=0
+    global ev, apple_num, berry_num, map, walkstep, walkframe, snake
+    walkframe=genframe0=genframe1=apple_num=berry_num=framenum=0
     walkstep=5
 
     map=se.Map(background=" ")
@@ -202,22 +193,22 @@ def main():
     set=False
     while True:
         if ev == "'w'":
-            if start.direction != "b" and set == False:
+            if start.direction != "b" and not set:
                 start.direction="t"
                 set=True
             ev=0
         elif ev == "'a'":
-            if start.direction != "r" and set == False:
+            if start.direction != "r" and not set:
                 start.direction="l"
                 set=True
             ev=0
         elif ev == "'s'":
-            if start.direction != "t" and set == False:
+            if start.direction != "t" and not set:
                 start.direction="b"
                 set=True
             ev=0
         elif ev == "'d'":
-            if start.direction != "l" and set == False:
+            if start.direction != "l" and not set:
                 start.direction="r"
                 set=True
             ev=0
@@ -228,10 +219,8 @@ def main():
         else:
             time.sleep(0.01)
         if walkframe+walkstep == framenum:
-            oldx=start.x
-            oldy=start.y
-            start.oldx=start.x
-            start.oldy=start.y
+            start.oldx=oldx=start.x
+            start.oldy=oldy=start.y
             if start.direction == "t":
                 start.set(start.x, start.y-1)
             if start.direction == "b":
