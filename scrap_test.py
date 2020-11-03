@@ -6,7 +6,9 @@
 
 import scrap_engine as se
 from pynput.keyboard import Key, Listener
-import threading, time
+import threading, time, os
+
+os.system("")
 
 # Some vars
 luisframe=0

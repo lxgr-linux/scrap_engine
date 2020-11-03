@@ -3,7 +3,9 @@
 
 import scrap_engine as se
 from pynput.keyboard import Key, Listener
-import threading, time, random
+import threading, time, random, os
+
+os.system("")
 
 class Start(se.Object):
     def bump_action(self):
