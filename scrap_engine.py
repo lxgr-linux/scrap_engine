@@ -144,14 +144,14 @@ class ObjectGroup():
             ob.remove()
 
 class Text(ObjectGroup):
-    def __init__(self, text, state="solid", exitc=""):
+    def __init__(self, text, state="solid", esccode=""):
         self.obs=[]
         self.text=text
         for text in text.split("\n"):
             for i, char in enumerate(text):
                 if i == 0:
-                    char=exitc+char
-                if i == len(text)-1 and exitc != "":
+                    char=esccode+char
+                if i == len(text)-1 and esccode != "":
                     char+="\033[0m"
                 exec("self.ob_"+str(i)+"=Object(char, state)")
                 exec("self.obs.append(self.ob_"+str(i)+")")
@@ -192,30 +192,3 @@ class Square(ObjectGroup):
     def rechar(self, char):
         for ob in self.obs:
             ob.rechar(char)
-
-# map=Map(background=" ")
-# ob=Object("i")
-# ob2=Object("2")
-# ob3=Object("3")
-# ob4=Object("3")
-# ob5=Object("3")
-# ob6=Object("3")
-# ob7=Object("3")
-# group=ObjectGroup([ob3, ob4, ob5, ob6, ob7])
-# ob3.add(map, 2, 2)
-# ob4.add(map, 3, 2)
-# ob5.add(map, 4, 2)
-# ob6.add(map, 5, 2)
-# ob7.add(map, 6, 2)
-# ob.add(map, 1, 2)
-# ob.set(1,2)
-# ob2.add(map, 1, 2)
-# map.show()
-# for i in range(3):
-#     time.sleep(1)
-#     ob.set(ob.x, ob.y+1)
-#     map.show()
-# group.move(2,3)
-# map.show()
-# group.remove()
-# map.show()
