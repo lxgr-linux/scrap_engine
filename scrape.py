@@ -201,27 +201,13 @@ def main():
     map.show()
     set=False
     while True:
-        if ev == "'w'":
-            if start.direction != "b" and not set:
-                start.direction="t"
-                set=True
-            ev=0
-        elif ev == "'a'":
-            if start.direction != "r" and not set:
-                start.direction="l"
-                set=True
-            ev=0
-        elif ev == "'s'":
-            if start.direction != "t" and not set:
-                start.direction="b"
-                set=True
-            ev=0
-        elif ev == "'d'":
-            if start.direction != "l" and not set:
-                start.direction="r"
-                set=True
-            ev=0
-        elif ev == "'m'":
+        for arr in [["'w'", "b", "t"], ["'a'", "r", "l"], ["'s'", "t", "b"], ["'d'", "l", "r"]]:
+            if ev == arr[0]:
+                if start.direction != arr[1] and not set:
+                    start.direction=arr[2]
+                    set=True
+                ev=0
+        if ev == "'m'":
             menu()
             map.show(init=True)
             ev=0
