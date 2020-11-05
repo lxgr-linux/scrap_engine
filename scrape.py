@@ -4,8 +4,8 @@
 import scrap_engine as se
 from pynput.keyboard import Key, Listener
 import threading, time, random, os
+from pathlib import Path
 
-os.system("")
 
 class Start(se.Object):
     def bump_action(self):
@@ -92,6 +92,16 @@ def dead():
     global ev, scoretext
     ev=0
     deadmenuind.index=1
+
+    home=str(Path.home())
+    Path(home+"/.cache/").mkdir(parents=True, exist_ok=True)
+    Path(home+"/.cache/scrape").touch(exist_ok=True)
+    with open(home+"/.cache/scrape", "r") as file:
+        file_content=file.read()
+        if file_content == "" or int(file_content) < len(snake.obs):
+            with open(home+"/.cache/scrape", "w+") as file1:
+                file1.write(str(len(snake.obs)))
+
     scoretext.remove()
     scoretext=se.Text("You scored "+str(len(snake.obs))+" points")
     scoretext.add(deadmap, round(deadmap.width/2-8-len(str(len(snake.obs)))/2), round(deadmap.height/2-4))
@@ -248,6 +258,7 @@ def main():
         framenum+=1
 
 ev=0
+os.system("")
 recognising=threading.Thread(target=recogniser)
 recognising.daemon=True
 recognising.start()
