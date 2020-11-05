@@ -94,12 +94,12 @@ def dead():
     deadmenuind.index=1
 
     home=str(Path.home())
-    Path(home+"/.cache/").mkdir(parents=True, exist_ok=True)
-    Path(home+"/.cache/scrape").touch(exist_ok=True)
-    with open(home+"/.cache/scrape", "r") as file:
+    Path(home+"/.cache/scrape").mkdir(parents=True, exist_ok=True)
+    Path(home+"/.cache/scrape/scrape").touch(exist_ok=True)
+    with open(home+"/.cache/scrape/scrape", "r") as file:
         file_content=file.read()
         if file_content == "" or int(file_content) < len(snake.obs):
-            with open(home+"/.cache/scrape", "w+") as file1:
+            with open(home+"/.cache/scrape/scrape", "w+") as file1:
                 file1.write(str(len(snake.obs)))
 
     scoretext.remove()
