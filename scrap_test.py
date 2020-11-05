@@ -8,6 +8,7 @@ import scrap_engine as se
 from pynput.keyboard import Key, Listener
 import threading, time, os
 
+# Because of some wierd windows shit this is required to let colors work
 os.system("")
 
 # Some vars
