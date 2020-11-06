@@ -87,9 +87,11 @@ deadtext.add(deadmap, round(deadmap.width/2)-4, round(deadmap.height/2-6))
 deadmenuind.add(deadmap, deadmenutext1.x-2, deadmenutext1.y)
 scoretext=se.Text("You scored 0 points")
 scoretext.add(deadmap, round(deadmap.width/2-8-1), round(deadmap.height/2)-4)
+highscoretext=se.Text("You scored 0 points")
+highscoretext.add(deadmap, round(deadmap.width/2-8-1), round(deadmap.height/2)-3)
 
 def dead():
-    global ev, scoretext
+    global ev, scoretext, highscoretext
     ev=0
     deadmenuind.index=1
 
@@ -101,10 +103,14 @@ def dead():
         if file_content == "" or int(file_content) < len(snake.obs):
             with open(home+"/.cache/scrape/scrape", "w+") as file1:
                 file1.write(str(len(snake.obs)))
+            file_content=str(len(snake.obs))
 
     scoretext.remove()
     scoretext=se.Text("You scored "+str(len(snake.obs))+" points")
-    scoretext.add(deadmap, round(deadmap.width/2-8-len(str(len(snake.obs)))/2), round(deadmap.height/2-4))
+    scoretext.add(deadmap, round(deadmap.width/2-8-len(str(len(snake.obs)))/2), round(deadmap.height/2)-4)
+    highscoretext.remove()
+    highscoretext=se.Text("Highscore: "+str(file_content))
+    highscoretext.add(deadmap, round(deadmap.width/2-5-len(file_content)/2), round(deadmap.height/2)-3)
     deadmap.blur_in(map, esccode="\033[31m")
     deadmap.show(init=True)
     while True:
@@ -218,11 +224,11 @@ def main():
             start.oldy=oldy=start.y
             if start.direction == "t":
                 start.set(start.x, start.y-1)
-            if start.direction == "b":
+            elif start.direction == "b":
                 start.set(start.x, start.y+1)
-            if start.direction == "l":
+            elif start.direction == "l":
                 start.set(start.x-1, start.y)
-            if start.direction == "r":
+            elif start.direction == "r":
                 start.set(start.x+1, start.y)
             for ob in snake.obs[1:]:
                 ob.oldx=ob.x
