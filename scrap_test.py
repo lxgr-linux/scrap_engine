@@ -21,7 +21,8 @@ ev=0
 obcount=0
 
 # Adding Maps
-map=se.Map(background=" ") # Maps are kind of the "playground" which you can add Objects and Groups to
+map=se.Map(width=600, background=" ") # Maps are kind of the "playground" which you can add Objects and Groups to
+smap=se.Submap(map, 0,0)
 menumap=se.Map(background=" ")
 howtomap=se.Map(background=" ")
 
@@ -99,7 +100,7 @@ def menu():
     global ev
     ev=0
     menuind.index=1
-    menumap.blur_in(map) # Blurs in the map Map into the background of the menumap Map
+    menumap.blur_in(smap) # Blurs in the map Map into the background of the menumap Map
     menumap.show(init=True)
     while True:
         if ev == "'m'":
@@ -159,7 +160,8 @@ recognising=threading.Thread(target=recogniser)
 recognising.daemon=True
 recognising.start()
 
-map.show() # showing map Map
+smap.remap()
+smap.show() # showing map Map
 while True:
     if ev == "'w'":
         player.direction="t"
@@ -189,7 +191,8 @@ while True:
         ev=0
     elif ev == "'m'":
         menu() # Running the menu function on keypress q to open the menu
-        map.show(init=True) # The init=True option ensures, the map Map is drawn after closing the menu, even if no changes accured in the map
+        smap.show(init=True) # The init=True option ensures, the map Map is drawn after closing the menu, even if no changes accured in the map
+        smap.remap()
         ev=0
     elif ev == "Key.space":
         exec("bullet"+str(bullet_num)+"=Bullet('*', state='float')")
@@ -217,6 +220,10 @@ while True:
         elif lui.x == 19 or lui.x == 21:
             lui.set(20, 10)
         luisframe+=20
+    if player.x+5 > smap.x+smap.width:
+        smap.set(smap.x+1 ,smap.y)
+    if player.x < smap.x+5:
+        smap.set(smap.x-1 ,smap.y)
     for ob in bullets:
         if ob.direction == "t":
             ob.set(ob.x, ob.y-1)
@@ -226,5 +233,6 @@ while True:
             ob.set(ob.x, ob.y+1)
         elif ob.direction == "r":
             ob.set(ob.x+1, ob.y)
-    map.show() # Draw the frame
+    smap.remap()
+    smap.show() # Draw the frame
     framenum+=1
