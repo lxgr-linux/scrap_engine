@@ -111,7 +111,7 @@ class Object():
         self.map.map[y][x]=self.char
         for ob in self.map.obs:
             if ob.x==x and ob.y==y and ob.state=="float":
-                ob.action()
+                ob.action(self)
 
     def redraw(self):
         if self.added == False:
@@ -119,7 +119,7 @@ class Object():
         self.backup=self.map.map[self.y][self.x]
         self.map.map[self.y][self.x]=self.char
 
-    def action(self):
+    def action(self, ob):
         return
 
     def bump(self, x, y):
@@ -158,9 +158,12 @@ class Object():
 class ObjectGroup():
     def __init__(self, obs):
         self.obs=obs
+        for ob in obs:
+            ob.group=self
 
     def add_ob(self, ob):
         self.obs.append(ob)
+        ob.group=self
 
     def move(self, x=0, y=0):
         for ob in self.obs:
@@ -182,6 +185,8 @@ class Text(ObjectGroup):
                     char+="\033[0m"
                 exec("self.ob_"+str(i)+"=Object(char, state)")
                 exec("self.obs.append(self.ob_"+str(i)+")")
+        for ob in self.obs:
+            ob.group=self
 
     def add(self, map, x, y):
         self.x=x
@@ -208,6 +213,8 @@ class Square(ObjectGroup):
             for i in range(width):
                 exec("self.ob_"+str(i)+str(l)+"=Object(char, state)")
                 exec("self.obs.append(self.ob_"+str(i)+str(l)+")")
+        for ob in self.obs:
+            ob.group=self
 
     def add(self, map, x, y):
         self.x=x
