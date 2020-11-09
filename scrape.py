@@ -86,9 +86,9 @@ deadmenutext2.add(deadmap, round(deadmap.width/2)-2, round(deadmap.height/2)+5)
 deadtext.add(deadmap, round(deadmap.width/2)-4, round(deadmap.height/2-6))
 deadmenuind.add(deadmap, deadmenutext1.x-2, deadmenutext1.y)
 scoretext=se.Text("You scored 0 points")
-scoretext.add(deadmap, round(deadmap.width/2-8-1), round(deadmap.height/2)-4)
+scoretext.add(deadmap, round(deadmap.width/2)-9, round(deadmap.height/2)-4)
 highscoretext=se.Text("You scored 0 points")
-highscoretext.add(deadmap, round(deadmap.width/2-8-1), round(deadmap.height/2)-3)
+highscoretext.add(deadmap, round(deadmap.width/2)-9, round(deadmap.height/2)-3)
 
 def dead():
     global ev, scoretext, highscoretext
