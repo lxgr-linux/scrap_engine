@@ -41,24 +41,30 @@ class Map():
             self.out_old=self.out
 
 class Submap(Map):
-    def __init__(self, bmap, y, x, height=height-1, width=width, dynfps=True):
+    def __init__(self, bmap, x, y, height=height-1, width=width, dynfps=True):
         self.height=height
+        self.width=width
         self.y=y
         self.x=x
-        self.width=width
         self.dynfps=dynfps
-        self.map=[]
         self.bmap=bmap
-        for arr in self.bmap.map[y:y+height]:
-            self.map.append(arr[x:x+width])
+        self.map=[]
         self.obs=[]
+        self.remap()
 
     def remap(self):
         self.map=[]
-        for arr in self.bmap.map[self.y:self.y+height]:
-            self.map.append(arr[self.x:self.x+width])
+        for arr in self.bmap.map[self.y:self.y+self.height]:
+            self.map.append(arr[self.x:self.x+self.width])
         for ob in self.obs:
             ob.redraw()
+
+    def set(self, x, y):
+        if x<0 or y<0 or x+self.width>self.bmap.width or y+self.height>self.bmap.height:
+            return
+        self.x=x
+        self.y=y
+        self.remap()
 
 
 class Object():
