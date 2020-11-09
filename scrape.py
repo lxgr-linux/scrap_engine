@@ -26,18 +26,20 @@ class Start(se.Object):
     def bump_bottom(self):
         self.bump_action()
 
+
 class Apple(se.Object):
-    def action(self):
-        exec("runner"+str(len(snake.obs))+"=se.Object('#')")
-        exec("runner"+str(len(snake.obs))+".add(map, snake.obs[-1].oldx, snake.obs[-1].oldy)")
-        exec("snake.add_ob(runner"+str(len(snake.obs))+")")
+    def action(self, ob):
+        exec("runner"+str(len(ob.group.obs))+"=se.Object('#')")
+        exec("runner"+str(len(ob.group.obs))+".add(map, ob.group.obs[-1].oldx, ob.group.obs[-1].oldy)")
+        exec("ob.group.add_ob(runner"+str(len(ob.group.obs))+")")
         self.remove()
+        
 
 class Berry(se.Object):
-    def action(self):
+    def action(self, ob):
         global walkstep, walkframe
-        snake.obs[-1].remove()
-        del snake.obs[-1]
+        ob.group.obs[-1].remove()
+        del ob.group.obs[-1]
         if walkstep > 1:
             walkframe+=1
             walkstep-=1
@@ -74,21 +76,6 @@ def recogniser():
     while True:
         with Listener(on_press=on_press) as listener:
             listener.join()
-
-deadmap=se.Map(background=" ")
-
-deadmenutext1=se.Text("Try again")
-deadmenutext2=se.Text("Exit")
-deadtext=se.Text("You dead!")
-deadmenuind=se.Object("*")
-deadmenutext1.add(deadmap, round(deadmap.width/2)-4, round(deadmap.height/2)+3)
-deadmenutext2.add(deadmap, round(deadmap.width/2)-2, round(deadmap.height/2)+5)
-deadtext.add(deadmap, round(deadmap.width/2)-4, round(deadmap.height/2-6))
-deadmenuind.add(deadmap, deadmenutext1.x-2, deadmenutext1.y)
-scoretext=se.Text("You scored 0 points")
-scoretext.add(deadmap, round(deadmap.width/2)-9, round(deadmap.height/2)-4)
-highscoretext=se.Text("You scored 0 points")
-highscoretext.add(deadmap, round(deadmap.width/2)-9, round(deadmap.height/2)-3)
 
 def dead():
     global ev, scoretext, highscoretext
@@ -136,21 +123,6 @@ def dead():
         else:
             time.sleep(0.05)
         deadmap.show()
-
-menumap=se.Map(background=" ")
-
-menutext=se.Text("Menu:")
-menutext1=se.Text("Resume")
-menutext2=se.Text("Restart")
-menutext3=se.Text("Exit")
-menuind=se.Object("*")
-curscore=se.Text("Current score: 0 points")
-curscore.add(menumap, round(menumap.width/2-11), round(menumap.height/2)-4)
-menutext1.add(menumap, round(menumap.width/2)-3, round(menumap.height/2)+1)
-menutext2.add(menumap, round(menumap.width/2)-3, round(menumap.height/2)+3)
-menutext3.add(menumap, round(menumap.width/2)-2, round(menumap.height/2)+5)
-menutext.add(menumap, round(menumap.width/2)-2, round(menumap.height/2)-6)
-menuind.add(menumap, menutext1.x-2, menutext1.y)
 
 def menu():
     global ev, curscore
@@ -248,6 +220,39 @@ def main():
             genframe1+=400
         map.show()
         framenum+=1
+
+
+# objects for dead
+deadmap=se.Map(background=" ")
+
+deadmenutext1=se.Text("Try again")
+deadmenutext2=se.Text("Exit")
+deadtext=se.Text("You dead!")
+deadmenuind=se.Object("*")
+deadmenutext1.add(deadmap, round(deadmap.width/2)-4, round(deadmap.height/2)+3)
+deadmenutext2.add(deadmap, round(deadmap.width/2)-2, round(deadmap.height/2)+5)
+deadtext.add(deadmap, round(deadmap.width/2)-4, round(deadmap.height/2-6))
+deadmenuind.add(deadmap, deadmenutext1.x-2, deadmenutext1.y)
+scoretext=se.Text("You scored 0 points")
+scoretext.add(deadmap, round(deadmap.width/2)-9, round(deadmap.height/2)-4)
+highscoretext=se.Text("You scored 0 points")
+highscoretext.add(deadmap, round(deadmap.width/2)-9, round(deadmap.height/2)-3)
+
+# Objects for menu
+menumap=se.Map(background=" ")
+
+menutext=se.Text("Menu:")
+menutext1=se.Text("Resume")
+menutext2=se.Text("Restart")
+menutext3=se.Text("Exit")
+menuind=se.Object("*")
+curscore=se.Text("Current score: 0 points")
+curscore.add(menumap, round(menumap.width/2-11), round(menumap.height/2)-4)
+menutext1.add(menumap, round(menumap.width/2)-3, round(menumap.height/2)+1)
+menutext2.add(menumap, round(menumap.width/2)-3, round(menumap.height/2)+3)
+menutext3.add(menumap, round(menumap.width/2)-2, round(menumap.height/2)+5)
+menutext.add(menumap, round(menumap.width/2)-2, round(menumap.height/2)-6)
+menuind.add(menumap, menutext1.x-2, menutext1.y)
 
 ev=0
 os.system("")

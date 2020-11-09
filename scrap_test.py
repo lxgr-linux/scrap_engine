@@ -28,8 +28,8 @@ howtomap=se.Map(background=" ")
 
 # Defining the "action" function for the Pad class wich is a modified Object class, which is triggert, when another Object is in the same spot as the Object it self
 class Pad(se.Object):
-    def action(self):
-        player.remove()
+    def action(self, ob):
+        ob.remove()
 
 # Same as above, but the player is set to the middle of the map when he bumps into an solid Object
 class Player(se.Object):
