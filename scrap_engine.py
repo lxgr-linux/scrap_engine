@@ -40,6 +40,27 @@ class Map():
             print(self.out, end="")
             self.out_old=self.out
 
+class Submap(Map):
+    def __init__(self, bmap, y, x, height=height-1, width=width, dynfps=True):
+        self.height=height
+        self.y=y
+        self.x=x
+        self.width=width
+        self.dynfps=dynfps
+        self.map=[]
+        self.bmap=bmap
+        for arr in self.bmap.map[y:y+height]:
+            self.map.append(arr[x:x+width])
+        self.obs=[]
+
+    def remap(self):
+        self.map=[]
+        for arr in self.bmap.map[self.y:self.y+height]:
+            self.map.append(arr[self.x:self.x+width])
+        for ob in self.obs:
+            ob.redraw()
+
+
 class Object():
     def __init__(self, char, state="solid"):
         self.char=char
