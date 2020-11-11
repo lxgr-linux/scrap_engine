@@ -21,7 +21,7 @@ ev=0
 obcount=0
 
 # Adding Maps
-map=se.Map(width=600, background=" ") # Maps are kind of the "playground" which you can add Objects and Groups to
+map=se.Map(width=200, background=" ") # Maps are kind of the "playground" which you can add Objects and Groups to
 smap=se.Submap(map, 0,0)
 menumap=se.Map(background=" ")
 howtomap=se.Map(background=" ")
@@ -33,21 +33,27 @@ class Pad(se.Object):
 
 # Same as above, but the player is set to the middle of the map when he bumps into an solid Object
 class Player(se.Object):
-    def bump(self, x, y):
+    def bump(self, ob, x, y):
         self.set(round(self.map.width/2), round(self.map.height/2))
         if self.char == "T":
             self.rechar("t")
-        else:
+        elif self.char == "t":
             self.rechar("T")
+        elif self.char == "F":
+            self.rechar("f")
+        elif self.char == "f":
+            self.rechar("F")
 
 class Bullet(se.Object):
     def bump_action(self):
-        for ob in bullets:
-            if ob == self:
-                del ob
+        for i in range(len(bullets)):
+            if bullets[i] == self:
+                del bullets[i]
+                break
         self.remove()
 
-    def bump(self, x, y):
+    def bump(self, ob, x, y):
+        ob.remove()
         self.bump_action()
 
     def bump_right(self):
@@ -62,11 +68,25 @@ class Bullet(se.Object):
     def bump_bottom(self):
         self.bump_action()
 
+def shoot(ob):
+    exec("bullet"+str(bullet_num)+"=Bullet('*', state='float')")
+    exec("bullet"+str(bullet_num)+".direction=ob.direction")
+    if ob.direction == "t":
+        exec("bullet"+str(bullet_num)+".add(map, ob.x, ob.y-1)")
+    elif ob.direction == "l":
+        exec("bullet"+str(bullet_num)+".add(map, ob.x-1, ob.y)")
+    elif ob.direction == "b":
+        exec("bullet"+str(bullet_num)+".add(map, ob.x, ob.y+1)")
+    elif ob.direction == "r":
+        exec("bullet"+str(bullet_num)+".add(map, ob.x+1, ob.y)")
+    exec("bullets.append(bullet"+str(bullet_num)+")")
+
 # Creating Objects
 lui=se.Object(char="L") # Objects are just objects that can be added to a map
 rock=se.Object(char="A")
 menuind=se.Object("*")
 player=Player(char="T")
+player0=Player(char="F")
 pad=Pad(char="i", state="float") # The state="float" means that other Objects can be placed over it, default is "solid"
 
 # Creating Groups
@@ -81,6 +101,7 @@ square2=se.Square("#", 10, 5) # The Square class creates a square of a specific 
 
 # Adding Objects and Groups to their Maps
 player.add(map, 0, 0)
+player0.add(map, 0, 1)
 lui.add(map, 20, 10)
 rock.add(map, 10, 10)
 howtotext.add(howtomap, int(round(howtomap.width-47)/2), int(round(howtomap.height/2)-2))
@@ -94,6 +115,7 @@ square2.add(map, 60, 10)
 square1.add(map, 20, 20)
 pad.add(map, 10, 20)
 player.direction="r"
+player0.direction="r"
 
 # Menu function
 def menu():
@@ -179,6 +201,22 @@ while True:
         player.direction="r"
         player.set(player.x+1, player.y) # Doing yet another different thing on keypress d
         ev=0
+    elif ev == "Key.up":
+        player0.direction="t"
+        player0.set(player0.x, player0.y-1) # Doing something on keypress w
+        ev=0
+    elif ev == "Key.left":
+        player0.direction="l"
+        player0.set(player0.x-1, player0.y) # Doing something different on keypress a
+        ev=0
+    elif ev == "Key.down":
+        player0.direction="b"
+        player0.set(player0.x, player0.y+1) # Doing something more different on keypress s
+        ev=0
+    elif ev == "Key.right":
+        player0.direction="r"
+        player0.set(player0.x+1, player0.y) # Doing yet another different thing on keypress d
+        ev=0
     elif ev == "'e'":
         text2.rechar("thus\nus\nmultiline mext!")
         square2.rechar("A") # Doing some weird shit on keypress e
@@ -195,17 +233,10 @@ while True:
         smap.remap()
         ev=0
     elif ev == "Key.space":
-        exec("bullet"+str(bullet_num)+"=Bullet('*', state='float')")
-        exec("bullet"+str(bullet_num)+".direction=player.direction")
-        if player.direction == "t":
-            exec("bullet"+str(bullet_num)+".add(map, player.x, player.y-1)")
-        elif player.direction == "l":
-            exec("bullet"+str(bullet_num)+".add(map, player.x-1, player.y)")
-        elif player.direction == "b":
-            exec("bullet"+str(bullet_num)+".add(map, player.x, player.y+1)")
-        elif player.direction == "r":
-            exec("bullet"+str(bullet_num)+".add(map, player.x+1, player.y)")
-        exec("bullets.append(bullet"+str(bullet_num)+")")
+        shoot(player)
+        ev=0
+    elif ev == "'#'":
+        shoot(player0)
         ev=0
     else:
         time.sleep(0.05) # Else just wait 0.05 seconds
@@ -220,10 +251,11 @@ while True:
         elif lui.x == 19 or lui.x == 21:
             lui.set(20, 10)
         luisframe+=20
-    if player.x+5 > smap.x+smap.width:
-        smap.set(smap.x+1 ,smap.y)
-    if player.x < smap.x+5:
-        smap.set(smap.x-1 ,smap.y)
+    for ob in [player, player0]:
+        if ob.x+5 > smap.x+smap.width:
+            smap.set(smap.x+1 ,smap.y)
+        if ob.x < smap.x+5:
+            smap.set(smap.x-1 ,smap.y)
     for ob in bullets:
         if ob.direction == "t":
             ob.set(ob.x, ob.y-1)
