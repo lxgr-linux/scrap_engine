@@ -90,7 +90,7 @@ class Object():
             return
         for ob in self.map.obs:
             if ob.x==x and ob.y==y and ob.state=="solid":
-                self.bump(self.x-x, self.y-y)
+                self.bump(ob, self.x-x, self.y-y)
                 return
         if x > self.map.width-1:
             self.bump_right()
@@ -122,7 +122,7 @@ class Object():
     def action(self, ob):
         return
 
-    def bump(self, x, y):
+    def bump(self, ob, x, y):
         return
 
     def bump_right(self):
