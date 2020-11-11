@@ -11,7 +11,7 @@ class Start(se.Object):
     def bump_action(self):
         dead()
 
-    def bump(self, x, y):
+    def bump(self, ob, x, y):
         self.bump_action()
 
     def bump_right(self):
@@ -33,7 +33,7 @@ class Apple(se.Object):
         exec("runner"+str(len(ob.group.obs))+".add(map, ob.group.obs[-1].oldx, ob.group.obs[-1].oldy)")
         exec("ob.group.add_ob(runner"+str(len(ob.group.obs))+")")
         self.remove()
-        
+
 
 class Berry(se.Object):
     def action(self, ob):
