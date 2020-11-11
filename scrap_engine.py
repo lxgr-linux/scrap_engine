@@ -165,6 +165,13 @@ class ObjectGroup():
         self.obs.append(ob)
         ob.group=self
 
+    def rem_ob(self, ob):
+        for i in range(len(self.obs)):
+            if ob == self.obs[i]:
+                self.obs[i].group=""
+                del self.obs[i]
+                return
+
     def move(self, x=0, y=0):
         for ob in self.obs:
             ob.set(ob.x+x, ob.y+y)
