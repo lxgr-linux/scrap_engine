@@ -2,8 +2,8 @@
 # This is snake, but worse
 
 import scrap_engine as se
-from pynput.keyboard import Key, Listener
-import threading, time, random, os
+#from pynput.keyboard import Key, Listener
+import threading, time, random, os, sys
 from pathlib import Path
 
 
@@ -71,11 +71,22 @@ def on_press(key):
     global ev
     ev=str(key)
 
-def recogniser():
-    global ev
-    while True:
-        with Listener(on_press=on_press) as listener:
-            listener.join()
+if sys.platform == "linux":
+    def recogniser():
+        global ev
+        while True:
+            a=os.popen("read -n 1 k; echo $k").read()
+            if a == "\n":
+                ev="Key.enter"
+            else:
+                ev="'"+a.rstrip()+"'"
+else:
+    from pynput.keyboard import Key, Listener
+    def recogniser():
+        global ev
+        while True:
+            with Listener(on_press=on_press) as listener:
+                listener.join()
 
 def dead():
     global ev, scoretext, highscoretext
