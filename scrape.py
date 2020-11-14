@@ -2,7 +2,6 @@
 # This is snake, but worse
 
 import scrap_engine as se
-#from pynput.keyboard import Key, Listener
 import threading, time, random, os, sys
 from pathlib import Path
 
@@ -71,7 +70,7 @@ def on_press(key):
     global ev
     ev=str(key)
 
-if sys.platform == "linux":
+if sys.platform == "linux":  # Use another (not on xserver relying) way to read keyboard input, to make this shit work in tty or via ssh, where no xserver is available
     def recogniser():
         global ev
         while True:
@@ -168,6 +167,9 @@ def menu():
             ev=0
         else:
             time.sleep(0.05)
+        width, height = os.get_terminal_size()
+        if menumap.width != width or menumap.height != height-1:
+            menumap.resize(height-1, width, " ")
         menumap.show()
 
 def main():
@@ -229,9 +231,11 @@ def main():
         if genframe1+400 == framenum:
             berrygen()
             genframe1+=400
+        width, height = os.get_terminal_size()
+        if map.width != width or map.height != height-1:
+            map.resize(height-1, width, " ")
         map.show()
         framenum+=1
-
 
 # objects for dead
 deadmap=se.Map(background=" ")
