@@ -40,6 +40,15 @@ class Map():
             print(self.out, end="")
             self.out_old=self.out
 
+    def resize(self, height, width, background="#"):
+        self.background=background
+        self.height=height
+        self.width=width
+        a="["+width*("'"+background+"',")+"],"
+        exec("self.map=["+height*a+"]")
+        for ob in self.obs:
+            ob.redraw()
+
 class Submap(Map):
     def __init__(self, bmap, x, y, height=height-1, width=width, dynfps=True):
         self.height=height
@@ -179,6 +188,7 @@ class ObjectGroup():
     def remove(self):
         for ob in self.obs:
             ob.remove()
+
 
 class Text(ObjectGroup):
     def __init__(self, text, state="solid", esccode=""):
