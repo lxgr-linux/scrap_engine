@@ -22,7 +22,7 @@ obcount=0
 
 # Adding Maps
 map=se.Map(width=200, background=" ") # Maps are kind of the "playground" which you can add Objects and Groups to
-smap=se.Submap(map, 0,0)
+smap=se.Submap(map, 0,0) # This one is just a small part of the real (map) Map
 menumap=se.Map(background=" ")
 howtomap=se.Map(background=" ")
 
@@ -183,7 +183,7 @@ recognising.daemon=True
 recognising.start()
 
 smap.remap()
-smap.show() # showing map Map
+smap.show() # showing smap Map
 while True:
     if ev == "'w'":
         player.direction="t"
