@@ -74,7 +74,7 @@ if sys.platform == "linux":  # Use another (not on xserver relying) way to read 
     def recogniser():
         global ev
         while True:
-            a=os.popen("read -n 1 k; echo $k").read()
+            a=os.popen('export SHELL=/bin/bash; echo $(read -s -N 1 k; echo $k)').read()
             if a == "\n":
                 ev="Key.enter"
             else:
