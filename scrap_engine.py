@@ -189,6 +189,11 @@ class ObjectGroup():
         for ob in self.obs:
             ob.remove()
 
+    def set(self, x, y):
+        self.move(x-self.x, y-self.y)
+        self.x=x
+        self.y=y
+
 
 class Text(ObjectGroup):
     def __init__(self, text, state="solid", esccode=""):
