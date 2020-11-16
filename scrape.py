@@ -74,7 +74,7 @@ if sys.platform == "linux":  # Use another (not on xserver relying) way to read 
     def recogniser():
         global ev
         while True:
-            a=os.popen('export SHELL=/bin/bash; echo $(read -s -N 1 k; echo $k)').read()
+            a=os.popen('./reader.sh').read()
             if a == "\n":
                 ev="Key.enter"
             else:
@@ -169,7 +169,14 @@ def menu():
             time.sleep(0.05)
         width, height = os.get_terminal_size()
         if menumap.width != width or menumap.height != height-1:
-            menumap.resize(height-1, width, " ")
+            height-=1
+            menumap.resize(height, width, " ")
+            curscore.set(round(width/2)-11, round(height/2)-4)
+            menutext1.set(round(width/2)-3, round(height/2)+1)
+            menutext2.set(round(width/2)-3, round(height/2)+3)
+            menutext3.set(round(width/2)-2, round(height/2)+5)
+            menutext.set(round(width/2)-2, round(height/2)-6)
+            menuind.set(menutext1.x-2, menutext1.y)
         menumap.show()
 
 def main():
