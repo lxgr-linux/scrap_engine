@@ -1,5 +1,7 @@
 #include<iostream>
 //using namespace std;
+// This should be scrap_engine, but just in c++, I don't know, why I'm doing this shit, it's just pain...
+// C++ is the greatest crap I ever witnessed in my live...
 
 class Map{
 public:
@@ -42,17 +44,26 @@ public:
     x=ix;
     y=iy;
     added=true;
-    backup=map->map[x][y];
+    backup=(*map).map[x][y];
     map->map[x][y]=character;
+  }
+  void set(int ix, int iy){
+    map->map[x][y]=backup;
+    backup=map->map[ix][iy];
+    map->map[ix][iy]=character;
+    x=ix;
+    y=iy;
   }
 };
 
-
+// some tests
 int main(){
   Map map(5, 10, '#');
   map.show();
   Object ob('h');
   ob.add(&map, 3, 4);
+  map.show();
+  ob.set(2, 2);
   map.show();
   return 0;
 }
