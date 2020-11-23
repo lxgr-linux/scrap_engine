@@ -1,4 +1,6 @@
 #include<iostream>
+#include<sys/ioctl.h> //ioctl() and TIOCGWINSZ
+#include<unistd.h> // for STDOUT_FILENO
 //using namespace std;
 // This should be scrap_engine, but just in c++, I don't know, why I'm doing this shit, it's just pain...
 // C++ is the greatest crap I ever witnessed in my live...
@@ -48,6 +50,9 @@ public:
     map->map[x][y]=character;
   }
   void set(int ix, int iy){
+    if (!added){
+      return;
+    }
     map->map[x][y]=backup;
     backup=map->map[ix][iy];
     map->map[ix][iy]=character;
@@ -58,12 +63,18 @@ public:
 
 // some tests
 int main(){
-  Map map(5, 10, '#');
+  struct winsize size;
+  ioctl(STDOUT_FILENO, TIOCGWINSZ, &size);
+  
+  Map map(size.ws_row-1, size.ws_col, ' ');
   map.show();
+  sleep(1);
   Object ob('h');
   ob.add(&map, 3, 4);
   map.show();
+  sleep(1);
   ob.set(2, 2);
   map.show();
+  sleep(1);
   return 0;
 }
