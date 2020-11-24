@@ -21,12 +21,15 @@ public:
     }
   }
   void show(){
+    std::string a;
     for (int i=0; i<height; i++){
       for (int j=0; j<width; j++){
-        std::cout << map[j][i];
+        a+=map[j][i];
       }
-      std::cout << std::endl;
+      a+="\n";
     }
+    //std::cout << a;
+    printf("%s", a.c_str());
   }
 };
 
@@ -65,7 +68,7 @@ public:
 int main(){
   struct winsize size;
   ioctl(STDOUT_FILENO, TIOCGWINSZ, &size);
-  
+
   Map map(size.ws_row-1, size.ws_col, ' ');
   map.show();
   sleep(1);
@@ -73,6 +76,14 @@ int main(){
   ob.add(&map, 3, 4);
   map.show();
   sleep(1);
+  while (true){
+    ob.set(2, 2);
+    map.show();
+    usleep(100000);
+    ob.set(5, 5);
+    map.show();
+    usleep(100000);
+  }
   ob.set(2, 2);
   map.show();
   sleep(1);
