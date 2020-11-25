@@ -88,6 +88,12 @@ menuind=se.Object("*")
 player=Player(char="T")
 player0=Player(char="F")
 pad=Pad(char="i", state="float") # The state="float" means that other Objects can be placed over it, default is "solid"
+testob=se.Object(char="t")
+testob2=se.Object(char="t")
+box=se.Box(10, 10)
+box.add_ob(testob, 5, 5)
+box.add_ob(testob2, 6, 6)
+box.add(map, 100, 10)
 
 # Creating Groups
 menutext1=se.Text("Resume", float) # The Text class creates a Group with the text in it

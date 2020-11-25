@@ -49,6 +49,7 @@ class Map():
         for ob in self.obs:
             ob.redraw()
 
+
 class Submap(Map):
     def __init__(self, bmap, x, y, height=height-1, width=width, dynfps=True):
         self.height=height
@@ -164,6 +165,7 @@ class Object():
                 ob.backup=self.backup
                 ob.redraw()
 
+
 class ObjectGroup():
     def __init__(self, obs):
         self.obs=obs
@@ -226,6 +228,7 @@ class Text(ObjectGroup):
         for ob, char in zip(self.obs, mtext):
             ob.rechar(char)
 
+
 class Square(ObjectGroup):
     def __init__(self, char, width, height, state="solid"):
         self.obs=[]
@@ -248,3 +251,26 @@ class Square(ObjectGroup):
     def rechar(self, char):
         for ob in self.obs:
             ob.rechar(char)
+
+
+class Box(ObjectGroup):
+    def __init__(self, height, width):
+        self.height=height
+        self.width=width
+        self.obs=[]
+        self.added=False
+
+    def add(self, map, x, y):
+        self.x=x
+        self.y=y
+        self.map=map
+        for ob in self.obs:
+            ob.add(self.map, ob.rx+self.x, ob.ry+self.y)
+        self.added=True
+
+    def add_ob(self, ob, rx, ry):
+        self.obs.append(ob)
+        ob.rx=rx
+        ob.ry=ry
+        if self.added:
+            ob.add(self.map, ob.rx+self.x, ob.ry+self.y)
