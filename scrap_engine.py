@@ -13,6 +13,11 @@ class Map():
         exec("self.map=["+height*a+"]")
         self.obs=[]
 
+    def curse_init(): # This method uses curses to display the map in terminal, this may result in glitches
+        import curses
+        self.screen=curses.initscr()
+        curses.start_color()
+
     def blur_in(self, blurmap, esccode="\033[37m"):
         for l in range(self.height):
             for i in range(self.width):
@@ -39,6 +44,13 @@ class Map():
         if self.out_old != self.out or self.dynfps == False or init == True:
             print(self.out, end="")
             self.out_old=self.out
+
+    def cshow(self, init=False): # uses curses
+        self.screen.erase()
+        for i in range(len(self.map)):
+            for j in range(len(self.map[i])):
+                self.screen.addstr(i, j, self.map[i][j])
+        self.screen.refresh()
 
     def resize(self, height, width, background="#"):
         self.background=background
