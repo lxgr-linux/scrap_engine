@@ -90,9 +90,11 @@ player0=Player(char="F")
 pad=Pad(char="i", state="float") # The state="float" means that other Objects can be placed over it, default is "solid"
 testob=se.Object(char="t")
 testob2=se.Object(char="t")
+testtext=se.Text("Hey!")
 box=se.Box(10, 10)
 box.add_ob(testob, 5, 5)
 box.add_ob(testob2, 6, 6)
+box.add_ob(testtext, 7, 7)
 box.add(map, 100, 10)
 
 # Creating Groups
