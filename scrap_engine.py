@@ -153,7 +153,6 @@ class Object():
         self.redraw()
 
     def remove(self):
-
         self.map.map[self.y][self.x]=self.backup
         for i in range(len(self.map.obs)):
             if self.map.obs[i] == self:
@@ -274,3 +273,13 @@ class Box(ObjectGroup):
         ob.ry=ry
         if self.added:
             ob.add(self.map, ob.rx+self.x, ob.ry+self.y)
+
+    def set_ob(self, ob, rx, ry):
+        ob.rx=rx
+        ob.ry=ry
+        ob.set(ob.rx+self.x, ob.ry+self.y)
+
+    def remove(self):
+        for ob in self.ob:
+            ob.remove()
+        self.added=False
