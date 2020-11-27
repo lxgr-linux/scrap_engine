@@ -94,10 +94,19 @@ def menuresize(map, box):
         map.resize(height-1, width, " ")
         box.set(round((map.width-box.width)/2), 1+round((map.height-box.height)/2))
 
+def mapresize():
+    width, height = os.get_terminal_size()
+    if map.width != width or map.height != height-1:
+        try:
+            map.resize(height-1, width, " ")
+        except:
+            pass
+
 def dead():
     global ev, scoretext, highscoretext
     ev=0
     deadmenuind.index=1
+    menuresize(deadmap, deadbox)
 
     home=str(Path.home())
     Path(home+"/.cache/scrape").mkdir(parents=True, exist_ok=True)
@@ -148,6 +157,7 @@ def menu():
     global ev, curscore
     ev=0
     menuind.index=1
+    menuresize(menumap, menubox)
     menubox.rem_ob(curscore)
     curscore.remove()
     curscore=se.Text("Current score: "+str(len(snake.obs))+" points")
@@ -186,7 +196,8 @@ def main():
     walkframe=genframe0=genframe1=apple_num=berry_num=framenum=0
     walkstep=5
 
-    map=se.Map(background=" ")
+    width, height = os.get_terminal_size()
+    map=se.Map(height-1, width, " ")
 
     start=Start("#")
     runner0=se.Object("#")
@@ -209,6 +220,7 @@ def main():
                 ev=0
         if ev == "'m'":
             menu()
+            mapresize()
             map.show(init=True)
             ev=0
         else:
@@ -240,12 +252,7 @@ def main():
         if genframe1+400 == framenum:
             berrygen()
             genframe1+=400
-        width, height = os.get_terminal_size()
-        if map.width != width or map.height != height-1:
-            try:
-                map.resize(height-1, width, " ")
-            except:
-                continue
+        mapresize()
         map.show()
         framenum+=1
 
@@ -282,7 +289,6 @@ menubox.add_ob(menutext2, 11, 9)
 menubox.add_ob(menutext3, 12, 11)
 menubox.add_ob(menuind, 9, 7)
 menubox.add(menumap, round((menumap.width-menubox.width)/2), 1+round((menumap.height-menubox.height)/2))
-
 
 ev=0
 os.system("")
