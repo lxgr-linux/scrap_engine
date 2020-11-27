@@ -138,9 +138,10 @@ def menu():
     global ev, curscore
     ev=0
     menuind.index=1
+    menubox.rem_ob(curscore)
     curscore.remove()
     curscore=se.Text("Current score: "+str(len(snake.obs))+" points")
-    curscore.add(menumap, round(menumap.width/2-10-len(str(len(snake.obs)))/2), round(menumap.height/2)-4)
+    menubox.add_ob(curscore, 1+round((menubox.width-22-len(snake.obs))/2), 2)
     menumap.blur_in(map)
     menumap.show(init=True)
     while True:
@@ -150,33 +151,28 @@ def menu():
         elif ev == "'w'":
             if menuind.index != 1:
                 menuind.index-=1
-            exec("menuind.set(menutext"+str(menuind.index)+".x-2, menutext"+str(menuind.index)+".y)")
+            exec("menubox.set_ob(menuind, menutext"+str(menuind.index)+".rx-2, menutext"+str(menuind.index)+".ry)")
             ev=0
         elif ev == "'s'":
             if menuind.index != 3:
                 menuind.index+=1
-            exec("menuind.set(menutext"+str(menuind.index)+".x-2, menutext"+str(menuind.index)+".y)")
+            exec("menubox.set_ob(menuind, menutext"+str(menuind.index)+".rx-2, menutext"+str(menuind.index)+".ry)")
             ev=0
         elif ev == "Key.enter":
-            if menuind.y == menutext1.y:
+            if menuind.ry == menutext1.ry:
                 return
-            elif menuind.y == menutext2.y:
+            elif menuind.ry == menutext2.ry:
                 main()
-            elif menuind.y == menutext3.y:
+            elif menuind.ry == menutext3.ry:
                 exit()
             ev=0
         else:
             time.sleep(0.05)
         width, height = os.get_terminal_size()
         if menumap.width != width or menumap.height != height-1:
-            height-=1
-            menumap.resize(height, width, " ")
-            curscore.set(round(width/2)-11, round(height/2)-4)
-            menutext1.set(round(width/2)-3, round(height/2)+1)
-            menutext2.set(round(width/2)-3, round(height/2)+3)
-            menutext3.set(round(width/2)-2, round(height/2)+5)
-            menutext.set(round(width/2)-2, round(height/2)-6)
-            menuind.set(menutext1.x-2, menutext1.y)
+            menubox.set(0, 0)
+            menumap.resize(height-1, width, " ")
+            menubox.set(round((menumap.width-menubox.width)/2), 1+round((menumap.height-menubox.height)/2))
         menumap.show()
 
 def main():
@@ -262,19 +258,21 @@ highscoretext.add(deadmap, round(deadmap.width/2)-9, round(deadmap.height/2)-3)
 
 # Objects for menu
 menumap=se.Map(background=" ")
-
+menubox=se.Box(13, 28)
 menutext=se.Text("Menu:")
+curscore=se.Text("Current score: 0 points")
 menutext1=se.Text("Resume")
 menutext2=se.Text("Restart")
 menutext3=se.Text("Exit")
 menuind=se.Object("*")
-curscore=se.Text("Current score: 0 points")
-curscore.add(menumap, round(menumap.width/2-11), round(menumap.height/2)-4)
-menutext1.add(menumap, round(menumap.width/2)-3, round(menumap.height/2)+1)
-menutext2.add(menumap, round(menumap.width/2)-3, round(menumap.height/2)+3)
-menutext3.add(menumap, round(menumap.width/2)-2, round(menumap.height/2)+5)
-menutext.add(menumap, round(menumap.width/2)-2, round(menumap.height/2)-6)
-menuind.add(menumap, menutext1.x-2, menutext1.y)
+menubox.add_ob(menutext, 12, 0)
+menubox.add_ob(curscore, 2, 2)
+menubox.add_ob(menutext1, 11, 7)
+menubox.add_ob(menutext2, 11, 9)
+menubox.add_ob(menutext3, 12, 11)
+menubox.add_ob(menuind, 9, 7)
+menubox.add(menumap, round((menumap.width-menubox.width)/2), 1+round((menumap.height-menubox.height)/2))
+
 
 ev=0
 os.system("")
