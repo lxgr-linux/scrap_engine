@@ -87,6 +87,13 @@ else:
             with Listener(on_press=on_press) as listener:
                 listener.join()
 
+def menuresize(map, box):
+    width, height = os.get_terminal_size()
+    if map.width != width or map.height != height-1:
+        box.set(0, 0)
+        map.resize(height-1, width, " ")
+        box.set(round((map.width-box.width)/2), 1+round((map.height-box.height)/2))
+
 def dead():
     global ev, scoretext, highscoretext
     ev=0
@@ -102,12 +109,14 @@ def dead():
                 file1.write(str(len(snake.obs)))
             file_content=str(len(snake.obs))
 
+    deadbox.rem_ob(scoretext)
+    deadbox.rem_ob(highscoretext)
     scoretext.remove()
-    scoretext=se.Text("You scored "+str(len(snake.obs))+" points")
-    scoretext.add(deadmap, round(deadmap.width/2-8-len(str(len(snake.obs)))/2), round(deadmap.height/2)-4)
     highscoretext.remove()
+    scoretext=se.Text("You scored "+str(len(snake.obs))+" points")
     highscoretext=se.Text("Highscore: "+str(file_content))
-    highscoretext.add(deadmap, round(deadmap.width/2-5-len(file_content)/2), round(deadmap.height/2)-3)
+    deadbox.add_ob(scoretext, round((deadbox.width-18-len(str(len(snake.obs))))/2), 2)
+    deadbox.add_ob(highscoretext, round((deadbox.width-12-len(str(file_content)))/2), 3)
     deadmap.blur_in(map, esccode="\033[31m")
     deadmap.show(init=True)
     while True:
@@ -117,21 +126,22 @@ def dead():
         elif ev == "'w'":
             if deadmenuind.index != 1:
                 deadmenuind.index-=1
-            exec("deadmenuind.set(deadmenutext"+str(deadmenuind.index)+".x-2, deadmenutext"+str(deadmenuind.index)+".y)")
+            exec("deadbox.set_ob(deadmenuind, deadmenutext"+str(deadmenuind.index)+".rx-2, deadmenutext"+str(deadmenuind.index)+".ry)")
             ev=0
         elif ev == "'s'":
             if deadmenuind.index != 2:
                 deadmenuind.index+=1
-            exec("deadmenuind.set(deadmenutext"+str(deadmenuind.index)+".x-2, deadmenutext"+str(deadmenuind.index)+".y)")
+            exec("deadbox.set_ob(deadmenuind, deadmenutext"+str(deadmenuind.index)+".rx-2, deadmenutext"+str(deadmenuind.index)+".ry)")
             ev=0
         elif ev == "Key.enter":
-            if deadmenuind.y == deadmenutext1.y:
+            if deadmenuind.ry == deadmenutext1.ry:
                 main()
-            elif deadmenuind.y == deadmenutext2.y:
+            elif deadmenuind.ry == deadmenutext2.ry:
                 exit()
             ev=0
         else:
             time.sleep(0.05)
+        menuresize(deadmap, deadbox)
         deadmap.show()
 
 def menu():
@@ -141,7 +151,7 @@ def menu():
     menubox.rem_ob(curscore)
     curscore.remove()
     curscore=se.Text("Current score: "+str(len(snake.obs))+" points")
-    menubox.add_ob(curscore, 1+round((menubox.width-22-len(snake.obs))/2), 2)
+    menubox.add_ob(curscore, 1+round((menubox.width-22-len(str(len(snake.obs))))/2), 2)
     menumap.blur_in(map)
     menumap.show(init=True)
     while True:
@@ -168,11 +178,7 @@ def menu():
             ev=0
         else:
             time.sleep(0.05)
-        width, height = os.get_terminal_size()
-        if menumap.width != width or menumap.height != height-1:
-            menubox.set(0, 0)
-            menumap.resize(height-1, width, " ")
-            menubox.set(round((menumap.width-menubox.width)/2), 1+round((menumap.height-menubox.height)/2))
+        menuresize(menumap, menubox)
         menumap.show()
 
 def main():
@@ -236,25 +242,29 @@ def main():
             genframe1+=400
         width, height = os.get_terminal_size()
         if map.width != width or map.height != height-1:
-            map.resize(height-1, width, " ")
+            try:
+                map.resize(height-1, width, " ")
+            except:
+                continue
         map.show()
         framenum+=1
 
 # objects for dead
 deadmap=se.Map(background=" ")
-
+deadbox=se.Box(13, 28)
+deadtext=se.Text("You dead!")
+scoretext=se.Text("You scored 0 points")
+highscoretext=se.Text("Highscore: 0")
 deadmenutext1=se.Text("Try again")
 deadmenutext2=se.Text("Exit")
-deadtext=se.Text("You dead!")
 deadmenuind=se.Object("*")
-deadmenutext1.add(deadmap, round(deadmap.width/2)-4, round(deadmap.height/2)+3)
-deadmenutext2.add(deadmap, round(deadmap.width/2)-2, round(deadmap.height/2)+5)
-deadtext.add(deadmap, round(deadmap.width/2)-4, round(deadmap.height/2-6))
-deadmenuind.add(deadmap, deadmenutext1.x-2, deadmenutext1.y)
-scoretext=se.Text("You scored 0 points")
-scoretext.add(deadmap, round(deadmap.width/2)-9, round(deadmap.height/2)-4)
-highscoretext=se.Text("You scored 0 points")
-highscoretext.add(deadmap, round(deadmap.width/2)-9, round(deadmap.height/2)-3)
+deadbox.add_ob(deadtext, 9, 0)
+deadbox.add_ob(scoretext, 3, 2)
+deadbox.add_ob(highscoretext, 7, 3)
+deadbox.add_ob(deadmenutext1, 9, 9)
+deadbox.add_ob(deadmenutext2, 11, 11)
+deadbox.add_ob(deadmenuind, 7, 9)
+deadbox.add(deadmap, round((deadmap.width-deadbox.width)/2), 1+round((deadmap.height-deadbox.height)/2))
 
 # Objects for menu
 menumap=se.Map(background=" ")
