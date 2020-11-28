@@ -295,4 +295,7 @@ os.system("")
 recognising=threading.Thread(target=recogniser)
 recognising.daemon=True
 recognising.start()
-main()
+try:
+    main()
+except KeyboardInterrupt:
+    print("Exited by user")
