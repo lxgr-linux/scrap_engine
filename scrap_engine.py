@@ -33,7 +33,7 @@ class Map():
             self.out_old
         except:
             self.out_old="test"
-        self.out="\n"
+        self.out="\033c"
         for arr in self.map:
             self.out_line=""
             for i in arr:
