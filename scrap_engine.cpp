@@ -1,4 +1,5 @@
 #include<iostream>
+#include<iomanip>
 #include<sys/ioctl.h> //ioctl() and TIOCGWINSZ
 #include<unistd.h> // for STDOUT_FILENO
 //using namespace std;
@@ -22,6 +23,7 @@ public:
   }
   void show(){
     std::string a;
+    printf("\033c");
     for (int i=0; i<height; i++){
       for (int j=0; j<width; j++){
         a+=map[j][i];
@@ -79,10 +81,10 @@ int main(){
   while (true){
     ob.set(2, 2);
     map.show();
-    usleep(100000);
+    usleep(10000);
     ob.set(5, 5);
     map.show();
-    usleep(100000);
+    usleep(10000);
   }
   ob.set(2, 2);
   map.show();
