@@ -54,7 +54,7 @@ while True:
         v=-0.3
         ev=0
     player.set(player.x+1, player.y)
-    if player.set(player.x, round(player.y-(v*(v/g)-1/2*g*(v/g)**2)-v*t+1/2*g*t**2)) == 0 and t != 0:
+    if player.set(player.x, round(player.y-(v*(v/g)-1/2*g*(v/g)**2)-v*t+1/2*g*t**2)) != 0 and t != 0:
         player.set(player.x, player.y+1)
     t+=1
     h.rechar((2-len(str(player.y)))*" "+str(player.y)+" "+str(map.height))

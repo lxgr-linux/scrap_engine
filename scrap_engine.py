@@ -83,10 +83,11 @@ class Submap(Map):
 
     def set(self, x, y):
         if x<0 or y<0 or x+self.width>self.bmap.width or y+self.height>self.bmap.height:
-            return
+            return 1
         self.x=x
         self.y=y
         self.remap()
+        return 0
 
 
 class Object():
@@ -109,23 +110,23 @@ class Object():
 
     def set(self, x, y):
         if self.added == False:
-            return 0
+            return 1
         for ob in self.map.obs:
             if ob.x==x and ob.y==y and ob.state=="solid":
                 self.bump(ob, self.x-x, self.y-y)
-                return 0
+                return 1
         if x > self.map.width-1:
             self.bump_right()
-            return 0
+            return 1
         if x < 0:
             self.bump_left()
-            return 0
+            return 1
         if y > self.map.height-1:
             self.bump_bottom()
-            return 0
+            return 1
         if y < 0:
             self.bump_top()
-            return 0
+            return 1
         self.map.map[self.y][self.x]=self.backup
         self.backup=self.map.map[y][x]
         self.x=x
@@ -134,14 +135,14 @@ class Object():
         for ob in self.map.obs:
             if ob.x==x and ob.y==y and ob.state=="float":
                 ob.action(self)
-        return 1
+        return 0
 
     def redraw(self):
         if self.added == False:
-            return 0
+            return 1
         self.backup=self.map.map[self.y][self.x]
         self.map.map[self.y][self.x]=self.char
-        return 1
+        return 0
 
     def action(self, ob):
         return
