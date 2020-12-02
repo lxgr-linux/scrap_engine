@@ -109,23 +109,23 @@ class Object():
 
     def set(self, x, y):
         if self.added == False:
-            return
+            return 0
         for ob in self.map.obs:
             if ob.x==x and ob.y==y and ob.state=="solid":
                 self.bump(ob, self.x-x, self.y-y)
-                return
+                return 0
         if x > self.map.width-1:
             self.bump_right()
-            return
+            return 0
         if x < 0:
             self.bump_left()
-            return
+            return 0
         if y > self.map.height-1:
             self.bump_bottom()
-            return
+            return 0
         if y < 0:
             self.bump_top()
-            return
+            return 0
         self.map.map[self.y][self.x]=self.backup
         self.backup=self.map.map[y][x]
         self.x=x
@@ -134,12 +134,14 @@ class Object():
         for ob in self.map.obs:
             if ob.x==x and ob.y==y and ob.state=="float":
                 ob.action(self)
+        return 1
 
     def redraw(self):
         if self.added == False:
-            return
+            return 0
         self.backup=self.map.map[self.y][self.x]
         self.map.map[self.y][self.x]=self.char
+        return 1
 
     def action(self, ob):
         return
