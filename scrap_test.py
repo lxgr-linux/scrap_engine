@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-# This software is licensed under the PGL v3 and comes with no license and so on....
+# This software is licensed under the PGL v3 and comes with no warranty and so on....
 # This software a proof of concept thingie for all features of the scrap_engine python module.
 # It is also kind of an explaination for those, see the comments.
 # Have fun!
