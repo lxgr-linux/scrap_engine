@@ -15,15 +15,15 @@ See scrap_test.py
 scrap_test.py and scrape.py both require pynput when running on windows
 
 # File explaination
-LICENSE : obvious
-README.md : ...
-scrap_engine.py : Python module that contains the engine
-scrap_engine.cpp : the same but just in c++, is just a proof of concept
-a.out : the compiled version of scrap_engine.cpp (x86_64)
-scrap_test.py : file that explains basic functionality of scrap_engine and tests them
-scrape.py : implimentation of snake
-lil_t.py : implimentation of a basic jump and run game
-reader.sh : shellscript thats needed to read keyboard input without a running xserver
+LICENSE : obvious<br>
+README.md : ...<br>
+scrap_engine.py : Python module that contains the engine<br>
+scrap_engine.cpp : the same but just in c++, is just a proof of concept<br>
+a.out : the compiled version of scrap_engine.cpp (x86_64)<br>
+scrap_test.py : file that explains basic functionality of scrap_engine and tests them<br>
+scrape.py : implimentation of snake<br>
+lil_t.py : implimentation of a basic jump and run game<br>
+reader.sh : shellscript thats needed to read keyboard input without a running xserver<br>
 
 # Notes
 Scrap_engine, scrap_test.py and scrape.py where all tested working in the xfce4-terminal terminal emulator, other terminal emulators will work for sure.
