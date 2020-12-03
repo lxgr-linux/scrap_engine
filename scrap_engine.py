@@ -99,7 +99,7 @@ class Object():
     def add(self, map, x, y):
         for ob in map.obs:
             if ob.x==x and ob.y==y and ob.state=="solid":
-                return
+                return 1
         self.backup=map.map[y][x]
         self.x=x
         self.y=y
@@ -107,6 +107,7 @@ class Object():
         map.obs.append(self)
         self.map=map
         self.added=True
+        return 0
 
     def set(self, x, y):
         if self.added == False:
@@ -195,7 +196,8 @@ class ObjectGroup():
             if ob == self.obs[i]:
                 self.obs[i].group=""
                 del self.obs[i]
-                return
+                return 0
+        return 1
 
     def move(self, x=0, y=0):
         for ob in self.obs:
