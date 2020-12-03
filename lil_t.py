@@ -10,12 +10,12 @@ g=0.02
 map=se.Map(height-1, 1000, " ")
 smap=se.Submap(map, 0, 0)
 
-player=se.Object("t")
 ground=se.Square("#", map.width, 5)
+player=se.Object("t")
 h=se.Text("00 00")
 
-player.add(map, round(smap.width/2), round(map.height/2))
 ground.add(map, 0, map.height-5)
+player.add(map, round(smap.width/2), round(map.height/2))
 h.add(smap, 0, 0)
 
 def on_press(key):
@@ -45,6 +45,7 @@ recognising.start()
 
 smap.remap()
 smap.show(init=True)
+time.sleep(0.5)
 while True:
     for ob in map.obs:
         if player.y+1 == ob.y:
@@ -58,7 +59,7 @@ while True:
         player.set(player.x, player.y+1)
     t+=1
     h.rechar((2-len(str(player.y)))*" "+str(player.y)+" "+str(map.height))
-    time.sleep(0.04)
+    time.sleep(0.05)
     smap.remap()
     smap.show()
     smap.set(smap.x+1, smap.y)
