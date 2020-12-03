@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-import time, os
+import time, os, threading
 
 width, height = os.get_terminal_size()
 
@@ -250,19 +250,28 @@ class Square(ObjectGroup):
         self.obs=[]
         self.width=width
         self.height=height
+        self.char=char
+        self.state=state
         for l in range(height):
-            for i in range(width):
-                exec("self.ob_"+str(i)+str(l)+"=Object(char, state)")
-                exec("self.obs.append(self.ob_"+str(i)+str(l)+")")
+            threading.Thread(target=self.one_line_create, args=(l,), daemon=True).start()
         for ob in self.obs:
             ob.group=self
+
+    def one_line_create(self, l):
+        for i in range(self.width):
+            exec("self.ob_"+str(i)+str(l)+"=Object(self.char, self.state)")
+            exec("self.obs.append(self.ob_"+str(i)+str(l)+")")
+
+    def one_line_add(self, l):
+        for i in range(self.width):
+            exec("self.ob_"+str(i)+str(l)+".add(self.map, self.x+i, self.y+l)")
 
     def add(self, map, x, y):
         self.x=x
         self.y=y
+        self.map=map
         for l in range(self.height):
-            for i in range(self.width):
-                exec("self.ob_"+str(i)+str(l)+".add(map, x+i, y+l)")
+            threading.Thread(target=self.one_line_add, args=(l,), daemon=True).start()
 
     def rechar(self, char):
         for ob in self.obs:
