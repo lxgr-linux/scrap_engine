@@ -17,7 +17,7 @@ luisview="r"
 framenum=0
 bullet_num=0
 bullets=[]
-ev=0
+ev=ev2=0
 obcount=0
 
 # Adding Maps
@@ -173,14 +173,16 @@ def howtoplay():
             time.sleep(0.05)
         howtomap.show() # Showing howtomap
 
-
 # Adding functions for capturing the keyboard and controling the game, you may recicle this in your applications
 def on_press(key):
-    global ev
-    ev=str(key)
+    global ev, ev2
+    if str(key) in ["'w'", "'a'", "'s'", "'d'", "'e'", "'q'", "Key.space"]:
+        ev=str(key)
+    elif str(key) in ["Key.up", "Key.left", "Key.down", "Key.right", "'#'"]:
+        ev2=str(key)
 
 def recogniser():
-    global ev
+    global ev, ev2
     while True:
         with Listener(on_press=on_press) as listener:
             listener.join()
@@ -209,22 +211,22 @@ while True:
         player.direction="r"
         player.set(player.x+1, player.y) # Doing yet another different thing on keypress d
         ev=0
-    elif ev == "Key.up":
+    elif ev2 == "Key.up":
         player0.direction="t"
         player0.set(player0.x, player0.y-1) # Doing something on keypress w
-        ev=0
-    elif ev == "Key.left":
+        ev2=0
+    elif ev2 == "Key.left":
         player0.direction="l"
         player0.set(player0.x-1, player0.y) # Doing something different on keypress a
-        ev=0
-    elif ev == "Key.down":
+        ev2=0
+    elif ev2 == "Key.down":
         player0.direction="b"
         player0.set(player0.x, player0.y+1) # Doing something more different on keypress s
-        ev=0
-    elif ev == "Key.right":
+        ev2=0
+    elif ev2 == "Key.right":
         player0.direction="r"
         player0.set(player0.x+1, player0.y) # Doing yet another different thing on keypress d
-        ev=0
+        ev2=0
     elif ev == "'e'":
         text2.rechar("thus\nus\nmultiline mext!")
         square2.rechar("A") # Doing some weird shit on keypress e
@@ -243,9 +245,9 @@ while True:
     elif ev == "Key.space":
         shoot(player)
         ev=0
-    elif ev == "'#'":
+    elif ev2 == "'#'":
         shoot(player0)
-        ev=0
+        ev2=0
     else:
         time.sleep(0.05) # Else just wait 0.05 seconds
     # Let lui run
