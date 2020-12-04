@@ -10,10 +10,12 @@ g=0.02
 map=se.Map(height-1, 1000, " ")
 smap=se.Submap(map, 0, 0)
 
+panel=se.Square("#", 10, 1)
 ground=se.Square("#", map.width, 5)
 player=se.Object("t")
 h=se.Text("00 00")
 
+panel.add(map, 100, map.height-10)
 ground.add(map, 0, map.height-5)
 player.add(map, round(smap.width/2), round(map.height/2))
 h.add(smap, 0, 0)
@@ -48,7 +50,7 @@ smap.show(init=True)
 time.sleep(0.5)
 while True:
     for ob in map.obs:
-        if player.y+1 == ob.y:
+        if player.y+1 == ob.y and player.x == ob.x:
             t=0
             v=0
     if ev == "Key.enter":
