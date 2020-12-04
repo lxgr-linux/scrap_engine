@@ -5,7 +5,7 @@ import time, os, threading, sys
 os.system("")
 width, height = os.get_terminal_size()
 t=ev=v=0
-g=0.02
+g=0.015
 
 map=se.Map(height-1, 1000, " ")
 smap=se.Submap(map, 0, 0)
@@ -54,7 +54,7 @@ while True:
             t=0
             v=0
     if ev == "Key.enter":
-        v=-0.3
+        v=-0.25
         ev=0
     player.set(player.x+1, player.y)
     if player.set(player.x, round(player.y-(v*(v/g)-1/2*g*(v/g)**2)-v*t+1/2*g*t**2)) != 0 and t != 0:
