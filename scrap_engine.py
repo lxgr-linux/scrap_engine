@@ -201,6 +201,7 @@ class ObjectGroup():
 
     def move(self, x=0, y=0):
         for ob in self.obs:
+            print(ob.added)
             ob.set(ob.x+x, ob.y+y)
 
     def remove(self):
@@ -250,6 +251,7 @@ class Text(ObjectGroup):
                 ob.remove()
         self.obs=[]
         self.texter(text)
+        self.text=text
         if self.added:
             self.add(self.map, self.x, self.y)
 
