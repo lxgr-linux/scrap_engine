@@ -216,19 +216,26 @@ class ObjectGroup():
 class Text(ObjectGroup):
     def __init__(self, text, state="solid", esccode=""):
         self.obs=[]
+        self.added=False
         self.text=text
+        self.esccode=esccode
+        self.state=state
+        self.texter(text)
+
+    def texter(self, text):
         for text in text.split("\n"):
             for i, char in enumerate(text):
                 if i == 0:
-                    char=esccode+char
-                if i == len(text)-1 and esccode != "":
+                    char=self.esccode+char
+                if i == len(text)-1 and self.esccode != "":
                     char+="\033[0m"
-                exec("self.ob_"+str(i)+"=Object(char, state)")
-                exec("self.obs.append(self.ob_"+str(i)+")")
+                self.obs.append(Object(char, self.state))
         for ob in self.obs:
             ob.group=self
 
     def add(self, map, x, y):
+        self.added=True
+        self.map=map
         self.x=x
         self.y=y
         count=0
@@ -238,11 +245,13 @@ class Text(ObjectGroup):
             count+=len(text)
 
     def rechar(self, text):
-        mtext=""
-        for t in text.split("\n"):
-            mtext+=t
-        for ob, char in zip(self.obs, mtext):
-            ob.rechar(char)
+        if self.added:
+            for ob in self.obs:
+                ob.remove()
+        self.obs=[]
+        self.texter(text)
+        if self.added:
+            self.add(self.map, self.x, self.y)
 
 
 class Square(ObjectGroup):
