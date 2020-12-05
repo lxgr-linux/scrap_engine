@@ -10,11 +10,13 @@ g=0.015
 map=se.Map(height-1, 1000, " ")
 smap=se.Submap(map, 0, 0)
 
+block=se.Object("#")
 panel=se.Square("#", 10, 1)
 ground=se.Square("#", map.width, 5)
 player=se.Object("t")
 h=se.Text("00 00")
 
+block.add(map, 200, map.height-6)
 panel.add(map, 100, map.height-10)
 ground.add(map, 0, map.height-5)
 player.add(map, round(smap.width/2), round(map.height/2))
@@ -60,6 +62,8 @@ while True:
     if player.set(player.x, round(player.y-(v*(v/g)-1/2*g*(v/g)**2)-v*t+1/2*g*t**2)) != 0 and t != 0:
         player.set(player.x, player.y+1)
     t+=1
+    if player.x < smap.x-1:
+        exit()
     h.rechar((2-len(str(player.y)))*" "+str(player.y)+" "+str(map.height))
     time.sleep(0.05)
     smap.remap()
