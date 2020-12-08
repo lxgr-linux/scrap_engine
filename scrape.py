@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 # This is snake, but worse
 
 import scrap_engine as se
@@ -31,6 +31,7 @@ class Apple(se.Object):
         exec("runner"+str(len(ob.group.obs))+"=se.Object('#')")
         exec("runner"+str(len(ob.group.obs))+".add(map, ob.group.obs[-1].oldx, ob.group.obs[-1].oldy)")
         exec("ob.group.add_ob(runner"+str(len(ob.group.obs))+")")
+        apples.rem_ob(self)
         self.remove()
 
 
@@ -42,6 +43,7 @@ class Berry(se.Object):
         if walkstep > 1:
             walkframe+=1
             walkstep-=1
+        berrys.rem_ob(self)
         self.remove()
 
 def applegen():
@@ -53,6 +55,7 @@ def applegen():
             return
     exec("apple"+str(apple_num)+"=Apple('\033[32;1ma\033[0m', state='float')")
     exec("apple"+str(apple_num)+".add(map, x, y)")
+    exec("apples.add_ob(apple"+str(apple_num)+")")
     apple_num+=1
 
 def berrygen():
@@ -64,6 +67,7 @@ def berrygen():
             return
     exec("berry"+str(berry_num)+"=Berry('\033[31;1ms\033[0m', state='float')")
     exec("berry"+str(berry_num)+".add(map, x, y)")
+    exec("berrys.add_ob(berry"+str(berry_num)+")")
     berry_num+=1
 
 def on_press(key):
@@ -86,6 +90,21 @@ else:
         while True:
             with Listener(on_press=on_press) as listener:
                 listener.join()
+
+def level_normal():
+    global genframe0, genframe1, framenum
+    if genframe0+150 == framenum:
+        applegen()
+        genframe0+=150
+    if genframe1+400 == framenum:
+        berrygen()
+        genframe1+=400
+
+def level_single():
+    if len(apples.obs) == 0:
+        applegen()
+    if len(berrys.obs) == 0:
+        berrygen()
 
 def menuresize(map, box):
     width, height = os.get_terminal_size()
@@ -186,7 +205,7 @@ def menu():
         menumap.show()
 
 def main():
-    global ev, apple_num, berry_num, map, walkstep, walkframe, snake
+    global ev, apple_num, berry_num, map, walkstep, walkframe, snake, genframe0, genframe1, framenum, apples, berrys
     walkframe=genframe0=genframe1=apple_num=berry_num=framenum=0
     walkstep=5
 
@@ -200,6 +219,8 @@ def main():
     runner0.add(map, round(map.width/2), round(map.height/2)+1)
     runner1.add(map, round(map.width/2), round(map.height/2)+2)
     snake=se.ObjectGroup([start, runner0, runner1])
+    apples=se.ObjectGroup([])
+    berrys=se.ObjectGroup([])
 
     start.direction="t"
 
@@ -240,12 +261,7 @@ def main():
                 dead()
             set=False
             walkframe+=walkstep
-        if genframe0+150 == framenum:
-            applegen()
-            genframe0+=150
-        if genframe1+400 == framenum:
-            berrygen()
-            genframe1+=400
+        level_normal()
         mapresize()
         map.show()
         framenum+=1
