@@ -256,8 +256,9 @@ class Text(ObjectGroup):
 
 
 class Square(ObjectGroup):
-    def __init__(self, char, width, height, state="solid"):
+    def __init__(self, char, width, height, state="solid", ob_class=Object):
         self.obs=[]
+        self.ob_class=ob_class
         self.width=width
         self.height=height
         self.char=char
@@ -269,7 +270,7 @@ class Square(ObjectGroup):
 
     def one_line_create(self, l):
         for i in range(self.width):
-            exec("self.ob_"+str(i)+str(l)+"=Object(self.char, self.state)")
+            exec("self.ob_"+str(i)+str(l)+"=self.ob_class(self.char, self.state)")
             exec("self.obs.append(self.ob_"+str(i)+str(l)+")")
 
     def one_line_add(self, l):
