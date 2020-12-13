@@ -70,18 +70,18 @@ smap.remap()
 smap.show(init=True)
 time.sleep(0.5)
 while True:
+    nexty=lambda v,g,t : round(player.y-(v*(v/g)-1/2*g*(v/g)**2)-v*t+1/2*g*t**2)
     for ob in map.obs[1:]:
         if player.y+1 == ob.y and player.x == ob.x:
             t=0
             v=0
     for ob in map.obs[1:]:
-        #print(player.y, ob.y, round(player.y-(v*(v/g)-1/2*g*(v/g)**2)-v*t+1/2*g*t**2))
-        if player.y < ob.y < round(player.y-(v*(v/g)-1/2*g*(v/g)**2)-v*t+1/2*g*t**2) and ob.x == player.x+1:
+        if player.y < ob.y < nexty(v,g,t) and ob.x == player.x+1:
             player.set(player.x, ob.y-1)
             t=0
             v=0
             break
-        elif player.y > ob.y > round(player.y-(v*(v/g)-1/2*g*(v/g)**2)-v*t+1/2*g*t**2) and ob.x == player.x+1:
+        elif player.y > ob.y > nexty(v,g,t) and ob.x == player.x+1:
             player.set(player.x, ob.y+1)
             t=0
             v=0
@@ -89,14 +89,14 @@ while True:
     if ev == "Key.enter":
         v=-0.25
         ev=0
-    if player.set(player.x, round(player.y-(v*(v/g)-1/2*g*(v/g)**2)-v*t+1/2*g*t**2)) != 0 and t != 0:
+    if player.set(player.x, nexty(v,g,t))!= 0 and t != 0:
         player.set(player.x, player.y+1)
     t+=1
     for mov in moving:
         mov.set(mov.x-1, mov.y)
     if player.x < smap.x-1:
         exit()
-    h.rechar((2-len(str(player.y)))*" "+str(player.y)+" "+str(map.height)+" "+str(player.y)+" "+str(round(player.y-(v*(v/g)-1/2*g*(v/g)**2)-v*t+1/2*g*t**2))+" "+str(player.y-round(player.y-(v*(v/g)-1/2*g*(v/g)**2)-v*t+1/2*g*t**2)))
+    h.rechar((2-len(str(player.y)))*" "+str(player.y)+" "+str(map.height)+" "+str(player.y)+" "+str(round(player.y-(v*(v/g)-1/2*g*(v/g)**2)-v*t+1/2*g*t**2))+" "+str(player.y-nexty(v,g,t)))
     if genframe+20 == framenum:
         genpanel()
         genframe+=15
