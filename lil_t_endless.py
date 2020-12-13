@@ -1,11 +1,14 @@
 #!/usr/bin/env python3
 import scrap_engine as se
-import time, os, threading, sys
+import time, os, threading, sys, random
 
 os.system("")
 width, height = os.get_terminal_size()
 t=ev=v=0
 g=0.015
+panelindex=0
+framenum=0
+genframe=0
 
 class PanelItem(se.Object):
     def bump_left(self):
@@ -15,7 +18,7 @@ class PanelItem(se.Object):
         ob.set(ob.x-1, ob.y)
         self.set(self.x-1, self.y)
 
-map=se.Map(height-1, width+10, " ")
+map=se.Map(height-1, width+12, " ")
 smap=se.Submap(map, 0, 0)
 
 block=PanelItem("#")
@@ -24,12 +27,19 @@ ground=se.Square("#", map.width, 5)
 player=se.Object("t")
 h=se.Text("00 00")
 
-block.add(map, map.width-12, map.height-6)
-panel.add(map, map.width-12, map.height-10)
+block.add(map, map.width-11, map.height-6)
+panel.add(map, map.width-11, map.height-10)
 ground.add(map, 0, map.height-5)
 player.add(map, round(smap.width/2), round(map.height/2))
 h.add(smap, 0, 0)
 moving=[panel, block]
+
+def genpanel():
+    global panelindex
+    exec("panel_%s=se.Square('#', 10, 1, ob_class=PanelItem)"%panelindex)
+    exec("panel_%s.add(map, map.width-11, map.height-%i)"%(panelindex, random.randint(8,20)))
+    exec("moving.append(panel_%s)"%panelindex)
+    panelindex+=1
 
 def on_press(key):
     global ev
@@ -75,6 +85,10 @@ while True:
     if player.x < smap.x-1:
         exit()
     h.rechar((2-len(str(player.y)))*" "+str(player.y)+" "+str(map.height))
+    if genframe+20 == framenum:
+        genpanel()
+        genframe+=15
     time.sleep(0.05)
     smap.remap()
     smap.show()
+    framenum+=1
