@@ -12,6 +12,8 @@ genframe=0
 
 class PanelItem(se.Object):
     def bump_left(self):
+        global moving
+        moving=[ob for ob in moving if ob != self]
         self.remove()
 
     def bump(self, ob, x, y):
@@ -27,10 +29,10 @@ panel=se.Square("#", 10, 1, ob_class=PanelItem)
 ground=se.Square("#", map.width, 5)
 h=se.Text("00 00")
 
+player.add(map, round(smap.width/2), round(map.height/2))
 block.add(map, map.width-11, map.height-6)
 panel.add(map, map.width-11, map.height-10)
 ground.add(map, 0, map.height-5)
-player.add(map, round(smap.width/2), round(map.height/2))
 h.add(smap, 0, 0)
 moving=[panel, block]
 
@@ -68,7 +70,6 @@ recognising.start()
 
 smap.remap()
 smap.show(init=True)
-time.sleep(0.5)
 while True:
     nexty=lambda v,g,t : round(player.y-(v*(v/g)-1/2*g*(v/g)**2)-v*t+1/2*g*t**2)
     for ob in map.obs[1:]:
@@ -90,16 +91,23 @@ while True:
         v=-0.25
         ev=0
     if player.set(player.x, nexty(v,g,t))!= 0 and t != 0:
+        for ob in map.obs[1:]:
+            if ob.x == player.x and ob.y == nexty(v,g,t):
+                v=0
         player.set(player.x, player.y+1)
     t+=1
+    # exec("point_%s=PanelItem('*', 'float')"%panelindex)
+    # exec("point_%s.add(map, player.x-1, player.y)"%panelindex)
+    # exec("moving.append(point_%s)"%panelindex)
+    # panelindex+=1
     for mov in moving:
         mov.set(mov.x-1, mov.y)
     if player.x < smap.x-1:
         exit()
-    h.rechar((2-len(str(player.y)))*" "+str(player.y)+" "+str(map.height)+" "+str(player.y)+" "+str(round(player.y-(v*(v/g)-1/2*g*(v/g)**2)-v*t+1/2*g*t**2))+" "+str(player.y-nexty(v,g,t)))
+    h.rechar((2-len(str(player.y)))*" "+str(player.y)+" "+str(map.height)+" "+str(player.y)+" "+str(nexty(v,g,t))+" "+str(player.y-nexty(v,g,t)))
     if genframe+20 == framenum:
         genpanel()
-        genframe+=15
+        genframe+=20
     time.sleep(0.05)
     smap.remap()
     smap.show()
