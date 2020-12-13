@@ -21,10 +21,10 @@ class PanelItem(se.Object):
 map=se.Map(height-1, width+12, " ")
 smap=se.Submap(map, 0, 0)
 
+player=se.Object("t")
 block=PanelItem("#")
 panel=se.Square("#", 10, 1, ob_class=PanelItem)
 ground=se.Square("#", map.width, 5)
-player=se.Object("t")
 h=se.Text("00 00")
 
 block.add(map, map.width-11, map.height-6)
@@ -70,10 +70,22 @@ smap.remap()
 smap.show(init=True)
 time.sleep(0.5)
 while True:
-    for ob in map.obs:
+    for ob in map.obs[1:]:
         if player.y+1 == ob.y and player.x == ob.x:
             t=0
             v=0
+    for ob in map.obs[1:]:
+        #print(player.y, ob.y, round(player.y-(v*(v/g)-1/2*g*(v/g)**2)-v*t+1/2*g*t**2))
+        if player.y < ob.y < round(player.y-(v*(v/g)-1/2*g*(v/g)**2)-v*t+1/2*g*t**2) and ob.x == player.x+1:
+            player.set(player.x, ob.y-1)
+            t=0
+            v=0
+            break
+        elif player.y > ob.y > round(player.y-(v*(v/g)-1/2*g*(v/g)**2)-v*t+1/2*g*t**2) and ob.x == player.x+1:
+            player.set(player.x, ob.y+1)
+            t=0
+            v=0
+            break
     if ev == "Key.enter":
         v=-0.25
         ev=0
@@ -84,7 +96,7 @@ while True:
         mov.set(mov.x-1, mov.y)
     if player.x < smap.x-1:
         exit()
-    h.rechar((2-len(str(player.y)))*" "+str(player.y)+" "+str(map.height))
+    h.rechar((2-len(str(player.y)))*" "+str(player.y)+" "+str(map.height)+" "+str(player.y)+" "+str(round(player.y-(v*(v/g)-1/2*g*(v/g)**2)-v*t+1/2*g*t**2))+" "+str(player.y-round(player.y-(v*(v/g)-1/2*g*(v/g)**2)-v*t+1/2*g*t**2)))
     if genframe+20 == framenum:
         genpanel()
         genframe+=15
