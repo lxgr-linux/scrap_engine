@@ -122,7 +122,7 @@ def mapresize():
             pass
 
 def dead():
-    global ev, scoretext, highscoretext
+    global ev, scoretext, highscoretext, mode
     ev=0
     deadmenuind.index=1
     menuresize(deadmap, deadbox)
@@ -148,7 +148,7 @@ def dead():
             ev=0
             exit()
         elif ev == "'w'":
-            if deadmenuind.index != 1:
+            if deadmenuind.index != 0:
                 deadmenuind.index-=1
             exec("deadbox.set_ob(deadmenuind, deadmenutext"+str(deadmenuind.index)+".rx-2, deadmenutext"+str(deadmenuind.index)+".ry)")
             ev=0
@@ -162,6 +162,10 @@ def dead():
                 main()
             elif deadmenuind.ry == deadmenutext2.ry:
                 exit()
+            elif deadmenuind.ry == deadmenutext0.ry:
+                mode="normal" if mode == "single" else "single"
+                deadmenutext0.rechar("Mode: "+mode)
+                deadbox.set_ob(deadmenutext0, round((deadbox.width-len("Mode: "+mode))/2), 7)
             ev=0
         else:
             time.sleep(0.05)
@@ -261,23 +265,27 @@ def main():
                 dead()
             set=False
             walkframe+=walkstep
-        level_normal()
+        exec("level_"+mode+"()")
+        #level_single() if mode == "single" else level_normal()
         mapresize()
         map.show()
         framenum+=1
 
+mode="normal"
 # objects for dead
 deadmap=se.Map(background=" ")
 deadbox=se.Box(13, 28)
 deadtext=se.Text("You dead!")
 scoretext=se.Text("You scored 0 points")
 highscoretext=se.Text("Highscore: 0")
+deadmenutext0=se.Text("Mode: "+mode)
 deadmenutext1=se.Text("Try again")
 deadmenutext2=se.Text("Exit")
 deadmenuind=se.Object("*")
 deadbox.add_ob(deadtext, 9, 0)
 deadbox.add_ob(scoretext, 4, 2)
 deadbox.add_ob(highscoretext, 7, 3)
+deadbox.add_ob(deadmenutext0, round((deadbox.width-len("Mode: "+mode))/2), 7)
 deadbox.add_ob(deadmenutext1, 9, 9)
 deadbox.add_ob(deadmenutext2, 11, 11)
 deadbox.add_ob(deadmenuind, 7, 9)
