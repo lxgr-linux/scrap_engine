@@ -105,9 +105,9 @@ while True:
     if player.x < smap.x-1:
         exit()
     h.rechar((2-len(str(player.y)))*" "+str(player.y)+" "+str(map.height)+" "+str(player.y)+" "+str(nexty(v,g,t))+" "+str(player.y-nexty(v,g,t)))
-    if genframe+20 == framenum:
+    if genframe+15 == framenum:
         genpanel()
-        genframe+=20
+        genframe+=15
     time.sleep(0.05)
     smap.remap()
     smap.show()
