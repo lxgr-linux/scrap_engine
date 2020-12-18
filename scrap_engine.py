@@ -214,8 +214,9 @@ class ObjectGroup():
 
 
 class Text(ObjectGroup):
-    def __init__(self, text, state="solid", esccode=""):
+    def __init__(self, text, state="solid", esccode="", ob_class=Object):
         self.obs=[]
+        self.ob_class=ob_class
         self.added=False
         self.text=text
         self.esccode=esccode
@@ -229,7 +230,7 @@ class Text(ObjectGroup):
                     char=self.esccode+char
                 if i == len(text)-1 and self.esccode != "":
                     char+="\033[0m"
-                self.obs.append(Object(char, self.state))
+                self.obs.append(self.ob_class(char, self.state))
         for ob in self.obs:
             ob.group=self
 
