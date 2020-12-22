@@ -86,12 +86,12 @@ int main(){
   while (true){
     ob.set(2, 2);
     map.show();
-    usleep(100000);
+    usleep(10000);
     ob.set(5, 5);
     // map.background='#';
     // std::cout << *map.backgroundptr << std::endl;
     map.show();
-    usleep(100000);
+    usleep(10000);
   }
   ob.set(2, 2);
   map.show();
