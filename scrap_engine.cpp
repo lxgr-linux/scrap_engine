@@ -1,5 +1,6 @@
 #include<iostream>
 #include<iomanip>
+#include<vector>
 #include<sys/ioctl.h> //ioctl() and TIOCGWINSZ
 #include<unistd.h> // for STDOUT_FILENO
 //using namespace std;
@@ -9,16 +10,16 @@
 class Map{
 public:
   int height, width;
-  char background, map[1000][1000];
+  char background;
+  std::vector<std::vector<char>> map;
   Map(int h, int w, char b){
     height=h;
     width=w;
     background=b;
-    map[width][height]={};
+    map.resize(height);
     for (int i=0; i<height; i++){
-      for (int j=0; j<width; j++){
-        map[j][i]=background;
-      }
+      std::vector<char> k (width, background);
+      map.at(i) = k;
     }
   }
   void show(){
@@ -26,7 +27,7 @@ public:
     printf("\033c");
     for (int i=0; i<height; i++){
       for (int j=0; j<width; j++){
-        a+=map[j][i];
+        a+=map[i][j];
       }
       a+="\n";
     }
