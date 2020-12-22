@@ -11,14 +11,16 @@ class Map{
 public:
   int height, width;
   char background;
-  std::vector<std::vector<char>> map;
+  char* backgroundptr = &background;
+  std::vector<std::vector<char*>> map;
   Map(int h, int w, char b){
     height=h;
     width=w;
     background=b;
+
     map.resize(height);
     for (int i=0; i<height; i++){
-      std::vector<char> k (width, background);
+      std::vector<char*> k (width, backgroundptr);
       map.at(i) = k;
     }
   }
@@ -27,7 +29,7 @@ public:
     printf("\033c");
     for (int i=0; i<height; i++){
       for (int j=0; j<width; j++){
-        a+=map[i][j];
+        a+=*map[i][j];
       }
       a+="\n";
     }
@@ -39,8 +41,10 @@ public:
 class Object{
 public:
   int x, y;
-  char character, backup;
-  Map *map;
+  char character;
+  char* characterptr = &character;
+  char* backup;
+  Map* map;
   std::string state;
   bool added=false;
   Object(char c, std::string s="solid"){
@@ -53,7 +57,7 @@ public:
     y=iy;
     added=true;
     backup=(*map).map[x][y];
-    map->map[x][y]=character;
+    map->map[x][y]=characterptr;
   }
   void set(int ix, int iy){
     if (!added){
@@ -61,7 +65,7 @@ public:
     }
     map->map[x][y]=backup;
     backup=map->map[ix][iy];
-    map->map[ix][iy]=character;
+    map->map[ix][iy]=characterptr;
     x=ix;
     y=iy;
   }
@@ -82,10 +86,12 @@ int main(){
   while (true){
     ob.set(2, 2);
     map.show();
-    usleep(10000);
+    usleep(100000);
     ob.set(5, 5);
+    // map.background='#';
+    // std::cout << *map.backgroundptr << std::endl;
     map.show();
-    usleep(10000);
+    usleep(100000);
   }
   ob.set(2, 2);
   map.show();
