@@ -13,11 +13,10 @@ public:
   char background;
   char* backgroundptr = &background;
   std::vector<std::vector<char*>> map;
-  Map(int h, int w, char b){
-    height=h;
-    width=w;
-    background=b;
-
+  Map(int height, int width, char background){
+    this->height=height;
+    this->width=width;
+    this->background=background;
     map.resize(height);
     for (int i=0; i<height; i++){
       std::vector<char*> k (width, backgroundptr);
@@ -47,14 +46,14 @@ public:
   Map* map;
   std::string state;
   bool added=false;
-  Object(char c, std::string s="solid"){
-    character=c;
-    state=s;
+  Object(char character, std::string state="solid"){
+    this->character=character;
+    this->state=state;
   }
-  void add(Map *m, int ix, int iy){
-    map=m;
-    x=ix;
-    y=iy;
+  void add(Map *map, int x, int y){
+    this->map=map;
+    this->x=x;
+    this->y=y;
     added=true;
     backup=(*map).map[x][y];
     map->map[x][y]=characterptr;
