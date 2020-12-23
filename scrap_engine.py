@@ -200,7 +200,9 @@ class ObjectGroup():
 
     def move(self, x=0, y=0):
         for ob in self.obs:
-            ob.set(ob.x+x, ob.y+y)
+            ob.remove()
+        for ob in self.obs:
+            ob.add(self.map, ob.x+x, ob.y+y)
 
     def remove(self):
         for ob in self.obs:
