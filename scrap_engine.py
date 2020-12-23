@@ -5,12 +5,11 @@ width, height = os.get_terminal_size()
 
 class Map():
     def __init__(self, height=height-1, width=width, background="#", dynfps=True):
-        a="["+width*("'"+background+"',")+"],"
         self.height=height
         self.width=width
         self.dynfps=dynfps
         self.background=background
-        exec("self.map=["+height*a+"]")
+        exec("self.map=["+height*("["+width*"self.background,"+"],")+"]")
         self.obs=[]
 
     def curse_init(): # This method uses curses to display the map in terminal, this may result in glitches

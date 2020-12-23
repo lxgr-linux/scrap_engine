@@ -14,9 +14,9 @@ public:
   char* backgroundptr = &background;
   std::vector<std::vector<char*>> map;
   Map(int height, int width, char background){
-    this->height=height;
-    this->width=width;
-    this->background=background;
+    this->height = height;
+    this->width = width;
+    this->background = background;
     map.resize(height);
     for (int i=0; i<height; i++){
       std::vector<char*> k (width, backgroundptr);
@@ -28,11 +28,10 @@ public:
     printf("\033c");
     for (int i=0; i<height; i++){
       for (int j=0; j<width; j++){
-        a+=*map[i][j];
+        a+=*map.at(i).at(j);
       }
       a+="\n";
     }
-    //std::cout << a;
     printf("%s", a.c_str());
   }
 };
@@ -45,15 +44,15 @@ public:
   char* backup;
   Map* map;
   std::string state;
-  bool added=false;
+  bool added = false;
   Object(char character, std::string state="solid"){
-    this->character=character;
-    this->state=state;
+    this->character = character;
+    this->state = state;
   }
   void add(Map *map, int x, int y){
-    this->map=map;
-    this->x=x;
-    this->y=y;
+    this->map = map;
+    this->x = x;
+    this->y = y;
     added=true;
     backup=(*map).map[x][y];
     map->map[x][y]=characterptr;
@@ -62,11 +61,11 @@ public:
     if (!added){
       return;
     }
-    map->map[x][y]=backup;
-    backup=map->map[ix][iy];
-    map->map[ix][iy]=characterptr;
-    x=ix;
-    y=iy;
+    map->map[x][y] = backup;
+    backup = map->map[ix][iy];
+    map->map[ix][iy] = characterptr;
+    x = ix;
+    y = iy;
   }
 };
 
