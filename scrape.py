@@ -25,10 +25,13 @@ class Start_master(se.Object):
     def bump_bottom(self):
         self.bump_action()
 
+    def pull_ob(self):
+        dead()
+
 
 class Apple(se.Object):
     def action(self, ob):
-        exec("runner"+str(len(ob.group.obs))+"=se.Object('#')")
+        exec("runner"+str(len(ob.group.obs))+"=Start('#')")
         exec("runner"+str(len(ob.group.obs))+".add(map, ob.group.obs[-1].oldx, ob.group.obs[-1].oldy)")
         exec("ob.group.add_ob(runner"+str(len(ob.group.obs))+")")
         apples.rem_ob(self)
@@ -146,10 +149,7 @@ def menuresize(map, box):
 def mapresize():
     width, height = os.get_terminal_size()
     if map.width != width or map.height != height-1:
-        try:
-            map.resize(height-1, width, " ")
-        except:
-            pass
+        map.resize(height-1, width, " ")
 
 def dead():
     global ev, scoretext, highscoretext, mode, modeindex
@@ -250,8 +250,8 @@ def main():
     map=se.Map(height-1, width, " ")
 
     start=Start("#")
-    runner0=se.Object("#")
-    runner1=se.Object("#")
+    runner0=Start("#")
+    runner1=Start("#")
     start.add(map, round(map.width/2), round(map.height/2))
     runner0.add(map, round(map.width/2), round(map.height/2)+1)
     runner1.add(map, round(map.width/2), round(map.height/2)+2)
