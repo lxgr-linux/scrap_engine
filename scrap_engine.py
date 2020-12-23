@@ -186,6 +186,8 @@ class Object():
         self.redraw()
 
     def remove(self):
+        if not self.added:
+            return 1
         self.map.map[self.y][self.x]=self.backup
         self.added=False
         for ob in self.map.obmap[self.y][self.x]:

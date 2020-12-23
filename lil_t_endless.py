@@ -20,12 +20,17 @@ class PanelItem(se.Object):
         ob.set(ob.x-1, ob.y)
         self.set(self.x-1, self.y)
 
+class Panel(se.Square):
+    def init(self):
+        for ob in self.obs:
+            moving.append(ob)
+
 map=se.Map(height-1, width+12, " ")
 smap=se.Submap(map, 0, 0)
 
 player=se.Object("t")
 block=PanelItem("#")
-panel=se.Square("#", 10, 1, ob_class=PanelItem)
+panel=Panel("#", 10, 1, ob_class=PanelItem)
 ground=se.Square("#", map.width, 5)
 h=se.Text("00 00")
 
@@ -34,13 +39,13 @@ block.add(map, map.width-11, map.height-6)
 panel.add(map, map.width-11, map.height-10)
 ground.add(map, 0, map.height-5)
 h.add(smap, 0, 0)
-moving=[panel, block]
+moving=[ob for ob in panel.obs]+[block]
 
 def genpanel():
     global panelindex
-    exec("panel_%s=se.Square('#', 10, 1, ob_class=PanelItem)"%panelindex)
+    exec("panel_%s=Panel('#', 10, 1, ob_class=PanelItem)"%panelindex)
     exec("panel_%s.add(map, map.width-11, map.height-%i)"%(panelindex, random.randint(8,20)))
-    exec("moving.append(panel_%s)"%panelindex)
+    exec("panel_%s.init()"%panelindex)
     panelindex+=1
 
 def on_press(key):
