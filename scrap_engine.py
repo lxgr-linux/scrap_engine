@@ -10,6 +10,7 @@ class Map():
         self.dynfps=dynfps
         self.background=background
         exec("self.map=["+height*("["+width*"self.background,"+"],")+"]")
+        exec("self.obmap=["+height*("["+width*"[],"+"],")+"]")
         self.obs=[]
 
     def curse_init(): # This method uses curses to display the map in terminal, this may result in glitches
@@ -53,12 +54,13 @@ class Map():
 
     def resize(self, height, width, background="#"):
         self.background=background
-        self.height=height
+        exec("self.map=["+height*("["+width*("background,")+"],")+"]")
+        exec("self.obmap=["+(height if height > self.height else self.height)*("["+(width if width > self.width else self.width)*"[],"+"],")+"]")
         self.width=width
-        a="["+width*("'"+background+"',")+"],"
-        exec("self.map=["+height*a+"]")
+        self.height=height
         for ob in self.obs:
             ob.redraw()
+            self.obmap[ob.y][ob.x].append(ob)
 
 
 class Submap(Map):
@@ -70,6 +72,7 @@ class Submap(Map):
         self.dynfps=dynfps
         self.bmap=bmap
         self.map=[]
+        self.obmap=[]
         self.obs=[]
         self.remap()
 
@@ -77,6 +80,8 @@ class Submap(Map):
         self.map=[]
         for arr in self.bmap.map[self.y:self.y+self.height]:
             self.map.append(arr[self.x:self.x+self.width])
+        for arr in self.bmap.obmap[self.y:self.y+self.height]:
+            self.obmap.append(arr[self.x:self.x+self.width])
         for ob in self.obs:
             ob.redraw()
 
@@ -96,13 +101,14 @@ class Object():
         self.added=False
 
     def add(self, map, x, y):
-        for ob in map.obs:
-            if ob.x==x and ob.y==y and ob.state=="solid":
+        for ob in map.obmap[y][x]:
+            if ob.state == "solid":
                 return 1
         self.backup=map.map[y][x]
         self.x=x
         self.y=y
         map.map[y][x]=self.char
+        map.obmap[y][x].append(self)
         map.obs.append(self)
         self.map=map
         self.added=True
@@ -111,10 +117,6 @@ class Object():
     def set(self, x, y):
         if self.added == False:
             return 1
-        for ob in self.map.obs:
-            if ob.x==x and ob.y==y and ob.state=="solid":
-                self.bump(ob, self.x-x, self.y-y)
-                return 1
         if x > self.map.width-1:
             self.bump_right()
             return 1
@@ -127,13 +129,19 @@ class Object():
         if y < 0:
             self.bump_top()
             return 1
+        for ob in self.map.obmap[y][x]:
+            if ob.state == "solid":
+                self.bump(ob, self.x-x, self.y-y)
+                return 1
         self.map.map[self.y][self.x]=self.backup
+        del self.map.obmap[self.y][self.x][self.map.obmap[self.y][self.x].index(self)]
+        self.map.obmap[y][x].append(self)
         self.backup=self.map.map[y][x]
         self.x=x
         self.y=y
         self.map.map[y][x]=self.char
-        for ob in self.map.obs:
-            if ob.x==x and ob.y==y and ob.state=="float":
+        for ob in self.map.obmap[y][x]:
+            if ob.state == "float":
                 ob.action(self)
         return 0
 
@@ -169,15 +177,13 @@ class Object():
 
     def remove(self):
         self.map.map[self.y][self.x]=self.backup
-        for i in range(len(self.map.obs)):
-            if self.map.obs[i] == self:
-                del self.map.obs[i]
-                break
         self.added=False
-        for ob in self.map.obs:
-            if ob.x == self.x and ob.y == self.y:
+        for ob in self.map.obmap[self.y][self.x]:
+            if ob != self:
                 ob.backup=self.backup
                 ob.redraw()
+        del self.map.obs[self.map.obs.index(self)]
+        del self.map.obmap[self.y][self.x][self.map.obmap[self.y][self.x].index(self)]
 
 
 class ObjectGroup():
