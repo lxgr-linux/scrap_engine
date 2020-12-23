@@ -106,6 +106,21 @@ def level_single():
     if len(berrys.obs) == 0:
         berrygen()
 
+def level_easy():
+    global genframe0, framenum
+    if genframe0+150 == framenum:
+        applegen()
+        genframe0+=150
+
+def level_normal_init():
+    return
+
+def level_single_init():
+    return
+
+def level_easy_init():
+    return
+
 def menuresize(map, box):
     width, height = os.get_terminal_size()
     if map.width != width or map.height != height-1:
@@ -124,6 +139,7 @@ def mapresize():
 def dead():
     global ev, scoretext, highscoretext, mode
     ev=0
+    modeindex=0
     deadmenuind.index=1
     menuresize(deadmap, deadbox)
 
@@ -163,9 +179,11 @@ def dead():
             elif deadmenuind.ry == deadmenutext2.ry:
                 exit()
             elif deadmenuind.ry == deadmenutext0.ry:
-                mode="normal" if mode == "single" else "single"
+                modeindex=modeindex+1 if modeindex < len(modes)-1 else 0
+                mode=modes[modeindex]
                 deadmenutext0.rechar("Mode: "+mode)
                 deadbox.set_ob(deadmenutext0, round((deadbox.width-len("Mode: "+mode))/2), 7)
+                deadbox.set_ob(deadmenuind, deadmenutext0.rx-2, deadmenutext0.ry)
             ev=0
         else:
             time.sleep(0.05)
@@ -227,7 +245,7 @@ def main():
     berrys=se.ObjectGroup([])
 
     start.direction="t"
-
+    exec("level_"+mode+"_init()")
     map.show()
     set=False
     while True:
@@ -272,6 +290,7 @@ def main():
         framenum+=1
 
 mode="normal"
+modes=["normal", "single", "easy"]
 # objects for dead
 deadmap=se.Map(background=" ")
 deadbox=se.Box(13, 28)
