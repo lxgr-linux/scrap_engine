@@ -124,13 +124,13 @@ def level_easy_init():
     global Start
     class Start(Start_master):
         def bump_action(self):
-            if self.x == 0:
+            if self.x == 0 and self.direction == 'l':
                 self.set(self.map.width-1, self.y)
-            elif self.x == self.map.width-1:
+            elif self.x == self.map.width-1 and self.direction == 'r':
                 self.set(0, self.y)
-            elif self.y == 0:
+            elif self.y == 0 and self.direction == 't':
                 self.set(self.x, self.map.height-1)
-            elif self.y == self.map.height-1:
+            elif self.y == self.map.height-1 and self.direction == 'b':
                 self.set(self.x, 0)
 
         def bump(self, ob, x, y):
