@@ -6,7 +6,7 @@ import threading, time, random, os, sys
 from pathlib import Path
 
 
-class Start(se.Object):
+class Start_master(se.Object):
     def bump_action(self):
         dead()
 
@@ -113,13 +113,28 @@ def level_easy():
         genframe0+=150
 
 def level_normal_init():
-    return
+    global Start
+    Start=Start_master
 
 def level_single_init():
-    return
+    global Start
+    Start=Start_master
 
 def level_easy_init():
-    return
+    global Start
+    class Start(Start_master):
+        def bump_action(self):
+            if self.x == 0:
+                self.set(self.map.width-1, self.y)
+            elif self.x == self.map.width-1:
+                self.set(0, self.y)
+            elif self.y == 0:
+                self.set(self.x, self.map.height-1)
+            elif self.y == self.map.height-1:
+                self.set(self.x, 0)
+
+        def bump(self, ob, x, y):
+            dead()
 
 def menuresize(map, box):
     width, height = os.get_terminal_size()
@@ -137,9 +152,8 @@ def mapresize():
             pass
 
 def dead():
-    global ev, scoretext, highscoretext, mode
+    global ev, scoretext, highscoretext, mode, modeindex
     ev=0
-    modeindex=0
     deadmenuind.index=1
     menuresize(deadmap, deadbox)
 
@@ -227,10 +241,11 @@ def menu():
         menumap.show()
 
 def main():
-    global ev, apple_num, berry_num, map, walkstep, walkframe, snake, genframe0, genframe1, framenum, apples, berrys
+    global ev, apple_num, berry_num, map, walkstep, walkframe, snake, genframe0, genframe1, framenum, apples, berrys, start
     walkframe=genframe0=genframe1=apple_num=berry_num=framenum=0
     walkstep=5
 
+    exec("level_"+mode+"_init()")
     width, height = os.get_terminal_size()
     map=se.Map(height-1, width, " ")
 
@@ -245,7 +260,6 @@ def main():
     berrys=se.ObjectGroup([])
 
     start.direction="t"
-    exec("level_"+mode+"_init()")
     map.show()
     set=False
     while True:
@@ -289,6 +303,7 @@ def main():
         map.show()
         framenum+=1
 
+modeindex=0
 mode="normal"
 modes=["normal", "single", "easy"]
 # objects for dead
