@@ -59,8 +59,11 @@ class Map():
         self.width=width
         self.height=height
         for ob in self.obs:
-            ob.redraw()
             self.obmap[ob.y][ob.x].append(ob)
+            try:
+                ob.redraw()
+            except:
+                pass
 
 
 class Submap(Map):
@@ -133,7 +136,11 @@ class Object():
             if ob.state == "solid":
                 self.bump(ob, self.x-x, self.y-y)
                 return 1
-        self.map.map[self.y][self.x]=self.backup
+        try:
+            self.map.map[self.y][self.x]=self.backup
+        except:
+            self.pull_ob()
+            return 1
         del self.map.obmap[self.y][self.x][self.map.obmap[self.y][self.x].index(self)]
         self.map.obmap[y][x].append(self)
         self.backup=self.map.map[y][x]
@@ -168,6 +175,9 @@ class Object():
         return
 
     def bump_bottom(self):
+        return
+
+    def pull_ob(self):
         return
 
     def rechar(self, char):
