@@ -53,9 +53,9 @@ public:
     this->map = map;
     this->x = x;
     this->y = y;
-    added=true;
-    backup=(*map).map[x][y];
-    map->map[x][y]=characterptr;
+    added = true;
+    backup = (*map).map[x][y];
+    map->map[x][y] = characterptr;
   }
   void set(int ix, int iy){
     if (!added){
