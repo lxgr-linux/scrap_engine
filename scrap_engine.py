@@ -137,7 +137,10 @@ class Object():
                 self.bump(ob, self.x-x, self.y-y)
                 return 1
         try:
-            self.map.map[self.y][self.x]=self.backup
+            if self.map.obmap[self.y][self.x][0] == self and len(self.map.obmap[self.y][self.x]) > 1:
+                self.map.obmap[self.y][self.x][1].backup=self.backup
+            else:
+                self.map.map[self.y][self.x]=self.backup
         except:
             self.pull_ob()
             return 1
@@ -188,12 +191,11 @@ class Object():
     def remove(self):
         if not self.added:
             return 1
-        self.map.map[self.y][self.x]=self.backup
         self.added=False
-        for ob in self.map.obmap[self.y][self.x]:
-            if ob != self:
-                ob.backup=self.backup
-                ob.redraw()
+        if self.map.obmap[self.y][self.x][0] == self and len(self.map.obmap[self.y][self.x]) > 1:
+            self.map.obmap[self.y][self.x][1].backup=self.backup
+        else:
+            self.map.map[self.y][self.x]=self.backup
         del self.map.obs[self.map.obs.index(self)]
         del self.map.obmap[self.y][self.x][self.map.obmap[self.y][self.x].index(self)]
 
