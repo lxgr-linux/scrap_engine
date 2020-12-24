@@ -6,7 +6,7 @@ import time, os, threading, sys, random
 class PanelItem(se.Object):
     def bump_left(self):
         global moving
-        moving=[ob for ob in moving if ob != self]
+        del moving[moving.index(self)]
         self.remove()
 
     def bump(self, ob, x, y):
