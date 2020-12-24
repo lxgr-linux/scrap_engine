@@ -50,28 +50,36 @@ class Berry(se.Object):
         self.remove()
 
 def applegen():
-    global apple_num
+    global inc
     x=random.randint(0, map.width-1)
     y=random.randint(0, map.height-1)
-    for ob in map.obs:
-        if ob.x == x and ob.y == y:
+    if map.obmap[y][x] != []:
             return
-    exec("apple"+str(apple_num)+"=Apple('\033[32;1ma\033[0m', state='float')")
-    exec("apple"+str(apple_num)+".add(map, x, y)")
-    exec("apples.add_ob(apple"+str(apple_num)+")")
-    apple_num+=1
+    exec("apple"+str(inc)+"=Apple('\033[32;1ma\033[0m', state='float')")
+    exec("apple"+str(inc)+".add(map, x, y)")
+    exec("apples.add_ob(apple"+str(inc)+")")
+    inc+=1
 
 def berrygen():
-    global berry_num
+    global inc
     x=random.randint(0, map.width-1)
     y=random.randint(0, map.height-1)
-    for ob in map.obs:
-        if ob.x == x and ob.y == y:
+    if map.obmap[y][x] != []:
             return
-    exec("berry"+str(berry_num)+"=Berry('\033[31;1ms\033[0m', state='float')")
-    exec("berry"+str(berry_num)+".add(map, x, y)")
-    exec("berrys.add_ob(berry"+str(berry_num)+")")
-    berry_num+=1
+    exec("berry"+str(inc)+"=Berry('\033[31;1ms\033[0m', state='float')")
+    exec("berry"+str(inc)+".add(map, x, y)")
+    exec("berrys.add_ob(berry"+str(inc)+")")
+    inc+=1
+
+def blockgen():
+    global inc
+    x=random.randint(0, map.width-1)
+    y=random.randint(0, map.height-1)
+    if map.obmap[y][x] != []:
+            return
+    exec("block"+str(inc)+"=se.Object('8', state='solid')")
+    exec("block"+str(inc)+".add(map, x, y)")
+    inc+=1
 
 def on_press(key):
     global ev
@@ -115,6 +123,18 @@ def level_easy():
         applegen()
         genframe0+=150
 
+def level_hard():
+    global genframe0, genframe1, framenum, genframe2
+    if genframe0+200 == framenum:
+        applegen()
+        genframe0+=200
+    if genframe1+200 == framenum:
+        berrygen()
+        genframe1+=200
+    if genframe2+300 == framenum:
+        blockgen()
+        genframe2+=300
+
 def level_normal_init():
     global Start
     Start=Start_master
@@ -138,6 +158,12 @@ def level_easy_init():
 
         def bump(self, ob, x, y):
             dead()
+
+def level_hard_init():
+    global Start, genframe2, genframe1
+    Start=Start_master
+    genframe2=0
+    genframe1=75
 
 def menuresize(map, box):
     width, height = os.get_terminal_size()
@@ -241,8 +267,8 @@ def menu():
         menumap.show()
 
 def main():
-    global ev, apple_num, berry_num, map, walkstep, walkframe, snake, genframe0, genframe1, framenum, apples, berrys, start
-    walkframe=genframe0=genframe1=apple_num=berry_num=framenum=0
+    global ev, inc, map, walkstep, walkframe, snake, genframe0, genframe1, framenum, apples, berrys, start
+    walkframe=genframe0=genframe1=inc=framenum=0
     walkstep=5
 
     exec("level_"+mode+"_init()")
@@ -305,7 +331,7 @@ def main():
 
 modeindex=0
 mode="normal"
-modes=["normal", "single", "easy"]
+modes=["normal", "single", "easy", "hard"]
 # objects for dead
 deadmap=se.Map(background=" ")
 deadbox=se.Box(13, 28)
