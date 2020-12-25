@@ -186,11 +186,15 @@ def dead():
     home=str(Path.home())
     Path(home+"/.cache/scrape").mkdir(parents=True, exist_ok=True)
     Path(home+"/.cache/scrape/scrape").touch(exist_ok=True)
-    data={'normal' : 0, 'single' : 0, 'easy' : 0, 'hard' : 0}
+    datas="{"
+    for mode in modes:
+        datas+="'"+mode+"' : 0,"
+    datas+="}"
+    exec("global data; data="+datas)
     with open(home+"/.cache/scrape/scrape", "r") as file:
         file_content=file.read()
         exec("global data; "+file_content)
-        if file_content == "" or data[mode] < len(snake.obs):
+        if file_content == "" or (mode not in data) or data[mode] < len(snake.obs):
             data[mode]=len(snake.obs)
             with open(home+"/.cache/scrape/scrape", "w+") as file1:
                 file1.write("data="+str(data))
@@ -326,7 +330,6 @@ def main():
             set=False
             walkframe+=walkstep
         exec("level_"+mode+"()")
-        #level_single() if mode == "single" else level_normal()
         mapresize()
         map.show()
         framenum+=1
