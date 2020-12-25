@@ -33,13 +33,24 @@ def on_press(key):
 
 if sys.platform == "linux":  # Use another (not on xserver relying) way to read keyboard input, to make this shit work in tty or via ssh, where no xserver is available
     def recogniser():
-        global ev
+        import tty, sys, termios
+        global ev, old_settings, termios, fd, do_exit
+
+        do_exit=False
+        fd=sys.stdin.fileno()
+        old_settings = termios.tcgetattr(fd)
+        tty.setraw(fd)
         while True:
-            a=os.popen('./reader.sh').read()
-            if a == "\n":
+            char=sys.stdin.read(1)
+            if ord(char) == 13:
                 ev="Key.enter"
+            elif ord(char) == 32:
+                ev="Key.space"
             else:
-                ev="'"+a.rstrip()+"'"
+                ev="'"+char.rstrip()+"'"
+            if ord(char) == 3 or do_exit:
+                termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
+                ev="'e'"
 else:
     from pynput.keyboard import Key, Listener
     def recogniser():
@@ -68,7 +79,7 @@ def main():
                 t=0
                 v=0
                 break
-        if ev == "Key.enter":
+        if ev == "Key.space":
             v=-0.25
             ev=0
         if player.set(player.x, nexty(v,g,t))!= 0 and t != 0:
