@@ -81,19 +81,33 @@ def blockgen():
     exec("block"+str(inc)+".add(map, x, y)")
     inc+=1
 
+def exiter():
+    global do_exit
+    do_exit=True
+    exit()
+
 def on_press(key):
     global ev
     ev=str(key)
 
 if sys.platform == "linux":  # Use another (not on xserver relying) way to read keyboard input, to make this shit work in tty or via ssh, where no xserver is available
     def recogniser():
-        global ev
+        import tty, sys, termios
+        global ev, old_settings, termios, fd, do_exit
+
+        do_exit=False
+        fd=sys.stdin.fileno()
+        old_settings = termios.tcgetattr(fd)
+        tty.setraw(fd)
         while True:
-            a=os.popen('./reader.sh').read()
-            if a == "\n":
+            char=sys.stdin.read(1)
+            if ord(char) == 13:
                 ev="Key.enter"
             else:
-                ev="'"+a.rstrip()+"'"
+                ev="'"+char.rstrip()+"'"
+            if ord(char) == 3 or do_exit:
+                termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
+                ev="'e'"
 else:
     from pynput.keyboard import Key, Listener
     def recogniser():
@@ -101,6 +115,7 @@ else:
         while True:
             with Listener(on_press=on_press) as listener:
                 listener.join()
+
 
 def level_normal():
     global genframe0, genframe1, framenum
@@ -165,6 +180,7 @@ def level_hard_init():
     genframe2=0
     genframe1=75
 
+
 def menuresize(map, box):
     width, height = os.get_terminal_size()
     if map.width != width or map.height != height-1:
@@ -187,8 +203,8 @@ def dead():
     Path(home+"/.cache/scrape").mkdir(parents=True, exist_ok=True)
     Path(home+"/.cache/scrape/scrape").touch(exist_ok=True)
     datas="{"
-    for mode in modes:
-        datas+="'"+mode+"' : 0,"
+    for i in modes:
+        datas+="'"+i+"' : 0,"
     datas+="}"
     exec("global data; data="+datas)
     with open(home+"/.cache/scrape/scrape", "r") as file:
@@ -208,7 +224,10 @@ def dead():
     while True:
         if ev == "'m'":
             ev=0
-            exit()
+            exiter()
+        elif ev == "'e'":
+            ev=0
+            raise KeyboardInterrupt
         elif ev == "'w'":
             if deadmenuind.index != 0:
                 deadmenuind.index-=1
@@ -223,7 +242,7 @@ def dead():
             if deadmenuind.ry == deadmenutext1.ry:
                 main()
             elif deadmenuind.ry == deadmenutext2.ry:
-                exit()
+                exiter()
             elif deadmenuind.ry == deadmenutext0.ry:
                 modeindex=modeindex+1 if modeindex < len(modes)-1 else 0
                 mode=modes[modeindex]
@@ -249,6 +268,9 @@ def menu():
         if ev == "'m'":
             ev=0
             break
+        elif ev == "'e'":
+            ev=0
+            raise KeyboardInterrupt
         elif ev == "'w'":
             if menuind.index != 1:
                 menuind.index-=1
@@ -265,7 +287,7 @@ def menu():
             elif menuind.ry == menutext2.ry:
                 main()
             elif menuind.ry == menutext3.ry:
-                exit()
+                exiter()
             ev=0
         else:
             time.sleep(0.05)
@@ -306,6 +328,9 @@ def main():
             mapresize()
             map.show(init=True)
             ev=0
+        elif ev == "'e'":
+            ev=0
+            raise KeyboardInterrupt
         else:
             time.sleep(0.01)
         if walkframe+walkstep == framenum:
