@@ -33,16 +33,14 @@ class Map():
             self.out_old
         except:
             self.out_old="test"
-        self.out="\033c"
+        self.out="\r\u001b["+str(self.height)+"A"
         for arr in self.map:
             self.out_line=""
             for i in arr:
                 self.out_line+=i
-            if self.out_line == self.width*" ":
-                self.out_line=" "
-            self.out+=self.out_line+"\n"
+            self.out+=self.out_line
         if self.out_old != self.out or self.dynfps == False or init == True:
-            print(self.out, end="")
+            print(self.out+"\n\u001b[1000D", end="")
             self.out_old=self.out
 
     def cshow(self, init=False): # uses curses
