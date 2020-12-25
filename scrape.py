@@ -178,7 +178,7 @@ def mapresize():
         map.resize(height-1, width, " ")
 
 def dead():
-    global ev, scoretext, highscoretext, mode, modeindex
+    global ev, scoretext, highscoretext, mode, modeindex, data
     ev=0
     deadmenuind.index=1
     menuresize(deadmap, deadbox)
@@ -186,17 +186,19 @@ def dead():
     home=str(Path.home())
     Path(home+"/.cache/scrape").mkdir(parents=True, exist_ok=True)
     Path(home+"/.cache/scrape/scrape").touch(exist_ok=True)
+    data={'normal' : 0, 'single' : 0, 'easy' : 0, 'hard' : 0}
     with open(home+"/.cache/scrape/scrape", "r") as file:
         file_content=file.read()
-        if file_content == "" or int(file_content) < len(snake.obs):
+        exec("global data; "+file_content)
+        if file_content == "" or data[mode] < len(snake.obs):
+            data[mode]=len(snake.obs)
             with open(home+"/.cache/scrape/scrape", "w+") as file1:
-                file1.write(str(len(snake.obs)))
-            file_content=str(len(snake.obs))
+                file1.write("data="+str(data))
 
     scoretext.rechar("You scored "+str(len(snake.obs))+" points")
-    highscoretext.rechar("Highscore: "+str(file_content))
-    deadbox.set_ob(scoretext, round((deadbox.width-18-len(str(len(snake.obs))))/2), 2)
-    deadbox.set_ob(highscoretext, round((deadbox.width-12-len(str(file_content)))/2), 3)
+    highscoretext.rechar("Highscore: "+str(data[mode]))
+    deadbox.set_ob(scoretext, round((deadbox.width-len(scoretext.text))/2), 2)
+    deadbox.set_ob(highscoretext, round((deadbox.width-1-len(highscoretext.text))/2), 3)
     deadmap.blur_in(map, esccode="\033[31m")
     deadmap.show(init=True)
     while True:
@@ -343,8 +345,8 @@ deadmenutext1=se.Text("Try again")
 deadmenutext2=se.Text("Exit")
 deadmenuind=se.Object("*")
 deadbox.add_ob(deadtext, 9, 0)
-deadbox.add_ob(scoretext, 4, 2)
-deadbox.add_ob(highscoretext, 7, 3)
+deadbox.add_ob(scoretext, round((deadbox.width-len(scoretext.text))/2), 2)
+deadbox.add_ob(highscoretext, round((deadbox.width-1-len(highscoretext.text))/2), 3)
 deadbox.add_ob(deadmenutext0, round((deadbox.width-len("Mode: "+mode))/2), 7)
 deadbox.add_ob(deadmenutext1, 9, 9)
 deadbox.add_ob(deadmenutext2, 11, 11)
