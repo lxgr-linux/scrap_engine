@@ -276,15 +276,20 @@ class Text(ObjectGroup):
 
 
 class Square(ObjectGroup):
-    def __init__(self, char, width, height, state="solid", ob_class=Object):
+    def __init__(self, char, width, height, state="solid", ob_class=Object, threads=False):
         self.obs=[]
         self.ob_class=ob_class
         self.width=width
         self.height=height
         self.char=char
         self.state=state
+        self.exits=[]
+        self.threads=threads
         for l in range(height):
-            threading.Thread(target=self.one_line_create, args=(l,), daemon=True).start()
+            if threads:
+                threading.Thread(target=self.one_line_create, args=(l,), daemon=True).start()
+            else:
+                self.one_line_create(l)
         for ob in self.obs:
             ob.group=self
 
@@ -295,14 +300,20 @@ class Square(ObjectGroup):
 
     def one_line_add(self, l):
         for i in range(self.width):
-            exec("self.ob_"+str(i)+str(l)+".add(self.map, self.x+i, self.y+l)")
+            exec("self.exits.append(self.ob_"+str(i)+str(l)+".add(self.map, self.x+i, self.y+l))")
 
     def add(self, map, x, y):
         self.x=x
         self.y=y
         self.map=map
         for l in range(self.height):
-            threading.Thread(target=self.one_line_add, args=(l,), daemon=True).start()
+            if self.threads:
+                threading.Thread(target=self.one_line_add, args=(l,), daemon=True).start()
+            else:
+                self.one_line_add(l)
+        if 1 in self.exits:
+            return 1
+        return 0
 
     def rechar(self, char):
         for ob in self.obs:
