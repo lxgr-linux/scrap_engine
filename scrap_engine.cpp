@@ -25,7 +25,7 @@ public:
   }
   void show(){
     std::string a;
-    printf("\033c");
+    printf("\r\u001b[%iA", height);
     for (int i=0; i<height; i++){
       for (int j=0; j<width; j++){
         a+=*map.at(i).at(j);
@@ -84,12 +84,12 @@ int main(){
   while (true){
     ob.set(2, 2);
     map.show();
-    usleep(10000);
+    usleep(100000);
     ob.set(5, 5);
     // map.background='#';
     // std::cout << *map.backgroundptr << std::endl;
     map.show();
-    usleep(10000);
+    usleep(100000);
   }
   ob.set(2, 2);
   map.show();
