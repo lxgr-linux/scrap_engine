@@ -107,7 +107,7 @@ if sys.platform == "linux":  # Use another (not on xserver relying) way to read 
                 ev="'"+char.rstrip()+"'"
             if ord(char) == 3 or do_exit:
                 termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
-                ev="'e'"
+                ev="exit"
 else:
     from pynput.keyboard import Key, Listener
     def recogniser():
@@ -225,7 +225,7 @@ def dead():
         if ev == "'m'":
             ev=0
             exiter()
-        elif ev == "'e'":
+        elif ev == "exit":
             ev=0
             raise KeyboardInterrupt
         elif ev == "'w'":
@@ -268,7 +268,7 @@ def menu():
         if ev == "'m'":
             ev=0
             break
-        elif ev == "'e'":
+        elif ev == "exit":
             ev=0
             raise KeyboardInterrupt
         elif ev == "'w'":
@@ -328,9 +328,12 @@ def main():
             mapresize()
             map.show(init=True)
             ev=0
-        elif ev == "'e'":
+        elif ev == "exit":
             ev=0
             raise KeyboardInterrupt
+        elif ev == "'e'":
+            ev=0
+            dead()
         else:
             time.sleep(0.01)
         if walkframe+walkstep == framenum:
