@@ -19,9 +19,8 @@ class Panel(se.Square):
         for ob in self.obs:
             moving.append(ob)
 
-
 def genpanel():
-    global panelindex
+    global panelindex, test
     exec("panel_%s=Panel('#', 10, 1, ob_class=PanelItem)"%panelindex)
     exec("panel_%s.add(map, map.width-11, map.height-%i)"%(panelindex, random.randint(8,20)))
     exec("panel_%s.init()"%panelindex)
@@ -50,7 +49,7 @@ if sys.platform == "linux":  # Use another (not on xserver relying) way to read 
                 ev="'"+char.rstrip()+"'"
             if ord(char) == 3 or do_exit:
                 termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
-                ev="'e'"
+                ev="exit"
 else:
     from pynput.keyboard import Key, Listener
     def recogniser():
@@ -82,6 +81,9 @@ def main():
         if ev == "Key.space":
             v=-0.25
             ev=0
+        elif ev == "exit":
+            ev=0
+            raise KeyboardInterrupt
         if player.set(player.x, nexty(v,g,t))!= 0 and t != 0:
             for ob in map.obs[1:]:
                 if ob.x == player.x and ob.y == nexty(v,g,t):
