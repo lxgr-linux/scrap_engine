@@ -150,7 +150,7 @@ def level_hard():
         blockgen()
         genframe2+=300
 
-def level_two():
+def level_multi():
     level_normal()
 
 def level_normal_init():
@@ -161,7 +161,7 @@ def level_single_init():
     global Start
     Start=Start_master
 
-def level_two_init():
+def level_multi_init():
     global Start
     Start=Start_master
     start2=Start("#")
@@ -225,6 +225,9 @@ def dead():
     home=str(Path.home())
     Path(home+"/.cache/scrape").mkdir(parents=True, exist_ok=True)
     Path(home+"/.cache/scrape/scrape").touch(exist_ok=True)
+    score=0
+    for group in snakes:
+        score+=len(group.obs)
     datas="{"
     for i in modes:
         datas+="'"+i+"' : 0,"
@@ -233,12 +236,12 @@ def dead():
     with open(home+"/.cache/scrape/scrape", "r") as file:
         file_content=file.read()
         exec("global data; "+file_content)
-        if file_content == "" or (mode not in data) or data[mode] < len(snake.obs):
-            data[mode]=len(snake.obs)
+        if file_content == "" or (mode not in data) or data[mode] < score:
+            data[mode]=score
             with open(home+"/.cache/scrape/scrape", "w+") as file1:
                 file1.write("data="+str(data))
 
-    scoretext.rechar("You scored "+str(len(snake.obs))+" points")
+    scoretext.rechar("You scored "+str(score)+" points")
     highscoretext.rechar("Highscore: "+str(data[mode]))
     deadbox.set_ob(scoretext, round((deadbox.width-len(scoretext.text))/2), 2)
     deadbox.set_ob(highscoretext, round((deadbox.width-1-len(highscoretext.text))/2), 3)
@@ -283,9 +286,12 @@ def menu():
     global ev, curscore
     ev=0
     menuind.index=1
+    score=0
+    for group in snakes:
+        score+=len(group.obs)
     menuresize(menumap, menubox)
-    curscore.rechar("Current score: "+str(len(snake.obs))+" points")
-    menubox.set_ob(curscore, 1+round((menubox.width-22-len(str(len(snake.obs))))/2), 2)
+    curscore.rechar("Current score: "+str(score)+" points")
+    menubox.set_ob(curscore, 1+round((menubox.width-22-len(str(score)))/2), 2)
     menumap.blur_in(map)
     menumap.show(init=True)
     while True:
@@ -400,7 +406,7 @@ def main():
 
 modeindex=0
 mode="normal"
-modes=["normal", "single", "easy", "hard", "two"]
+modes=["normal", "single", "easy", "hard", "multi"]
 # objects for dead
 deadmap=se.Map(background=" ")
 deadbox=se.Box(13, 28)
