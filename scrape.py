@@ -150,6 +150,9 @@ def level_hard():
         blockgen()
         genframe2+=300
 
+def level_two():
+    level_normal()
+
 def level_normal_init():
     global Start
     Start=Start_master
@@ -157,6 +160,18 @@ def level_normal_init():
 def level_single_init():
     global Start
     Start=Start_master
+
+def level_two_init():
+    global Start
+    Start=Start_master
+    start2=Start("#")
+    start2.add(map, round(map.width/2-5), round(map.height/2))
+    start2.direction="l"
+    snake2=se.ObjectGroup([start2])
+    snake2.walkframe=0
+    snake2.walkstep=5
+    snakes.append(snake2)
+
 
 def level_easy_init():
     global Start
@@ -247,6 +262,7 @@ def dead():
                 modeindex=modeindex+1 if modeindex < len(modes)-1 else 0
                 mode=modes[modeindex]
                 deadmenutext0.rechar("Mode: "+mode)
+                deadbox.set_ob(deadmenuind, 0, 0)
                 deadbox.set_ob(deadmenutext0, round((deadbox.width-len("Mode: "+mode))/2), 7)
                 deadbox.set_ob(deadmenuind, deadmenutext0.rx-2, deadmenutext0.ry)
             ev=0
@@ -295,13 +311,13 @@ def menu():
         menumap.show()
 
 def main():
-    global ev, inc, map, walkstep, walkframe, snake, genframe0, genframe1, framenum, apples, berrys, start
-    walkframe=genframe0=genframe1=inc=framenum=0
-    walkstep=5
+    global ev, inc, map, walkstep, walkframe, snake, genframe0, genframe1, framenum, apples, berrys, start, snakes
+    genframe0=genframe1=inc=framenum=0
 
-    exec("level_"+mode+"_init()")
+    snakes=[]
     width, height = os.get_terminal_size()
     map=se.Map(height-1, width, " ")
+    exec("level_"+mode+"_init()")
 
     start=Start("#")
     runner0=Start("#")
@@ -310,6 +326,9 @@ def main():
     runner0.add(map, round(map.width/2), round(map.height/2)+1)
     runner1.add(map, round(map.width/2), round(map.height/2)+2)
     snake=se.ObjectGroup([start, runner0, runner1])
+    snake.walkframe=0
+    snake.walkstep=5
+    snakes.append(snake)
     apples=se.ObjectGroup([])
     berrys=se.ObjectGroup([])
 
@@ -336,27 +355,28 @@ def main():
             dead()
         else:
             time.sleep(0.01)
-        if walkframe+walkstep == framenum:
-            start.oldx=oldx=start.x
-            start.oldy=oldy=start.y
-            if start.direction == "t":
-                start.set(start.x, start.y-1)
-            elif start.direction == "b":
-                start.set(start.x, start.y+1)
-            elif start.direction == "l":
-                start.set(start.x-1, start.y)
-            elif start.direction == "r":
-                start.set(start.x+1, start.y)
-            for ob in snake.obs[1:]:
-                ob.oldx=ob.x
-                ob.oldy=ob.y
-                ob.set(oldx, oldy)
-                oldx=ob.oldx
-                oldy=ob.oldy
+        for group in snakes:
+            if group.walkframe+group.walkstep == framenum:
+                group.obs[0].oldx=oldx=group.obs[0].x
+                group.obs[0].oldy=oldy=group.obs[0].y
+                if group.obs[0].direction == "t":
+                    group.obs[0].set(group.obs[0].x, group.obs[0].y-1)
+                elif group.obs[0].direction == "b":
+                    group.obs[0].set(group.obs[0].x, group.obs[0].y+1)
+                elif group.obs[0].direction == "l":
+                    group.obs[0].set(group.obs[0].x-1, group.obs[0].y)
+                elif group.obs[0].direction == "r":
+                    group.obs[0].set(group.obs[0].x+1, group.obs[0].y)
+                for ob in group.obs[1:]:
+                    ob.oldx=ob.x
+                    ob.oldy=ob.y
+                    ob.set(oldx, oldy)
+                    oldx=ob.oldx
+                    oldy=ob.oldy
+                group.walkframe+=group.walkstep
             if len(snake.obs) == 0:
                 dead()
             set=False
-            walkframe+=walkstep
         exec("level_"+mode+"()")
         mapresize()
         map.show()
@@ -364,7 +384,7 @@ def main():
 
 modeindex=0
 mode="normal"
-modes=["normal", "single", "easy", "hard"]
+modes=["normal", "single", "easy", "hard", "two"]
 # objects for dead
 deadmap=se.Map(background=" ")
 deadbox=se.Box(13, 28)
