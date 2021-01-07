@@ -43,9 +43,9 @@ class Berry(se.Object):
         global walkstep, walkframe
         ob.group.obs[-1].remove()
         del ob.group.obs[-1]
-        if walkstep > 1:
-            walkframe+=1
-            walkstep-=1
+        if ob.group.walkstep > 1:
+            ob.group.walkframe+=1
+            ob.group.walkstep-=1
         berrys.rem_ob(self)
         self.remove()
 
@@ -166,8 +166,16 @@ def level_two_init():
     Start=Start_master
     start2=Start("#")
     start2.add(map, round(map.width/2-5), round(map.height/2))
-    start2.direction="l"
-    snake2=se.ObjectGroup([start2])
+    runner2_0=Start("#")
+    runner2_1=Start("#")
+    runner2_0.add(map, round(map.width/2-5), round(map.height/2)+1)
+    runner2_1.add(map, round(map.width/2-5), round(map.height/2)+2)
+    start2.direction="t"
+    start2.key_t="'i'"
+    start2.key_b="'k'"
+    start2.key_l="'j'"
+    start2.key_r="'l'"
+    snake2=se.ObjectGroup([start2, runner2_0, runner2_1])
     snake2.walkframe=0
     snake2.walkstep=5
     snakes.append(snake2)
@@ -322,9 +330,14 @@ def main():
     start=Start("#")
     runner0=Start("#")
     runner1=Start("#")
-    start.add(map, round(map.width/2), round(map.height/2))
     runner0.add(map, round(map.width/2), round(map.height/2)+1)
     runner1.add(map, round(map.width/2), round(map.height/2)+2)
+    start.add(map, round(map.width/2), round(map.height/2))
+    start.key_t="'w'"
+    start.key_b="'s'"
+    start.key_l="'a'"
+    start.key_r="'d'"
+    start.is_set=False
     snake=se.ObjectGroup([start, runner0, runner1])
     snake.walkframe=0
     snake.walkstep=5
@@ -334,14 +347,14 @@ def main():
 
     start.direction="t"
     map.show()
-    set=False
     while True:
-        for arr in [["'w'", "b", "t"], ["'a'", "r", "l"], ["'s'", "t", "b"], ["'d'", "l", "r"]]:
-            if ev == arr[0]:
-                if start.direction != arr[1] and not set:
-                    start.direction=arr[2]
-                    set=True
-                ev=0
+        for group in snakes:
+            for arr in [[group.obs[0].key_t, "b", "t"], [group.obs[0].key_l, "r", "l"], [group.obs[0].key_b, "t", "b"], [group.obs[0].key_r, "l", "r"]]:
+                if ev == arr[0]:
+                    if group.obs[0].direction != arr[1] and not group.obs[0].is_set:
+                        group.obs[0].direction=arr[2]
+                        group.obs[0].is_set=True
+                    ev=0
         if ev == "'m'":
             menu()
             mapresize()
@@ -355,10 +368,11 @@ def main():
             dead()
         else:
             time.sleep(0.01)
+        start.oldx=start.oldy=0
         for group in snakes:
             if group.walkframe+group.walkstep == framenum:
-                group.obs[0].oldx=oldx=group.obs[0].x
-                group.obs[0].oldy=oldy=group.obs[0].y
+                oldx=group.obs[0].x
+                oldy=group.obs[0].y
                 if group.obs[0].direction == "t":
                     group.obs[0].set(group.obs[0].x, group.obs[0].y-1)
                 elif group.obs[0].direction == "b":
@@ -367,6 +381,10 @@ def main():
                     group.obs[0].set(group.obs[0].x-1, group.obs[0].y)
                 elif group.obs[0].direction == "r":
                     group.obs[0].set(group.obs[0].x+1, group.obs[0].y)
+                if len(group.obs) == 0:
+                    dead()
+                group.obs[0].oldx=oldx
+                group.obs[0].oldy=oldy
                 for ob in group.obs[1:]:
                     ob.oldx=ob.x
                     ob.oldy=ob.y
@@ -374,9 +392,7 @@ def main():
                     oldx=ob.oldx
                     oldy=ob.oldy
                 group.walkframe+=group.walkstep
-            if len(snake.obs) == 0:
-                dead()
-            set=False
+                group.obs[0].is_set=False
         exec("level_"+mode+"()")
         mapresize()
         map.show()
