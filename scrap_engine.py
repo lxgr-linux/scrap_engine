@@ -208,6 +208,10 @@ class ObjectGroup():
         self.obs.append(ob)
         ob.group=self
 
+    def add_obs(self, obs):
+        for ob in obs:
+            self.add_ob(ob)
+
     def rem_ob(self, ob):
         for i in range(len(self.obs)):
             if ob == self.obs[i]:
