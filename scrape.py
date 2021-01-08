@@ -31,7 +31,7 @@ class Start_master(se.Object):
 
 class Apple(se.Object):
     def action(self, ob):
-        exec("runner"+str(len(ob.group.obs))+"=Start('#')")
+        exec("runner"+str(len(ob.group.obs))+"=Start(ob.group.symbol)")
         exec("runner"+str(len(ob.group.obs))+".add(map, ob.group.obs[-1].oldx, ob.group.obs[-1].oldy)")
         exec("ob.group.add_ob(runner"+str(len(ob.group.obs))+")")
         apples.rem_ob(self)
@@ -164,10 +164,12 @@ def level_single_init():
 def level_multi_init():
     global Start
     Start=Start_master
-    start2=Start("#")
+    snake2=se.ObjectGroup([])
+    snake2.symbol="\033[34m#\033[0m"
+    start2=Start(snake2.symbol)
     start2.add(map, round(map.width/2-5), round(map.height/2))
-    runner2_0=Start("#")
-    runner2_1=Start("#")
+    runner2_0=Start(snake2.symbol)
+    runner2_1=Start(snake2.symbol)
     runner2_0.add(map, round(map.width/2-5), round(map.height/2)+1)
     runner2_1.add(map, round(map.width/2-5), round(map.height/2)+2)
     start2.direction="t"
@@ -175,7 +177,7 @@ def level_multi_init():
     start2.key_b="'k'"
     start2.key_l="'j'"
     start2.key_r="'l'"
-    snake2=se.ObjectGroup([start2, runner2_0, runner2_1])
+    snake2.add_obs([start2, runner2_0, runner2_1])
     snake2.walkframe=0
     snake2.walkstep=5
     snakes.append(snake2)
@@ -333,18 +335,20 @@ def main():
     map=se.Map(height-1, width, " ")
     exec("level_"+mode+"_init()")
 
-    start=Start("#")
-    runner0=Start("#")
-    runner1=Start("#")
+    snake=se.ObjectGroup([])
+    snake.symbol="#"
+    start=Start(snake.symbol)
+    runner0=Start(snake.symbol)
+    runner1=Start(snake.symbol)
     runner0.add(map, round(map.width/2), round(map.height/2)+1)
     runner1.add(map, round(map.width/2), round(map.height/2)+2)
     start.add(map, round(map.width/2), round(map.height/2))
+    snake.add_obs([start, runner0, runner1])
     start.key_t="'w'"
     start.key_b="'s'"
     start.key_l="'a'"
     start.key_r="'d'"
     start.is_set=False
-    snake=se.ObjectGroup([start, runner0, runner1])
     snake.walkframe=0
     snake.walkstep=5
     snakes.append(snake)
