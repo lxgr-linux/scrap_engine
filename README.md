@@ -23,9 +23,8 @@ a.out : the compiled version of scrap_engine.cpp (x86_64)<br>
 scrap_test.py : file that explains basic functionality of scrap_engine and tests them<br>
 scrape.py : implimentation of snake<br>
 lil_t.py : implimentation of a basic jump and run game<br>
-reader.sh : shellscript thats needed to read keyboard input without a running xserver<br>
 
-# Notes
+## Notes
 Scrap_engine, scrap_test.py and scrape.py where all tested working in the xfce4-terminal terminal emulator, other terminal emulators will work for sure.
 For reading keyboard input in TTY or via ssh or telnet you may use reader.sh to capture the keyboard like demonstrated in scrape.py and lil_t.py instead of pynput.
 
