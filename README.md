@@ -28,6 +28,7 @@ scrap_test.py and scrape.py both require pynput when running on windows
 Scrap_engine, scrap_test.py and scrape.py where all tested working in the xfce4-terminal terminal emulator, other terminal emulators will work for sure.
 For reading keyboard input in TTY or via ssh or telnet you may use reader.sh to capture the keyboard like demonstrated in scrape.py and lil_t.py instead of pynput.
 
+
 # Scrape
 
 ## What the game is about
