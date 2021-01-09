@@ -28,6 +28,20 @@ class Start_master(se.Object):
     def pull_ob(self):
         dead()
 
+class Start_easy(Start_master):
+    def bump_action(self):
+        if self.x == 0 and self.direction == 'l':
+            self.set(self.map.width-1, self.y)
+        elif self.x == self.map.width-1 and self.direction == 'r':
+            self.set(0, self.y)
+        elif self.y == 0 and self.direction == 't':
+            self.set(self.x, self.map.height-1)
+        elif self.y == self.map.height-1 and self.direction == 'b':
+            self.set(self.x, 0)
+
+    def bump(self, ob, x, y):
+        dead()
+
 
 class Apple(se.Object):
     def action(self, ob):
@@ -161,9 +175,25 @@ def level_single_init():
     global Start
     Start=Start_master
 
+def level_easy_init():
+    global Start
+    Start=Start_easy
+
+def level_hard_init():
+    global Start, genframe2, genframe1
+    Start=Start_master
+    genframe2=0
+    genframe1=75
+
 def level_multi_init():
     global Start
-    Start=Start_master
+    class Start(Start_easy):
+        def bump(self, ob, x, y):
+            global suicide
+            if self.group == ob.group:
+                suicide=self.group
+            dead()
+
     snake2=se.ObjectGroup([])
     snake2.symbol="\033[34m#\033[0m"
     start2=Start(snake2.symbol)
@@ -178,33 +208,10 @@ def level_multi_init():
     start2.key_l="'j'"
     start2.key_r="'l'"
     snake2.add_obs([start2, runner2_0, runner2_1])
+    snake2.color="blue"
     snake2.walkframe=0
     snake2.walkstep=5
     snakes.append(snake2)
-
-
-def level_easy_init():
-    global Start
-    class Start(Start_master):
-        def bump_action(self):
-            if self.x == 0 and self.direction == 'l':
-                self.set(self.map.width-1, self.y)
-            elif self.x == self.map.width-1 and self.direction == 'r':
-                self.set(0, self.y)
-            elif self.y == 0 and self.direction == 't':
-                self.set(self.x, self.map.height-1)
-            elif self.y == self.map.height-1 and self.direction == 'b':
-                self.set(self.x, 0)
-
-        def bump(self, ob, x, y):
-            dead()
-
-def level_hard_init():
-    global Start, genframe2, genframe1
-    Start=Start_master
-    genframe2=0
-    genframe1=75
-
 
 def menuresize(map, box):
     width, height = os.get_terminal_size()
@@ -219,7 +226,7 @@ def mapresize():
         map.resize(height-1, width, " ")
 
 def dead():
-    global ev, scoretext, highscoretext, mode, modeindex, data
+    global ev, scoretext, highscoretext, mode, modeindex, data, suicide
     ev=0
     deadmenuind.index=1
     menuresize(deadmap, deadbox)
@@ -227,9 +234,24 @@ def dead():
     home=str(Path.home())
     Path(home+"/.cache/scrape").mkdir(parents=True, exist_ok=True)
     Path(home+"/.cache/scrape/scrape").touch(exist_ok=True)
-    score=0
-    for group in snakes:
-        score+=len(group.obs)
+
+    if mode == "multi":
+        scores=sorted([len(group.obs) for group in snakes])
+        score=scores[-1]
+        if suicide != "":
+            for group in snakes:
+                if suicide != group:
+                    score_text=group.color+" won with "+str(len(group.obs))+" points"
+        elif scores[0] == scores[-1]:
+            score_text="Both players scored "+str(score)+" -- tie"
+        else:
+            for group in snakes:
+                if len(group.obs) == score:
+                    score_text=group.color+" won with "+str(score)+" points"
+        suicide=""
+    else:
+        score=len(snake.obs)
+        score_text="You scored "+str(score)+" points"
     datas="{"
     for i in modes:
         datas+="'"+i+"' : 0,"
@@ -243,7 +265,7 @@ def dead():
             with open(home+"/.cache/scrape/scrape", "w+") as file1:
                 file1.write("data="+str(data))
 
-    scoretext.rechar("You scored "+str(score)+" points")
+    scoretext.rechar(score_text)
     highscoretext.rechar("Highscore: "+str(data[mode]))
     deadbox.set_ob(scoretext, round((deadbox.width-len(scoretext.text))/2), 2)
     deadbox.set_ob(highscoretext, round((deadbox.width-1-len(highscoretext.text))/2), 3)
@@ -349,6 +371,7 @@ def main():
     start.key_l="'a'"
     start.key_r="'d'"
     start.is_set=False
+    snake.color="white"
     snake.walkframe=0
     snake.walkstep=5
     snakes.append(snake)
@@ -447,6 +470,7 @@ menubox.add_ob(menutext3, 12, 11)
 menubox.add_ob(menuind, 9, 7)
 menubox.add(menumap, round((menumap.width-menubox.width)/2), 1+round((menumap.height-menubox.height)/2))
 
+suicide=""
 ev=0
 os.system("")
 recognising=threading.Thread(target=recogniser)
