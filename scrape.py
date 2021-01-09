@@ -189,9 +189,8 @@ def level_multi_init():
     global Start
     class Start(Start_easy):
         def bump(self, ob, x, y):
-            global suicide
-            if self.group == ob.group:
-                suicide=self.group
+            global kill
+            kill=self.group
             dead()
 
     snake2=se.ObjectGroup([])
@@ -226,7 +225,7 @@ def mapresize():
         map.resize(height-1, width, " ")
 
 def dead():
-    global ev, scoretext, highscoretext, mode, modeindex, data, suicide
+    global ev, scoretext, highscoretext, mode, modeindex, data, kill
     ev=0
     deadmenuind.index=1
     menuresize(deadmap, deadbox)
@@ -238,9 +237,9 @@ def dead():
     if mode == "multi":
         scores=sorted([len(group.obs) for group in snakes])
         score=scores[-1]
-        if suicide != "":
+        if kill != "":
             for group in snakes:
-                if suicide != group:
+                if kill != group:
                     score_text=group.color+" won with "+str(len(group.obs))+" points"
         elif scores[0] == scores[-1]:
             score_text="Both players scored "+str(score)+" -- tie"
@@ -248,7 +247,7 @@ def dead():
             for group in snakes:
                 if len(group.obs) == score:
                     score_text=group.color+" won with "+str(score)+" points"
-        suicide=""
+        kill=""
     else:
         score=len(snake.obs)
         score_text="You scored "+str(score)+" points"
@@ -310,9 +309,10 @@ def menu():
     global ev, curscore
     ev=0
     menuind.index=1
-    score=0
+    scores=[]
     for group in snakes:
-        score+=len(group.obs)
+        scores.append(len(group.obs))
+    score=sorted(scores)[-1]
     menuresize(menumap, menubox)
     curscore.rechar("Current score: "+str(score)+" points")
     menubox.set_ob(curscore, 1+round((menubox.width-22-len(str(score)))/2), 2)
@@ -470,7 +470,7 @@ menubox.add_ob(menutext3, 12, 11)
 menubox.add_ob(menuind, 9, 7)
 menubox.add(menumap, round((menumap.width-menubox.width)/2), 1+round((menumap.height-menubox.height)/2))
 
-suicide=""
+kill=""
 ev=0
 os.system("")
 recognising=threading.Thread(target=recogniser)
