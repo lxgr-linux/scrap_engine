@@ -1,20 +1,20 @@
 # Scrap_engine
 by LXGR <lxgr@protonmail.com>
 
-# Installation
+## Installation
 Linux:
 Copy scrap_engine.py to /usr/lib/python3.9/site-packages
 
 Windoofs:
 Idk, you will figure it out.
 
-# Usage
+## Usage
 See scrap_test.py
 
-# Dependencies
+## Dependencies
 scrap_test.py and scrape.py both require pynput when running on windows
 
-# File explaination
+## File explaination
 LICENSE : obvious<br>
 README.md : ...<br>
 scrap_engine.py : Python module that contains the engine<br>
@@ -29,13 +29,13 @@ reader.sh : shellscript thats needed to read keyboard input without a running xs
 Scrap_engine, scrap_test.py and scrape.py where all tested working in the xfce4-terminal terminal emulator, other terminal emulators will work for sure.
 For reading keyboard input in TTY or via ssh or telnet you may use reader.sh to capture the keyboard like demonstrated in scrape.py and lil_t.py instead of pynput.
 
-## Scrape
+# Scrape
 
-# What the game is about
+## What the game is about
 
 Scrape is basicaly a clone of the snake game, but with some additional modes. The Main goal of the player is to eat as many apples while not dieing.
 
-# Modes
+## Modes
 
 Until now there are 5 modes:
 
@@ -49,17 +49,17 @@ hard: This is the hard mode, here the amount of apples and berrys spawning is th
 
 multi: This in the multiplayer mode, in this mode two snakes are present which can be controled seperately. The goal of each player is to kill the other player.
 
-# How to play
+## How to play
 
 General buttons: "e" -- to end the game, "m" -- to pause it
 
 Control buttons: snake1: w,a,s,d; snake2: i,j,k,l
 
-# Resizing
+## Resizing
 
 In scrape resizing the game window is supported. Maximizing works flawlessly, minimizing can be tricky, because the snake(s) have to be in the left top corner, when minimizing, else, when the snake(s) are outside of the newly created widows size, they will die.
 
-# Hacking
+## Hacking
 
 You can hack the game by, for esample, adding modes, which can be ver simply done.
 The first thing to do is to add two functions: level_$modename and level_$modename_init, and adding $modename to the modes array in circa line 436. The the mode will be awailable in the menu.
