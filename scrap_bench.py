@@ -33,4 +33,7 @@ def main():
         time2 = time.time()-time0
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except KeyboardInterrupt:
+        print("KeyboardInterrupt")
