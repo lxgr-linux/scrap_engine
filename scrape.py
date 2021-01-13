@@ -187,8 +187,8 @@ def level_hard_init():
 
 def level_multi_init():
     global Start
-    class Start(Start_easy):
-        def bump(self, ob, x, y):
+    class Start(Start_master):
+        def bump_action(self):
             global kill
             kill=self.group
             dead()
