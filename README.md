@@ -30,7 +30,7 @@ For reading keyboard input in TTY or via ssh or telnet you may use reader.sh to 
 
 
 # Scrape
-
+![Demo](demo.gif)
 ## What the game is about
 Scrape is basicaly a clone of the snake game, but with some additional modes. The Main goal of the player is to eat as many apples while not dieing.
 
