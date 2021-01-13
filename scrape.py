@@ -292,9 +292,11 @@ def dead():
                 modeindex=modeindex+1 if modeindex < len(modes)-1 else 0
                 mode=modes[modeindex]
                 deadmenutext0.rechar("Mode: "+mode)
+                highscoretext.rechar("Highscore: "+str(data[mode]))
                 deadbox.set_ob(deadmenuind, 0, 0)
                 deadbox.set_ob(deadmenutext0, round((deadbox.width-len("Mode: "+mode))/2), 7)
                 deadbox.set_ob(deadmenuind, deadmenutext0.rx-2, deadmenutext0.ry)
+                deadbox.set_ob(highscoretext, round((deadbox.width-1-len(highscoretext.text))/2), 3)
             ev=0
         else:
             time.sleep(0.05)
