@@ -51,7 +51,7 @@ Control buttons: snake1: w,a,s,d; snake2: i,j,k,l
 In scrape resizing the game window is supported. Maximizing works flawlessly, minimizing can be tricky, because the snake(s) have to be in the left top corner, when minimizing, else, when the snake(s) are outside of the newly created widows size, they will die.
 
 ## Scores
-The scores for each mode are saved to ```shell ~/.cache/scrape/scrape ```.
+The scores for each mode are saved to ```~/.cache/scrape/scrape ```.
 
 ## Hacking
 You can hack the game by, for esample, adding modes, which can be ver simply done.
