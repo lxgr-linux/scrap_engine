@@ -227,11 +227,11 @@ def mapresize():
         map.resize(height-1, width, " ")
 
 def dead():
-    global ev, scoretext, highscoretext, mode, modes, data, kill
+    global ev, mode, data, kill
     ev=0
     deadmenuind.index=1
     menuresize(deadmap, deadbox)
-
+    # text labels for multi mode
     if mode == "multi":
         scores=sorted([len(group.obs) for group in snakes])
         score=scores[-1]
@@ -249,6 +249,7 @@ def dead():
     else:
         score=len(snake.obs)
         score_text="You scored "+str(score)+" points"
+    # read/write to file
     with open(home+"/.cache/scrape/scrape", "r") as file:
         file_content=file.read()
         exec("global data; "+file_content)
@@ -258,7 +259,7 @@ def dead():
                 data[mode]=score
             with open(home+"/.cache/scrape/scrape", "w+") as file1:
                 file1.write("data="+str(data))
-
+    # object setting und recharing
     scoretext.rechar(score_text)
     highscoretext.rechar("Highscore: "+str(data[mode]))
     deadbox.set_ob(scoretext, round((deadbox.width-len(scoretext.text))/2), 2)
@@ -313,6 +314,8 @@ def menu():
     score=sorted(scores)[-1]
     menuresize(menumap, menubox)
     curscore.rechar("Current score: "+str(score)+" points")
+    menuhighscoretext.rechar("Highscore: "+str(data[mode]))
+    menubox.set_ob(menuhighscoretext, round((deadbox.width-1-len(highscoretext.text))/2), 3)
     menubox.set_ob(curscore, 1+round((menubox.width-22-len(str(score)))/2), 2)
     menumap.blur_in(map)
     menumap.show(init=True)
@@ -472,6 +475,7 @@ menumap=se.Map(background=" ")
 menubox=se.Box(13, 28)
 menutext=se.Text("Menu:")
 curscore=se.Text("Current score: 0 points")
+menuhighscoretext=se.Text("Highscore: "+str(data[mode]))
 menutext1=se.Text("Resume")
 menutext2=se.Text("Restart")
 menutext3=se.Text("Exit")
@@ -482,6 +486,7 @@ menubox.add_ob(menutext1, 11, 7)
 menubox.add_ob(menutext2, 11, 9)
 menubox.add_ob(menutext3, 12, 11)
 menubox.add_ob(menuind, 9, 7)
+menubox.add_ob(menuhighscoretext, round((deadbox.width-1-len(highscoretext.text))/2), 3)
 menubox.add(menumap, round((menumap.width-menubox.width)/2), 1+round((menumap.height-menubox.height)/2))
 
 kill=""
