@@ -5,7 +5,7 @@ import scrap_engine as se
 import threading, time, random, os, sys
 from pathlib import Path
 
-
+# relevant classes
 class Start_master(se.Object):
     def bump_action(self):
         dead()
@@ -100,6 +100,7 @@ def exiter():
     do_exit=True
     exit()
 
+# keyboard input management
 def on_press(key):
     global ev
     ev=str(key)
@@ -130,7 +131,7 @@ else:
             with Listener(on_press=on_press) as listener:
                 listener.join()
 
-
+# star level declarations
 def level_normal():
     global genframe0, genframe1, framenum
     if genframe0+150 == framenum:
@@ -211,6 +212,7 @@ def level_multi_init():
     snake2.walkframe=0
     snake2.walkstep=5
     snakes.append(snake2)
+# end level declarations
 
 def menuresize(map, box):
     width, height = os.get_terminal_size()
@@ -225,14 +227,10 @@ def mapresize():
         map.resize(height-1, width, " ")
 
 def dead():
-    global ev, scoretext, highscoretext, mode, modeindex, data, kill
+    global ev, scoretext, highscoretext, mode, modes, data, kill
     ev=0
     deadmenuind.index=1
     menuresize(deadmap, deadbox)
-
-    home=str(Path.home())
-    Path(home+"/.cache/scrape").mkdir(parents=True, exist_ok=True)
-    Path(home+"/.cache/scrape/scrape").touch(exist_ok=True)
 
     if mode == "multi":
         scores=sorted([len(group.obs) for group in snakes])
@@ -251,16 +249,13 @@ def dead():
     else:
         score=len(snake.obs)
         score_text="You scored "+str(score)+" points"
-    datas="{"
-    for i in modes:
-        datas+="'"+i+"' : 0,"
-    datas+="}"
-    exec("global data; data="+datas)
     with open(home+"/.cache/scrape/scrape", "r") as file:
         file_content=file.read()
         exec("global data; "+file_content)
-        if file_content == "" or (mode not in data) or data[mode] < score:
-            data[mode]=score
+        if file_content == "" or (mode not in data) or data[mode] < score or ("currend_mode" not in data) or (data["currend_mode"] != mode):
+            data["currend_mode"]=mode
+            if data[mode] < score:
+                data[mode]=score
             with open(home+"/.cache/scrape/scrape", "w+") as file1:
                 file1.write("data="+str(data))
 
@@ -293,6 +288,7 @@ def dead():
             elif deadmenuind.ry == deadmenutext2.ry:
                 exiter()
             elif deadmenuind.ry == deadmenutext0.ry:
+                modeindex=modes.index(mode)
                 modeindex=modeindex+1 if modeindex < len(modes)-1 else 0
                 mode=modes[modeindex]
                 deadmenutext0.rechar("Mode: "+mode)
@@ -431,9 +427,25 @@ def main():
         map.show()
         framenum+=1
 
-modeindex=0
+
 mode="normal"
 modes=["normal", "single", "easy", "hard", "multi"]
+
+# makes sure fie is there
+home=str(Path.home())
+Path(home+"/.cache/scrape").mkdir(parents=True, exist_ok=True)
+Path(home+"/.cache/scrape/scrape").touch(exist_ok=True)
+# reads mode from file
+datas="{"
+for i in modes:
+    datas+="'"+i+"' : 0,"
+datas+="}"
+exec("global data; data="+datas)
+data["currend_mode"]=mode
+with open(home+"/.cache/scrape/scrape", "r") as file:
+    exec("global data; "+file.read())
+    mode=data["currend_mode"]
+
 # objects for dead
 deadmap=se.Map(background=" ")
 deadbox=se.Box(13, 28)
@@ -476,6 +488,7 @@ os.system("")
 recognising=threading.Thread(target=recogniser)
 recognising.daemon=True
 recognising.start()
+
 try:
     main()
 except KeyboardInterrupt:
