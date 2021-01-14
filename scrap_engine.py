@@ -57,8 +57,8 @@ class Map():
         self.width=width
         self.height=height
         for ob in self.obs:
-            self.obmap[ob.y][ob.x].append(ob)
             try:
+                self.obmap[ob.y][ob.x].append(ob)
                 ob.redraw()
             except:
                 pass
