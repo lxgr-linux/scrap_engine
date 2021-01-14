@@ -382,6 +382,7 @@ def main():
     start.direction="t"
     map.show()
     while True:
+        time0=time.time()
         for group in snakes:
             for arr in [[group.obs[0].key_t, "b", "t"], [group.obs[0].key_l, "r", "l"], [group.obs[0].key_b, "t", "b"], [group.obs[0].key_r, "l", "r"]]:
                 if ev == arr[0]:
@@ -400,8 +401,6 @@ def main():
         elif ev == "'e'":
             ev=0
             dead()
-        else:
-            time.sleep(0.01)
         start.oldx=start.oldy=0
         for group in snakes:
             if group.walkframe+group.walkstep == framenum:
@@ -430,6 +429,7 @@ def main():
         exec("level_"+mode+"()")
         mapresize()
         map.show()
+        time.sleep(0.01-(time.time()-time0))
         framenum+=1
 
 
