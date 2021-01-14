@@ -449,7 +449,11 @@ exec("global data; data="+datas)
 data["currend_mode"]=mode
 with open(home+"/.cache/scrape/scrape", "r") as file:
     exec("global data; "+file.read())
-    mode=data["currend_mode"]
+    try:
+        mode=data["currend_mode"]
+    except:
+        pass
+
 
 # objects for dead
 deadmap=se.Map(background=" ")
