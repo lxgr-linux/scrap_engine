@@ -450,12 +450,12 @@ exec("global data; data="+datas)
 data["currend_mode"]=mode
 with open(home+"/.cache/scrape/scrape", "r") as file:
     exec("global data_from_file; "+file.read())
-    mode=data["currend_mode"]
     for i in modes+["currend_mode"]:
         if i not in data:
             data[i]=0 if i != "currend_mode" else "normal"
             with open(home+"/.cache/scrape/scrape", "w+") as file1:
                 file1.write("data="+str(data))
+mode=data["currend_mode"]
 
 # objects for dead
 deadmap=se.Map(background=" ")
