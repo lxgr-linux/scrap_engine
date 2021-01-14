@@ -429,7 +429,8 @@ def main():
         exec("level_"+mode+"()")
         mapresize()
         map.show()
-        time.sleep(0.01-(time.time()-time0))
+        time1=time.time()-time0
+        time.sleep(0.01-(time1 if time1 < 0.01 else 0.01))
         framenum+=1
 
 
