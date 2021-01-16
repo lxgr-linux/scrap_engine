@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # This is snake, but worse
+# This program is licensed under the GPL3
 
 import scrap_engine as se
 import threading, time, random, os, sys
@@ -442,12 +443,7 @@ home=str(Path.home())
 Path(home+"/.cache/scrape").mkdir(parents=True, exist_ok=True)
 Path(home+"/.cache/scrape/scrape").touch(exist_ok=True)
 # reads mode from file
-datas="{"
-for i in modes:
-    datas+="'"+i+"' : 0,"
-datas+="}"
-exec("global data; data="+datas)
-data["currend_mode"]=mode
+data={i: j for i, j in zip(modes+["currend_mode"], [0 for i in modes]+[mode])}
 with open(home+"/.cache/scrape/scrape", "r") as file:
     exec("global data_from_file; "+file.read())
     for i in modes+["currend_mode"]:
