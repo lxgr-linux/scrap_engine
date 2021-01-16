@@ -9,8 +9,8 @@ class Map():
         self.width=width
         self.dynfps=dynfps
         self.background=background
-        exec("self.map=["+height*("["+width*"self.background,"+"],")+"]")
-        exec("self.obmap=["+height*("["+width*"[],"+"],")+"]")
+        self.map=[[self.background for j in range(width)] for i in range(height)]
+        self.obmap=[[[] for j in range(width)] for i in range(height)]
         self.obs=[]
 
     def curse_init(): # This method uses curses to display the map in terminal, this may result in glitches
@@ -52,8 +52,8 @@ class Map():
 
     def resize(self, height, width, background="#"):
         self.background=background
-        exec("self.map=["+height*("["+width*("background,")+"],")+"]")
-        exec("self.obmap=["+(height if height > self.height else self.height)*("["+(width if width > self.width else self.width)*"[],"+"],")+"]")
+        self.map=[[self.background for j in range(width)] for i in range(height)]
+        self.obmap=[[[] for j in range(width if width > self.width else self.width)] for i in range(height if height > self.height else self.height)]
         self.width=width
         self.height=height
         for ob in self.obs:
