@@ -198,11 +198,11 @@ def level_multi_init():
     snake2=se.ObjectGroup([])
     snake2.symbol="\033[34m#\033[0m"
     start2=Start(snake2.symbol)
-    start2.add(map, round(map.width/2-5), round(map.height/2))
+    start2.add(map, int(map.width/2-5), int(map.height/2))
     runner2_0=Start(snake2.symbol)
     runner2_1=Start(snake2.symbol)
-    runner2_0.add(map, round(map.width/2-5), round(map.height/2)+1)
-    runner2_1.add(map, round(map.width/2-5), round(map.height/2)+2)
+    runner2_0.add(map, int(map.width/2-5), int(map.height/2)+1)
+    runner2_1.add(map, int(map.width/2-5), int(map.height/2)+2)
     start2.direction="t"
     start2.key_t="'i'"
     start2.key_b="'k'"
@@ -220,7 +220,7 @@ def menuresize(map, box):
     if map.width != width or map.height != height-1:
         box.set(0, 0)
         map.resize(height-1, width, " ")
-        box.set(round((map.width-box.width)/2), 1+round((map.height-box.height)/2))
+        box.set(int((map.width-box.width)/2), 1+int((map.height-box.height)/2))
 
 def mapresize():
     width, height = os.get_terminal_size()
@@ -263,8 +263,8 @@ def dead():
     # object setting und recharing
     scoretext.rechar(score_text)
     highscoretext.rechar("Highscore: "+str(data[mode]))
-    deadbox.set_ob(scoretext, round((deadbox.width-len(scoretext.text))/2), 2)
-    deadbox.set_ob(highscoretext, round((deadbox.width-1-len(highscoretext.text))/2), 3)
+    deadbox.set_ob(scoretext, int((deadbox.width-len(scoretext.text))/2), 2)
+    deadbox.set_ob(highscoretext, int((deadbox.width-len(highscoretext.text))/2), 3)
     deadmap.blur_in(map, esccode="\033[31m")
     deadmap.show(init=True)
     while True:
@@ -296,9 +296,9 @@ def dead():
                 deadmenutext0.rechar("Mode: "+mode)
                 highscoretext.rechar("Highscore: "+str(data[mode]))
                 deadbox.set_ob(deadmenuind, 0, 0)
-                deadbox.set_ob(deadmenutext0, round((deadbox.width-len("Mode: "+mode))/2), 7)
+                deadbox.set_ob(deadmenutext0, int((deadbox.width-len("Mode: "+mode))/2), 7)
                 deadbox.set_ob(deadmenuind, deadmenutext0.rx-2, deadmenutext0.ry)
-                deadbox.set_ob(highscoretext, round((deadbox.width-1-len(highscoretext.text))/2), 3)
+                deadbox.set_ob(highscoretext, int((deadbox.width-len(highscoretext.text))/2), 3)
             ev=0
         else:
             time.sleep(0.05)
@@ -316,8 +316,8 @@ def menu():
     menuresize(menumap, menubox)
     curscore.rechar("Current score: "+str(score)+" points")
     menuhighscoretext.rechar("Highscore: "+str(data[mode]))
-    menubox.set_ob(menuhighscoretext, round((deadbox.width-1-len(highscoretext.text))/2), 3)
-    menubox.set_ob(curscore, 1+round((menubox.width-22-len(str(score)))/2), 2)
+    menubox.set_ob(menuhighscoretext, int((deadbox.width-len(highscoretext.text))/2), 3)
+    menubox.set_ob(curscore, int((menubox.width-len(curscore.text))/2)+1, 2)
     menumap.blur_in(map)
     menumap.show(init=True)
     while True:
@@ -364,9 +364,9 @@ def main():
     start=Start(snake.symbol)
     runner0=Start(snake.symbol)
     runner1=Start(snake.symbol)
-    runner0.add(map, round(map.width/2), round(map.height/2)+1)
-    runner1.add(map, round(map.width/2), round(map.height/2)+2)
-    start.add(map, round(map.width/2), round(map.height/2))
+    runner0.add(map, int(map.width/2), int(map.height/2)+1)
+    runner1.add(map, int(map.width/2), int(map.height/2)+2)
+    start.add(map, int(map.width/2), int(map.height/2))
     snake.add_obs([start, runner0, runner1])
     start.key_t="'w'"
     start.key_b="'s'"
@@ -464,13 +464,13 @@ deadmenutext1=se.Text("Try again")
 deadmenutext2=se.Text("Exit")
 deadmenuind=se.Object("*")
 deadbox.add_ob(deadtext, 9, 0)
-deadbox.add_ob(scoretext, round((deadbox.width-len(scoretext.text))/2), 2)
-deadbox.add_ob(highscoretext, round((deadbox.width-1-len(highscoretext.text))/2), 3)
-deadbox.add_ob(deadmenutext0, round((deadbox.width-len("Mode: "+mode))/2), 7)
+deadbox.add_ob(scoretext, int((deadbox.width-len(scoretext.text))/2), 2)
+deadbox.add_ob(highscoretext, int((deadbox.width-len(highscoretext.text))/2), 3)
+deadbox.add_ob(deadmenutext0, int((deadbox.width-len(deadmenutext0.text))/2), 7)
 deadbox.add_ob(deadmenutext1, 9, 9)
 deadbox.add_ob(deadmenutext2, 11, 11)
 deadbox.add_ob(deadmenuind, 7, 9)
-deadbox.add(deadmap, round((deadmap.width-deadbox.width)/2), 1+round((deadmap.height-deadbox.height)/2))
+deadbox.add(deadmap, int((deadmap.width-deadbox.width)/2), 1+int((deadmap.height-deadbox.height)/2))
 
 # Objects for menu
 menumap=se.Map(background=" ")
@@ -488,8 +488,8 @@ menubox.add_ob(menutext1, 11, 7)
 menubox.add_ob(menutext2, 11, 9)
 menubox.add_ob(menutext3, 12, 11)
 menubox.add_ob(menuind, 9, 7)
-menubox.add_ob(menuhighscoretext, round((deadbox.width-1-len(highscoretext.text))/2), 3)
-menubox.add(menumap, round((menumap.width-menubox.width)/2), 1+round((menumap.height-menubox.height)/2))
+menubox.add_ob(menuhighscoretext, int((deadbox.width-len(highscoretext.text))/2), 3)
+menubox.add(menumap, int((menumap.width-menubox.width)/2), 1+int((menumap.height-menubox.height)/2))
 
 kill=""
 ev=0
