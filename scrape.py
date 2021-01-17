@@ -46,7 +46,7 @@ class Start_easy(Start_master):
 
 class Apple(se.Object):
     def action(self, ob):
-        exec("runner"+str(len(ob.group.obs))+"=Start(ob.group.symbol)")
+        exec("runner"+str(len(ob.group.obs))+"=Start(ob.group.symbol, snake_state)")
         exec("runner"+str(len(ob.group.obs))+".add(map, ob.group.obs[-1].oldx, ob.group.obs[-1].oldy)")
         exec("ob.group.add_ob(runner"+str(len(ob.group.obs))+")")
         apples.rem_ob(self)
@@ -169,6 +169,12 @@ def level_hard():
 def level_multi():
     level_normal()
 
+def level_realy_fucking_easy():
+    global genframe0, framenum
+    if genframe0+150 == framenum:
+        applegen()
+        genframe0+=150
+
 def level_normal_init():
     global Start
     Start=Start_master
@@ -186,6 +192,11 @@ def level_hard_init():
     Start=Start_master
     genframe2=0
     genframe1=75
+
+def level_realy_fucking_easy_init():
+    global Start, snake_state
+    Start=Start_easy
+    snake_state="float"
 
 def level_multi_init():
     global Start
@@ -351,19 +362,20 @@ def menu():
         menumap.show()
 
 def main():
-    global ev, inc, map, walkstep, walkframe, snake, genframe0, genframe1, framenum, apples, berrys, start, snakes
+    global ev, inc, map, walkstep, walkframe, snake, genframe0, genframe1, framenum, apples, berrys, start, snakes, snake_state
     genframe0=genframe1=inc=framenum=0
 
     snakes=[]
+    snake_state="solid"
     width, height = os.get_terminal_size()
     map=se.Map(height-1, width, " ")
     exec("level_"+mode+"_init()")
 
     snake=se.ObjectGroup([])
     snake.symbol="#"
-    start=Start(snake.symbol)
-    runner0=Start(snake.symbol)
-    runner1=Start(snake.symbol)
+    start=Start(snake.symbol, snake_state)
+    runner0=Start(snake.symbol, snake_state)
+    runner1=Start(snake.symbol, snake_state)
     runner0.add(map, int(map.width/2), int(map.height/2)+1)
     runner1.add(map, int(map.width/2), int(map.height/2)+2)
     start.add(map, int(map.width/2), int(map.height/2))
@@ -436,7 +448,7 @@ def main():
 
 
 mode="normal"
-modes=["normal", "single", "easy", "hard", "multi"]
+modes=["normal", "single", "easy", "hard", "multi", "realy_fucking_easy"]
 
 # makes sure fie is there
 home=str(Path.home())
