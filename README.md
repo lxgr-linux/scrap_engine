@@ -6,7 +6,7 @@ Linux:
 Copy scrap_engine.py to /usr/lib/python3.9/site-packages
 
 Windoofs:
-Install python and the pynput module via pip. The njust run what ever file you want (for example scrape).
+Install python and the pynput module via pip. Then just run what ever file you want (for example scrape).
 
 ## Usage
 See scrap_test.py
@@ -21,6 +21,7 @@ scrap_test.py and scrape.py both require pynput when running on windows
 - scrap_engine.cpp : the same but just in c++, is just a proof of concept
 - a.out : the compiled version of scrap_engine.cpp (x86_64)
 - scrap_test.py : file that explains basic functionality of scrap_engine and tests them
+- scrap_bench.py : little benchmarking tool that shows frametimes and does some nice looking calculations
 - scrape.py : implimentation of snake
 - lil_t.py : implimentation of a basic jump and run game
 
@@ -41,7 +42,7 @@ Until now there are 5 modes:
 - easy: In this mode just aplles exist and coliding with wall does not kill the snake.
 - hard: This is the hard mode, here the amount of apples and berrys spawning is the same, but also blocks are spwaned, that will kill the snake at colidation.
 - multi: This in the multiplayer mode, in this mode two snakes are present which can be controled seperately. The goal of each player is to kill the other player.
-- really_fucking_easy: This is the REALY FUCKING EASY mode, and it's realy fucking easy. Therefore the snake does not die on crash with itself.
+- really_fucking_easy: This is the REALLY FUCKING EASY mode, and it's realy fucking easy. Therefore the snake does not die on crash with itself.
 
 ## How to play
 General buttons: "e" -- to end the game, "m" -- to pause it
