@@ -169,7 +169,7 @@ def level_hard():
 def level_multi():
     level_normal()
 
-def level_realy_fucking_easy():
+def level_really_fucking_easy():
     global genframe0, framenum
     if genframe0+150 == framenum:
         applegen()
@@ -193,7 +193,7 @@ def level_hard_init():
     genframe2=0
     genframe1=75
 
-def level_realy_fucking_easy_init():
+def level_really_fucking_easy_init():
     global Start, snake_state
     Start=Start_easy
     snake_state="float"
@@ -448,7 +448,7 @@ def main():
 
 
 mode="normal"
-modes=["normal", "single", "easy", "hard", "multi", "realy_fucking_easy"]
+modes=["normal", "single", "easy", "hard", "multi", "really_fucking_easy"]
 
 # makes sure fie is there
 home=str(Path.home())

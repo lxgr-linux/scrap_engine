@@ -41,7 +41,7 @@ Until now there are 5 modes:
 - easy: In this mode just aplles exist and coliding with wall does not kill the snake.
 - hard: This is the hard mode, here the amount of apples and berrys spawning is the same, but also blocks are spwaned, that will kill the snake at colidation.
 - multi: This in the multiplayer mode, in this mode two snakes are present which can be controled seperately. The goal of each player is to kill the other player.
-- realy_fucking_easy: This is the REALY FUCKING EASY mode, and it's realy fucking easy. Therefore the snake does not die on crash with itself.
+- really_fucking_easy: This is the REALY FUCKING EASY mode, and it's realy fucking easy. Therefore the snake does not die on crash with itself.
 
 ## How to play
 General buttons: "e" -- to end the game, "m" -- to pause it
