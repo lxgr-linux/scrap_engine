@@ -463,7 +463,7 @@ with open(home+"/.cache/scrape/scrape", "r") as file:
             data[i]=0 if i != "currend_mode" else "normal"
             with open(home+"/.cache/scrape/scrape", "w+") as file1:
                 file1.write("data="+str(data))
-mode=data["currend_mode"]
+mode=data["currend_mode"] if data["currend_mode"] in modes else "normal"
 
 # objects for dead
 deadmap=se.Map(background=" ")
