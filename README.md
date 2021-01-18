@@ -6,7 +6,7 @@ Linux:
 Copy scrap_engine.py to /usr/lib/python3.9/site-packages
 
 Windoofs:
-Idk, you will figure it out.
+Install python and the pynput module via pip. The njust run what ever file you want (for example scrape).
 
 ## Usage
 See scrap_test.py
