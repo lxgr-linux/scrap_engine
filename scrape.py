@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # This is snake, but worse
-# This program is licensed under the GPL3
+# This software is licensed under the GPL3
 
 import scrap_engine as se
 import threading, time, random, os, sys

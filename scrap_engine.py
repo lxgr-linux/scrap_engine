@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# This software is licensed under the GPL3
+
 import time, os, threading
 
 width, height = os.get_terminal_size()
