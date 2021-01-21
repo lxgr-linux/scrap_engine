@@ -169,6 +169,9 @@ def level_hard():
 def level_multi():
     level_normal()
 
+def level_senior():
+    level_normal()
+
 def level_really_fucking_easy():
     global genframe0, framenum
     if genframe0+150 == framenum:
@@ -197,6 +200,11 @@ def level_really_fucking_easy_init():
     global Start, snake_state
     Start=Start_easy
     snake_state="float"
+
+def level_senior_init():
+    global Start, walkstep
+    Start=Start_master
+    walkstep=8
 
 def level_multi_init():
     global Start
@@ -367,6 +375,7 @@ def main():
 
     snakes=[]
     snake_state="solid"
+    walkstep=5
     width, height = os.get_terminal_size()
     map=se.Map(height-1, width, " ")
     exec("level_"+mode+"_init()")
@@ -387,7 +396,7 @@ def main():
     start.is_set=False
     snake.color="white"
     snake.walkframe=0
-    snake.walkstep=5
+    snake.walkstep=walkstep
     snakes.append(snake)
     apples=se.ObjectGroup([])
     berrys=se.ObjectGroup([])
@@ -448,7 +457,7 @@ def main():
 
 
 mode="normal"
-modes=["normal", "single", "easy", "hard", "multi", "really_fucking_easy"]
+modes=["normal", "single", "easy", "hard", "multi", "really_fucking_easy", "senior"]
 
 # makes sure fie is there
 home=str(Path.home())
