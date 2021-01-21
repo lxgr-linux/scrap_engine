@@ -270,7 +270,8 @@ class Text(ObjectGroup):
                 ob.add(map, x+i, y+l)
             count+=len(text)
 
-    def rechar(self, text):
+    def rechar(self, text, esccode=""):
+        self.esccode=esccode
         if self.added:
             for ob in self.obs:
                 ob.remove()
