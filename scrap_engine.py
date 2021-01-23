@@ -251,10 +251,8 @@ class Text(ObjectGroup):
     def texter(self, text):
         for text in text.split("\n"):
             for i, char in enumerate(text):
-                if i == 0:
-                    char=self.esccode+char
-                if i == len(text)-1 and self.esccode != "":
-                    char+="\033[0m"
+                if esccode != "":
+                    char=self.esccode+char+"\033[0m"
                 self.obs.append(self.ob_class(char, self.state))
         for ob in self.obs:
             ob.group=self
