@@ -37,7 +37,7 @@ class Map():
 
     def resize(self, height, width, background="#"):
         self.background=background
-        self.map=[[self.background for j in range(width)] for i in range(height)]
+        self.map=[[self.background for j in range(width if width > self.width else self.width)] for i in range(height if height > self.height else self.height)]
         self.obmap=[[[] for j in range(width)] for i in range(height)]
         self.width=width
         self.height=height
@@ -57,19 +57,15 @@ class Submap(Map):
         self.x=x
         self.dynfps=dynfps
         self.bmap=bmap
-        self.map=[]
-        self.obmap=[]
+        self.map=[["" for j in range(width)] for i in range(height)]
+        self.obmap=[[[] for j in range(width)] for i in range(height)]
         self.obs=[]
         self.remap()
 
     def remap(self):
-        self.map=[]
-        for arr in self.bmap.map[self.y:self.y+self.height]:
-            self.map.append(arr[self.x:self.x+self.width])
-        for arr in self.bmap.obmap[self.y:self.y+self.height]:
-            self.obmap.append(arr[self.x:self.x+self.width])
-        for ob in self.obs:
-            ob.redraw()
+        for l in range(self.height):
+            for i in range(self.width):
+                self.map[l][i]=self.bmap.map[self.y+l][self.x+i] if self.bmap.obmap[self.y+l][self.x+i] == [] else self.bmap.obmap[self.y+l][self.x+i][-1].char
 
     def set(self, x, y):
         if x<0 or y<0 or x+self.width>self.bmap.width or y+self.height>self.bmap.height:
