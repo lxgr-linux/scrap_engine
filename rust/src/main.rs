@@ -2,6 +2,7 @@
 
 struct Map{
     map: Vec<Vec<String>>,
+    obmap: Vec<Vec<Vec<Object>>>,
     width: i32,
     height: i32,
     background: String,
@@ -15,7 +16,14 @@ impl Map{
                 map[i].push(background.clone());
             }
         }
-        Map{map, width, height, background}
+        let mut obmap:Vec<Vec<Vec<Object>>> = vec![];
+        for i in 0..height as usize{
+            obmap.push(vec![]);
+            for j in 0..width as usize{
+                obmap[i].push(vec![]);
+            }
+        }
+        Map{map, obmap, width, height, background}
     }
     fn show(&self){
         let mut line = String::new();
@@ -26,6 +34,23 @@ impl Map{
             }
             println!("{}", line)
         }
+    }
+}
+
+struct Object{
+    symbol: String,
+    map: Map,
+    x: i32,
+    y: i32,
+}
+impl Object{
+    fn new(map: Map, symbol: String) -> Object{
+        Object{symbol, map, x: 0, y: 0}
+    }
+    fn add(&mut self, x: i32, y: i32){
+        self.x = x;
+        self.y = y;
+        self.map.obmap[y as usize][x as usize].push(self);
     }
 }
 
