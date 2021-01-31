@@ -50,7 +50,8 @@ impl Object{
     fn add(&mut self, x: i32, y: i32){
         self.x = x;
         self.y = y;
-        self.map.obmap[y as usize][x as usize].push(self);
+        let ob:Object = &*self;
+        self.map.obmap[y as usize][x as usize].push(ob);
     }
 }
 
