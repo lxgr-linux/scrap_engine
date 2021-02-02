@@ -43,6 +43,7 @@ struct Object{
     x: i32,
     y: i32,
 }
+
 impl Object{
     fn new(map: Map, symbol: String) -> Object{
         Object{symbol, map, x: 0, y: 0}
@@ -50,8 +51,7 @@ impl Object{
     fn add(&mut self, x: i32, y: i32){
         self.x = x;
         self.y = y;
-        let ob:Object = &*self;
-        self.map.obmap[y as usize][x as usize].push(ob);
+        self.map.obmap[y as usize][x as usize].push(self.clone());
     }
 }
 

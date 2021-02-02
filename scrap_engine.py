@@ -154,7 +154,7 @@ class Object():
         return 0
 
     def redraw(self):
-        if self.added == False:
+        if not self.added:
             return 1
         self.backup=self.map.map[self.y][self.x]
         self.map.map[self.y][self.x]=self.char
@@ -182,8 +182,10 @@ class Object():
         return
 
     def rechar(self, char):
-        self.map.map[self.y][self.x]=self.backup
         self.char=char
+        if not self.added:
+            return 1
+        self.map.map[self.y][self.x]=self.backup
         self.redraw()
 
     def remove(self):
@@ -265,6 +267,11 @@ class Text(ObjectGroup):
             for i, ob in enumerate(self.obs[count:count+len(text)]):
                 ob.add(map, x+i, y+l)
             count+=len(text)
+
+    def remove(self):
+        self.added=False
+        for ob in self.obs:
+            ob.remove()
 
     def rechar(self, text, esccode=""):
         self.esccode=esccode
