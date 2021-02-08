@@ -74,15 +74,18 @@ class Submap(Map):
         self.x=x
         self.dynfps=dynfps
         self.bmap=bmap
-        self.map=[]
+        self.map=[[self.bmap.background for j in range(width)] for i in range(height)]
         self.obmap=[[[] for j in range(width)] for i in range(height)]
         self.obs=[]
         self.remap()
 
     def remap(self):
-        self.map=[]
-        for arr in self.bmap.map[self.y:self.y+self.height]:
-            self.map.append(arr[self.x:self.x+self.width])
+        for sy, y in zip(range(0, self.height), range(self.y, self.y+self.height)):
+            for sx, x in zip(range(0, self.width), range(self.x, self.x+self.width)):
+                try:
+                    self.map[sy][sx] = self.bmap.map[y][x]
+                except:
+                    continue
         for ob in self.obs:
             ob.redraw()
 
