@@ -80,6 +80,7 @@ class Submap(Map):
         self.remap()
 
     def remap(self):
+        self.map=[[self.bmap.background for j in range(width)] for i in range(height)]
         for sy, y in zip(range(0, self.height), range(self.y, self.y+self.height)):
             for sx, x in zip(range(0, self.width), range(self.x, self.x+self.width)):
                 try:
