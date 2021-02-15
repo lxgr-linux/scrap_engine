@@ -243,13 +243,14 @@ class ObjectGroup():
 
 
 class Text(ObjectGroup):
-    def __init__(self, text, state="solid", esccode="", ob_class=Object):
+    def __init__(self, text, state="solid", esccode="", ob_class=Object, ignore=""):
         self.obs=[]
         self.ob_class=ob_class
         self.added=False
         self.text=text
         self.esccode=esccode
         self.state=state
+        self.ignore=ignore
         self.texter(text)
 
     def texter(self, text):
@@ -269,7 +270,8 @@ class Text(ObjectGroup):
         count=0
         for l, text in enumerate(self.text.split("\n")):
             for i, ob in enumerate(self.obs[count:count+len(text)]):
-                ob.add(map, x+i, y+l)
+                if ob.char != self.ignore:
+                    ob.add(map, x+i, y+l)
             count+=len(text)
 
     def remove(self):

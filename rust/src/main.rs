@@ -1,14 +1,14 @@
 // Scrap_engine attempt in rust
 
-struct Map{
+struct Map<'a>{
     map: Vec<Vec<String>>,
-    obmap: Vec<Vec<Vec<Object>>>,
+    obmap: Vec<Vec<Vec<&'a Object<'a>>>>,
     width: i32,
     height: i32,
     background: String,
 }
-impl Map{
-    fn new(width: i32, height: i32, background: String) -> Map {
+impl Map<'_>{
+    fn new(width: i32, height: i32, background: String) -> Map<'static> {
         let mut map:Vec<Vec<String>> = vec![];
         for i in 0..height as usize{
             map.push(vec![]);
@@ -16,7 +16,7 @@ impl Map{
                 map[i].push(background.clone());
             }
         }
-        let mut obmap:Vec<Vec<Vec<Object>>> = vec![];
+        let mut obmap:Vec<Vec<Vec<&Object>>> = vec![];
         for i in 0..height as usize{
             obmap.push(vec![]);
             for j in 0..width as usize{
@@ -37,21 +37,21 @@ impl Map{
     }
 }
 
-struct Object{
+struct Object<'c>{
     symbol: String,
-    map: Map,
+    map: &'c mut Map<'c>,
     x: i32,
     y: i32,
 }
 
-impl Object{
-    fn new(map: Map, symbol: String) -> Object{
+impl<'b> Object<'b>{
+    fn new(map: &'b mut Map<'b>, symbol: String) -> Object<'b>{
         Object{symbol, map, x: 0, y: 0}
     }
-    fn add(&mut self, x: i32, y: i32){
+    fn add(&'b mut self, x: i32, y: i32){
         self.x = x;
         self.y = y;
-        self.map.obmap[y as usize][x as usize].push(self.clone());
+        self.map.obmap[y as usize][x as usize].push(&self);
     }
 }
 
