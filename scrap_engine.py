@@ -104,7 +104,7 @@ class Object():
         self.char=char
         self.state=state
         self.added=False
-        self.arg_proto={}  # This was added to enable more than the default args for custom objects in Text and Square
+        self.arg_proto=arg_proto  # This was added to enable more than the default args for custom objects in Text and Square
 
     def add(self, map, x, y):
         for ob in map.obmap[y][x]:
