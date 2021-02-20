@@ -100,10 +100,11 @@ class Submap(Map):
 
 
 class Object():
-    def __init__(self, char, state="solid"):
+    def __init__(self, char, state="solid", arg_proto={}):
         self.char=char
         self.state=state
         self.added=False
+        self.arg_proto={}  # This was added to enable more than the default args for custom objects in Text and Square
 
     def add(self, map, x, y):
         for ob in map.obmap[y][x]:
@@ -243,7 +244,7 @@ class ObjectGroup():
 
 
 class Text(ObjectGroup):
-    def __init__(self, text, state="solid", esccode="", ob_class=Object, ignore=""):
+    def __init__(self, text, state="solid", esccode="", ob_class=Object, ob_args={}, ignore=""):
         self.obs=[]
         self.ob_class=ob_class
         self.added=False
@@ -251,6 +252,7 @@ class Text(ObjectGroup):
         self.esccode=esccode
         self.state=state
         self.ignore=ignore
+        self.ob_args=ob_args
         self.texter(text)
 
     def texter(self, text):
@@ -258,7 +260,7 @@ class Text(ObjectGroup):
             for i, char in enumerate(text):
                 if self.esccode != "":
                     char=self.esccode+char+"\033[0m"
-                self.obs.append(self.ob_class(char, self.state))
+                self.obs.append(self.ob_class(char, self.state, arg_proto=self.ob_args))
         for ob in self.obs:
             ob.group=self
 
@@ -292,7 +294,7 @@ class Text(ObjectGroup):
 
 
 class Square(ObjectGroup):
-    def __init__(self, char, width, height, state="solid", ob_class=Object, threads=False):
+    def __init__(self, char, width, height, state="solid", ob_class=Object, ob_args={}, threads=False):
         self.obs=[]
         self.ob_class=ob_class
         self.width=width
@@ -300,6 +302,7 @@ class Square(ObjectGroup):
         self.char=char
         self.state=state
         self.exits=[]
+        self.ob_args=ob_args
         self.threads=threads
         for l in range(height):
             if threads:
@@ -311,7 +314,7 @@ class Square(ObjectGroup):
 
     def one_line_create(self, l):
         for i in range(self.width):
-            exec("self.ob_"+str(i)+str(l)+"=self.ob_class(self.char, self.state)")
+            exec("self.ob_"+str(i)+str(l)+"=self.ob_class(self.char, self.state, arg_proto=self.ob_args)")
             exec("self.obs.append(self.ob_"+str(i)+str(l)+")")
 
     def one_line_add(self, l):
