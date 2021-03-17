@@ -98,9 +98,9 @@ class Submap(Map):
         self.remap()
         return 0
 
-    def full_show(self):
+    def full_show(self, init=False):
         self.remap()
-        self.show()
+        self.show(init)
 
 
 class Object():
