@@ -98,6 +98,10 @@ class Submap(Map):
         self.remap()
         return 0
 
+    def full_show(self):
+        self.remap()
+        self.show()
+
 
 class Object():
     def __init__(self, char, state="solid", arg_proto={}):
