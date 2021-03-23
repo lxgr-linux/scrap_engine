@@ -52,7 +52,7 @@ class Map():
                 self.screen.addstr(i, j, self.map[i][j])
         self.screen.refresh()
 
-    def resize(self, height=height-1, width=width, background="#"):
+    def resize(self, height, width, background="#"):
         self.background=background
         self.map=[[self.background for j in range(width)] for i in range(height)]
         self.obmap=[[[] for j in range(width if width > self.width else self.width)] for i in range(height if height > self.height else self.height)]
