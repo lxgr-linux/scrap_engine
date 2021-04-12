@@ -118,12 +118,12 @@ if sys.platform == "linux":  # Use another (not on xserver relying) way to read 
         while True:
             char=sys.stdin.read(1)
             if ord(char) == 13:
-                ev="Key.enter"
+                ev.append("Key.enter")
             else:
-                ev="'"+char.rstrip()+"'"
+                ev.append("'"+char.rstrip()+"'")
             if ord(char) == 3 or do_exit:
                 termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
-                ev="exit"
+                ev=["exit"]
 else:
     from pynput.keyboard import Key, Listener
     def recogniser():
@@ -248,7 +248,7 @@ def mapresize():
 
 def dead():
     global ev, mode, data, kill
-    ev=0
+    ev=[]
     deadmenuind.index=1
     menuresize(deadmap, deadbox)
     # text labels for multi mode
@@ -287,23 +287,23 @@ def dead():
     deadmap.blur_in(map, esccode="\033[31m")
     deadmap.show(init=True)
     while True:
-        if ev == "'m'":
-            ev=0
+        if "'m'" in ev:
+            ev=[]
             exiter()
-        elif ev == "exit":
-            ev=0
+        elif "exit" in ev:
+            ev=[]
             raise KeyboardInterrupt
-        elif ev == "'w'":
+        elif "'w'" in ev:
             if deadmenuind.index != 0:
                 deadmenuind.index-=1
             exec("deadbox.set_ob(deadmenuind, deadmenutext"+str(deadmenuind.index)+".rx-2, deadmenutext"+str(deadmenuind.index)+".ry)")
-            ev=0
-        elif ev == "'s'":
+            ev=[]
+        elif "'s'" in ev:
             if deadmenuind.index != 2:
                 deadmenuind.index+=1
             exec("deadbox.set_ob(deadmenuind, deadmenutext"+str(deadmenuind.index)+".rx-2, deadmenutext"+str(deadmenuind.index)+".ry)")
-            ev=0
-        elif ev == "Key.enter":
+            ev=[]
+        elif "Key.enter" in ev:
             if deadmenuind.ry == deadmenutext1.ry:
                 main()
             elif deadmenuind.ry == deadmenutext2.ry:
@@ -318,7 +318,7 @@ def dead():
                 deadbox.set_ob(deadmenutext0, int((deadbox.width-len("Mode: "+mode))/2), 7)
                 deadbox.set_ob(deadmenuind, deadmenutext0.rx-2, deadmenutext0.ry)
                 deadbox.set_ob(highscoretext, int((deadbox.width-len(highscoretext.text))/2), 3)
-            ev=0
+            ev=[]
         else:
             time.sleep(0.05)
         menuresize(deadmap, deadbox)
@@ -326,7 +326,7 @@ def dead():
 
 def menu():
     global ev, curscore
-    ev=0
+    ev=[]
     menuind.index=1
     scores=[]
     for group in snakes:
@@ -340,30 +340,30 @@ def menu():
     menumap.blur_in(map)
     menumap.show(init=True)
     while True:
-        if ev == "'m'":
-            ev=0
+        if "'m'" in ev:
+            ev=[]
             break
-        elif ev == "exit":
-            ev=0
+        elif "exit" in ev:
+            ev=[]
             raise KeyboardInterrupt
-        elif ev == "'w'":
+        elif "'w'" in ev:
             if menuind.index != 1:
                 menuind.index-=1
             exec("menubox.set_ob(menuind, menutext"+str(menuind.index)+".rx-2, menutext"+str(menuind.index)+".ry)")
-            ev=0
-        elif ev == "'s'":
+            ev=[]
+        elif "'s'" in ev:
             if menuind.index != 3:
                 menuind.index+=1
             exec("menubox.set_ob(menuind, menutext"+str(menuind.index)+".rx-2, menutext"+str(menuind.index)+".ry)")
-            ev=0
-        elif ev == "Key.enter":
+            ev=[]
+        elif "Key.enter" in ev:
             if menuind.ry == menutext1.ry:
                 return
             elif menuind.ry == menutext2.ry:
                 main()
             elif menuind.ry == menutext3.ry:
                 exiter()
-            ev=0
+            ev=[]
         else:
             time.sleep(0.05)
         menuresize(menumap, menubox)
@@ -405,24 +405,27 @@ def main():
     map.show()
     while True:
         time0=time.time()
-        for group in snakes:
-            for arr in [[group.obs[0].key_t, "b", "t"], [group.obs[0].key_l, "r", "l"], [group.obs[0].key_b, "t", "b"], [group.obs[0].key_r, "l", "r"]]:
-                if ev == arr[0]:
-                    if group.obs[0].direction != arr[1] and not group.obs[0].is_set:
-                        group.obs[0].direction=arr[2]
-                        group.obs[0].is_set=True
-                    ev=0
-        if ev == "'m'":
-            menu()
-            mapresize()
-            map.show(init=True)
-            ev=0
-        elif ev == "exit":
-            ev=0
-            raise KeyboardInterrupt
-        elif ev == "'e'":
-            ev=0
-            dead()
+        while len(ev) > 0:
+            for group in snakes:
+                for arr in [[group.obs[0].key_t, "b", "t"], [group.obs[0].key_l, "r", "l"], [group.obs[0].key_b, "t", "b"], [group.obs[0].key_r, "l", "r"]]:
+                    if len(ev) != 0 and ev[0] == arr[0]:
+                        if group.obs[0].direction != arr[1] and not group.obs[0].is_set:
+                            group.obs[0].direction=arr[2]
+                            group.obs[0].is_set=True
+                        ev.pop(0)
+            if "'m'" in ev:
+                menu()
+                mapresize()
+                map.show(init=True)
+                ev=[]
+            elif "exit" in ev:
+                ev=[]
+                raise KeyboardInterrupt
+            elif "'e'" in ev:
+                ev=[]
+                dead()
+            elif len(ev) != 0:
+                ev.pop(0)
         start.oldx=start.oldy=0
         for group in snakes:
             if group.walkframe+group.walkstep == framenum:
@@ -513,7 +516,7 @@ menubox.add_ob(menuhighscoretext, int((deadbox.width-len(highscoretext.text))/2)
 menubox.add(menumap, int((menumap.width-menubox.width)/2), 1+int((menumap.height-menubox.height)/2))
 
 kill=""
-ev=0
+ev=[]
 os.system("")
 recognising=threading.Thread(target=recogniser)
 recognising.daemon=True
