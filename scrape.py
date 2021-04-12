@@ -104,7 +104,7 @@ def exiter():
 # keyboard input management
 def on_press(key):
     global ev
-    ev=str(key)
+    ev.append(str(key))
 
 if sys.platform == "linux":  # Use another (not on xserver relying) way to read keyboard input, to make this shit work in tty or via ssh, where no xserver is available
     def recogniser():
