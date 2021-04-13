@@ -227,6 +227,7 @@ def level_multi_init():
     start2.key_b="'k'"
     start2.key_l="'j'"
     start2.key_r="'l'"
+    start2.is_set = False
     snake2.add_obs([start2, runner2_0, runner2_1])
     snake2.color="blue"
     snake2.walkframe=0
@@ -400,6 +401,7 @@ def main():
     snakes.append(snake)
     apples=se.ObjectGroup([])
     berrys=se.ObjectGroup([])
+    _i = 0
 
     start.direction="t"
     map.show()
@@ -424,8 +426,11 @@ def main():
             elif "'e'" in ev:
                 ev=[]
                 dead()
-            elif len(ev) != 0:
+            elif len(ev) != 0 and _i == 0:
+                _i = 1
+            elif len(ev) != 0 and _i == 1:
                 ev.pop(0)
+                _i = 0
         start.oldx=start.oldy=0
         for group in snakes:
             if group.walkframe+group.walkstep == framenum:
