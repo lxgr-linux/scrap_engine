@@ -343,6 +343,54 @@ class Square(ObjectGroup):
             ob.rechar(char)
 
 
+class Frame(ObjectGroup):
+    def __init__(self, height, width, corner_chars=["+", "+", "+", "+"], horizontal_char="-", vertical_char="|", state="solid", ob_class=Object, ob_args={}):
+        self.height=height
+        self.width=width
+        self.ob_class=ob_class
+        self.ob_args=ob_args
+        self.added=False
+        self.state=state
+        self.corners = [self.ob_class(i, arg_proto=self.ob_args, state=self.state) for i, j in zip(corner_chars, range(4))]
+        self.horizontals = [Square(char=horizontal_char, width=self.width-2, height=1, state=self.state, ob_class=Object, ob_args={}) for i in range(2)]
+        self.verticals = [Square(char=vertical_char, width=1, height=self.height-2, state=self.state, ob_class=Object, ob_args={}) for i in range(2)]
+
+    def __add_obs(self):
+        for ob, rx, ry in zip(self.corners, [0, self.width-1, 0, self.width-1], [0, 0, self.height-1, self.height-1]):
+            ob.add(self.map, self.x+rx, self.y+ry)
+        for ob, rx, ry in zip(self.horizontals, [1, 1], [0, self.height-1]):
+            ob.add(self.map, self.x+rx, self.y+ry)
+        for ob, rx, ry in zip(self.verticals, [0, self.width-1], [1, 1]):
+            ob.add(self.map, self.x+rx, self.y+ry)
+
+    def add(self, map, x, y):
+        self.x=x
+        self.y=y
+        self.map=map
+        self.__add_obs()
+        self.added=True
+
+    def set(self, x, y):
+        self.x=x
+        self.y=y
+        for ob in self.corners+self.horizontals+self.verticals:
+            ob.remove()
+        self.__add_obs()
+
+    def rechar(self, corner_chars=["+", "+", "+", "+"], horizontal_char="-", vertical_char="|"):
+        for ob, c in zip(self.corners, corner_chars):
+            ob.rechar(c)
+        for ob in self.horizontals:
+            ob.rechar(horizontal_char)
+        for ob in self.verticals:
+            ob.rechar(vertical_char)
+
+    def remove(self):
+        for ob in self.corners + self.horizontals + self.verticals:
+            ob.remove()
+        self.added=False
+
+
 class Box(ObjectGroup):
     def __init__(self, height, width):
         self.height=height
