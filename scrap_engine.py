@@ -344,7 +344,7 @@ class Square(ObjectGroup):
 
 
 class Frame(ObjectGroup):
-    def __init__(self, height, width, corner_chars=["+", "+", "+", "+"], horizontal_char="-", vertical_char="|", state="solid", ob_class=Object, ob_args={}):
+    def __init__(self, height, width, corner_chars=["+", "+", "+", "+"], horizontal_chars=["-", "-"], vertical_chars=["|", "|"], state="solid", ob_class=Object, ob_args={}):
         self.height=height
         self.width=width
         self.ob_class=ob_class
@@ -352,8 +352,8 @@ class Frame(ObjectGroup):
         self.added=False
         self.state=state
         self.corners = [self.ob_class(i, arg_proto=self.ob_args, state=self.state) for i, j in zip(corner_chars, range(4))]
-        self.horizontals = [Square(char=horizontal_char, width=self.width-2, height=1, state=self.state, ob_class=Object, ob_args={}) for i in range(2)]
-        self.verticals = [Square(char=vertical_char, width=1, height=self.height-2, state=self.state, ob_class=Object, ob_args={}) for i in range(2)]
+        self.horizontals = [Square(char=i, width=self.width-2, height=1, state=self.state, ob_class=Object, ob_args={}) for i, j in zip(horizontal_chars, range(2))]
+        self.verticals = [Square(char=i, width=1, height=self.height-2, state=self.state, ob_class=Object, ob_args={}) for i, j in zip(vertical_chars, range(2))]
 
     def __add_obs(self):
         for ob, rx, ry in zip(self.corners, [0, self.width-1, 0, self.width-1], [0, 0, self.height-1, self.height-1]):
