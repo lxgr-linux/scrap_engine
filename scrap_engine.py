@@ -201,8 +201,8 @@ class Object():
         if not self.added:
             return 1
         self.added=False
-        if self.map.obmap[self.y][self.x][0] == self and len(self.map.obmap[self.y][self.x]) > 1:
-            self.map.obmap[self.y][self.x][1].backup=self.backup
+        if len(self.map.obmap[self.y][self.x]) > self.map.obmap[self.y][self.x].index(self)+1:
+            self.map.obmap[self.y][self.x][self.map.obmap[self.y][self.x].index(self)+1].backup=self.backup
         else:
             self.map.map[self.y][self.x]=self.backup
         del self.map.obs[self.map.obs.index(self)]
