@@ -416,7 +416,8 @@ class Box(ObjectGroup):
     def set_ob(self, ob, rx, ry):
         ob.rx=rx
         ob.ry=ry
-        ob.set(ob.rx+self.x, ob.ry+self.y)
+        if self.added:
+            ob.set(ob.rx+self.x, ob.ry+self.y)
 
     def remove(self):
         for ob in self.obs:
