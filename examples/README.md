@@ -1,5 +1,5 @@
 # Scrape
-![Demo](pics/demo.gif)
+![Demo](../pics/demo.gif)
 
 ## Installation
 Move ```./examples/scrape.py``` into the parent directory or make sure scrap_engine.py is in it's path

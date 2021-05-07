@@ -35,4 +35,4 @@ For reading keyboard input in TTY or via ssh or telnet you may use reader.sh to 
 ## Examples and tests
 The examples and tests in ```tests``` and ```examples``` can be ran by either installing scrap_engine like in the installation section or by moving the ```scrap_engine.py``` file in their directorys, and then just executing them.
 The examples are resources to understand the key functionality ot scrap_engine and the tests are just used to test some of those functions.
-For example for scrape see ![REAME.md](examples/README.md).
+For example for scrape see [REAME.md](examples/README.md).
