@@ -14,7 +14,7 @@ Move the ```scrap_engine.py``` file somehow into your python path.
 To run the examples install python and the pynput module via pip. Then just run what ever file you want (for example scrape).
 
 ## Usage
-See scrap_test.py
+See examples and [Documentation](docs/DOCS.md)
 
 ## File explaination
 - LICENSE : obvious
