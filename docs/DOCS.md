@@ -1,5 +1,10 @@
 # Scrap_engine documentation
 
+## Table of contents
+1. [Concept](#concept)
+2. [Classes](#classes)
+  1. [scrap_engine.Map](#scrap_engine.Map)
+
 ## Concept
 The basic concept of scrap_engine evolves around having a ```map``` that is basicaly a cordinatesystem that represents the colloms and rows in the console/terminal.
 On this maps ```objects``` can be added, moved, and removed acording to given rules.
