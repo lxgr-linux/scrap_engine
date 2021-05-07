@@ -6,4 +6,6 @@ On this maps ```objects``` can be added, moved, and removed acording to given ru
 ![example](../pics/example1.jpg)
 
 ## Classes
-### Map
+### ```scrap_engine.Map```
+The basic map class to add scrap_engine.objects on.
+#### Methods
