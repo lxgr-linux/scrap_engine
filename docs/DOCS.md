@@ -5,7 +5,7 @@ The basic concept of scrap_engine evolves around having a ```map``` that is basi
 On this maps ```objects``` can be added, moved, and removed acording to given rules.
 ![example](../pics/example1.jpg)
 ## Classes
-### ```scrap_engine.Map```
+### scrap_engine.Map
 The basic map class to add scrap_engine.objects on.
 #### Methods
 ##### ```scrap_engine.Map.__init__(self, height=height-1, width=width, background="#", dynfps=True)```
@@ -35,7 +35,7 @@ Blurs another map as the background into the map
 - esccode:```String``` Escape code used to blur the blurmap
 
 
-### ```scrap_engine.Object```
+### scrap_engine.Object
 An object that can be added and moved on a ```scrap_engine.Map```.
 #### Methods
 ##### ```scrap_engine.Object.__init__(self, char, state="solid", arg_proto={})```
