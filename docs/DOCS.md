@@ -22,7 +22,7 @@ The basic map class to add scrap_engine.objects on.
 
 #### Method ```scrap_engine.Map.__init__(self, height=height-1, width=width, background="#", dynfps=True)```
 Constructor.
-- height:```int``` Heigt of the map
+- height:```int``` Height of the map
 - width:```int``` Width of the map
 - background:```String``` Default char, that will be used as the maps background
 - dynfps:```boolean``` If changes of the map will be checked a ```scrap_engine.Map.show()```
@@ -33,7 +33,7 @@ Shows a frame.
 
 #### Method ```scrap_engine.Map.resize(self, height, width, background="#")```
 Resizes the map.
-- height:```int``` New heigt of the map
+- height:```int``` New height of the map
 - width:```int``` New width of the map
 - background:```String``` Default char, that will be used as the maps background
 
@@ -49,7 +49,7 @@ An object that can be added and moved on a ```scrap_engine.Map```.
 #### Method ```scrap_engine.Object.__init__(self, char, state="solid", arg_proto={})```
 Constructor.
 - char:```String``` A string that represents to object on the map
-- state:```String``` State ```"solid"``` or ```"float"```, that indices the behavior of the Obeject. ```"solid"``` means that not other objects can be put over the object, ```"float"``` means that it is possible.
+- state:```String``` State ```"solid"``` or ```"float"```, that indices the behaviour of the Obeject. ```"solid"``` means that not other objects can be put over the object, ```"float"``` means that it is possible.
 - arg_proto:```dictionary``` A custom dictionary that can be passed to custom objects in, for example ```scrap_engine.Text```
 
 #### Method ```scrap_engine.Object.add(self, map, x, y)```
@@ -79,7 +79,7 @@ Method that is executed, when another object is laid over it self. This just wor
 - ob:```scrap_engine.Object``` The object, that is laid over self.
 
 #### Method ```scrap_engine.Object.bump(self, ob, x, y)```
-Method thats executed, when it's tried to lay this object over another object with ```self.state = "solid"```. This function returns nothing and does nothing, it can be used in custom daughter classes of ```scrap_engine.Object```.
+Method that's executed, when it's tried to lay this object over another object with ```self.state = "solid"```. This function returns nothing and does nothing, it can be used in custom daughter classes of ```scrap_engine.Object```.
 - ob:```scrap_engine.Object``` The object, that self tried to be laid over
 - x:```int``` X coordinate of the object, that self tried to be laid over
 - y:```int``` Y coordinate of the object, that self tried to be laid over
@@ -102,7 +102,7 @@ This method is executed when trying to move self from a place out of the boarder
 ---
 
 ### scrap_engine.ObjectGroup
-More a metha class to arganize ```scrap_engine.Object```s and daughter objects to do certain actions with a group of those at once.
+More a meta class to organize ```scrap_engine.Object```s and daughter objects to do certain actions with a group of those at once.
 
 #### Method ```scrap_engine.ObjectGroup.__init__(self, obs)```
 Constructor.
@@ -140,8 +140,8 @@ An easy way to generate text labels. This is a daughter class of ```scrap_engine
 #### Method ```scrap_engine.Text.__init__(self, text, state="solid", esccode="", ob_class=Object, ob_args={}, ignore="")```
 Constructor.
 - text:```String``` The text of the label.
-- state:```String``` State ```"solid"``` or ```"float"```, that indices the behavior of the Obeject. ```"solid"``` means that not other objects can be put over the object, ```"float"``` means that it is possible.
-- esccode:```String``` The ansii escape code that can be used to color the text or make it bold/italic...
+- state:```String``` State ```"solid"``` or ```"float"```, that indices the behaviour of the Obeject. ```"solid"``` means that not other objects can be put over the object, ```"float"``` means that it is possible.
+- esccode:```String``` The ansii escape code that can be used to colour the text or make it bold/italic...
 - ob_class:```class``` The class of the objects in the label, that should be used.
 - ob_args:```dictionary``` This dictionary is passed as ```arg_proto``` to the objects.
 - ignore:```String``` Character of objects that should be ignored not be added to the map.
@@ -158,7 +158,7 @@ Removes the text from the map.
 #### Method ```scrap_engine.Text.rechar(self, text, esccode="")```
 Changes the text of the text.
 - text:```String``` The text of the label.
-- esccode:```String``` The ansii escape code that can be used to color the text or make it bold/italic...
+- esccode:```String``` The ansii escape code that can be used to colour the text or make it bold/italic...
 ---
 
 ### scrap_engine.Square
@@ -169,11 +169,11 @@ Constructor.
 - char:```String``` The character that's used in the rectangle
 - width:```int``` Width of the rectangle
 - height:```int``` Height of the rectangle
-- state:```String``` State ```"solid"``` or ```"float"```, that indices the behavior of the Obeject. ```"solid"``` means that not other objects can be put over the object, ```"float"``` means that it is possible.
+- state:```String``` State ```"solid"``` or ```"float"```, that indices the behaviour of the Obeject. ```"solid"``` means that not other objects can be put over the object, ```"float"``` means that it is possible.
 - esccode:```String``` The ansii escape code that can be used to color the text or make it bold/italic...
 - ob_class:```class``` The class of the objects in the label, that should be used
 - ob_args:```dictionary``` This dictionary is passed as ```arg_proto``` to the objects
-- threads:```boolean``` If or if not threading should be used for generatiing the rectangle (usefull for big rectangles)
+- threads:```boolean``` If or if not threading should be used for generating the rectangle (usefull for big rectangles)
 
 #### Method ```scrap_engine.Square.add(self, map, x, y)```
 Adds the rectangle to a map.
@@ -183,7 +183,7 @@ Adds the rectangle to a map.
 
 #### Method ```scrap_engine.Square.rechar(self, char)```
 Changes char for the character of the rectangle.
-- char:```String``` The new charater of the rectangle
+- char:```String``` The new character of the rectangle
 ---
 
 ### scrap_engine.Frame
@@ -196,7 +196,7 @@ Constructor.
 - corner_chars:```list<String>``` Chars used for frame corners, [lefttop, righttop, leftbottom, rightbottom]
 - horizontal_chars:```list<String>``` Chars used for horizontals, [top, bottom]
 - vertical_chars:```list<String>``` Chars used for verticals, [left, right]
-- state:```String``` State ```"solid"``` or ```"float"```, that indices the behavior of the Obeject. ```"solid"``` means that not other objects can be put over the object, ```"float"``` means that it is possible.
+- state:```String``` State ```"solid"``` or ```"float"```, that indices the behaviour of the Obeject. ```"solid"``` means that not other objects can be put over the object, ```"float"``` means that it is possible.
 - ob_class:```class``` The class of the objects in the label, that should be used
 - ob_args:```dictionary``` This dictionary is passed as ```arg_proto``` to the objects
 
@@ -253,7 +253,7 @@ Removes the box from the map.
 ---
 
 ### scrap_engine.Submap
-A map thats background is a cutout of another map. This is a daughter class of ```scrap_engine.Map``` and shares all its methods.
+A map thats background is a cut-out of another map. This is a daughter class of ```scrap_engine.Map``` and shares all its methods.
 
 #### Method ```scrap_engine.Submap.__init__(self, bmap, x, y, height=height-1, width=width, dynfps=True)```
 Constructor.
