@@ -249,6 +249,7 @@ Sets an object to another coordinate in the box.
 
 #### Method ```scrap_engine.Box.remove(self)```
 Removes the box from the map.
+
 ---
 
 ### scrap_engine.Submap
