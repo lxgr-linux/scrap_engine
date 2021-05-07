@@ -245,7 +245,7 @@ class Text(ObjectGroup):
         self.state=state
         self.ignore=ignore
         self.ob_args=ob_args
-        self.t__texter(text)
+        self.__texter(text)
 
     def __texter(self, text):
         for text in text.split("\n"):
