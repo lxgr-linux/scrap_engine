@@ -9,6 +9,7 @@
    4. [scrap_engine.Text](#scrap_enginetext)
    5. [scrap_engine.Square](#scrap_enginesquare)
    6. [scrap_engine.Box](#scrap_enginebox)
+   7. [scrap_engine.Submap](#scrap_enginesubmap)
 ## Concept
 The basic concept of scrap_engine evolves around having a ```map``` that is basicaly a cordinatesystem that represents the colloms and rows in the console/terminal.
 On this maps ```objects``` can be added, moved, and removed acording to given rules.
@@ -248,3 +249,28 @@ Sets an object to another coordinate in the box.
 
 #### Method ```scrap_engine.Box.remove(self)```
 Removes the box from the map.
+---
+
+### scrap_engine.Submap
+A map thats background is a cutout of another map. This is a daughter class of ```scrap_engine.Map``` and shares all its methods.
+
+#### Method ```scrap_engine.Submap.__init__(self, bmap, x, y, height=height-1, width=width, dynfps=True)```
+Constructor.
+- bmap:```scrap_engine.Map``` The map that's the background
+- x:```int``` The x coordinate the map will be set to
+- y:```int``` The y coordinate the map will be set to
+- height:```int``` Height of the map
+- width:```int``` Width of the map
+- dynfps:```boolean``` If changes of the map will be checked a ```scrap_engine.Map.show()```
+
+#### Method ```scrap_engine.Submap.remap(self)```
+Updates the background.
+
+#### Method ```scrap_engine.Submap.set(self, x, y)```
+Moves the map to a given coordinate.
+- x:```int``` The new x coordinate the map will be set to
+- y:```int``` The new y coordinate the map will be set to
+
+#### Method ```scrap_engine.Submap.full_show(self, init=False)```
+A wrapper for ```scrap_engine.Submap.show()``` and ```scrap_engine.Submap.remap(self)```
+- init:```boolean``` Forces printing
