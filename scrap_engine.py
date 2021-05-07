@@ -245,9 +245,9 @@ class Text(ObjectGroup):
         self.state=state
         self.ignore=ignore
         self.ob_args=ob_args
-        self.texter(text)
+        self.t__texter(text)
 
-    def texter(self, text):
+    def __texter(self, text):
         for text in text.split("\n"):
             for i, char in enumerate(text):
                 if self.esccode != "":
@@ -279,7 +279,7 @@ class Text(ObjectGroup):
             for ob in self.obs:
                 ob.remove()
         self.obs=[]
-        self.texter(text)
+        self.__texter(text)
         self.text=text
         if self.added:
             self.add(self.map, self.x, self.y)
