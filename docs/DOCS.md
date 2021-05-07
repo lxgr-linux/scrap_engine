@@ -149,3 +149,93 @@ Removes the text from the map.
 Changes the text of the text.
 - text:```String``` The text of the label.
 - esccode:```String``` The ansii escape code that can be used to color the text or make it bold/italic...
+---
+
+### scrap_engine.Square
+An easy way to generate rectangles. This is a daughter class of ```scrap_engine.ObjectGroup``` and shares all its methods.
+
+#### Method ```scrap_engine.Square.__init__(self, char, width, height, state="solid", ob_class=Object, ob_args={}, threads=False)```
+Constructor.
+- char:```String``` The character that's used in the rectangle
+- width:```int``` Width of the rectangle
+- height:```int``` Height of the rectangle
+- state:```String``` State ```"solid"``` or ```"float"```, that indices the behavior of the Obeject. ```"solid"``` means that not other objects can be put over the object, ```"float"``` means that it is possible.
+- esccode:```String``` The ansii escape code that can be used to color the text or make it bold/italic...
+- ob_class:```class``` The class of the objects in the label, that should be used
+- ob_args:```dictionary``` This dictionary is passed as ```arg_proto``` to the objects
+- threads:```boolean``` If or if not threading should be used for generatiing the rectangle (usefull for big rectangles)
+
+#### Method ```scrap_engine.Square.add(self, map, x, y)```
+Adds the rectangle to a map.
+- map:```scrap_engine.Map``` The map the rectangle should be added to
+- x:```int``` The x coordinate the rectangle will be set to
+- y:```int``` The y coordinate the rectangle will be set to
+
+#### Method ```scrap_engine.Square.rechar(self, char)```
+Changes char for the character of the rectangle.
+- char:```String``` The new charater of the rectangle
+---
+
+### scrap_engine.Frame
+An easy way to generate frames. This is a daughter class of ```scrap_engine.ObjectGroup``` and shares all its methods.
+
+#### Method ```scrap_engine.Frame.__init__(self, height, width, corner_chars=["+", "+", "+", "+"], horizontal_chars=["-", "-"], vertical_chars=["|", "|"], state="solid", ob_class=Object, ob_args={})```
+Constructor.
+- height:```int``` Height of the frame
+- width:```int``` Width of the frame
+- corner_chars:```list<String>``` Chars used for frame corners, [lefttop, righttop, leftbottom, rightbottom]
+- horizontal_chars:```list<String>``` Chars used for horizontals, [top, bottom]
+- vertical_chars:```list<String>``` Chars used for verticals, [left, right]
+- state:```String``` State ```"solid"``` or ```"float"```, that indices the behavior of the Obeject. ```"solid"``` means that not other objects can be put over the object, ```"float"``` means that it is possible.
+- ob_class:```class``` The class of the objects in the label, that should be used
+- ob_args:```dictionary``` This dictionary is passed as ```arg_proto``` to the objects
+
+#### Method ```scrap_engine.Frame.add(self, map, x, y)```
+Adds the frame to a map.
+- map:```scrap_engine.Map``` The map the frame should be added to
+- x:```int``` The x coordinate the frame will be set to
+- y:```int``` The y coordinate the frame will be set to
+
+#### Method ```scrap_engine.Frame.set(self, x, y)```
+Moves the frame to a given coordinate.
+- x:```int``` The new x coordinate the frame will be set to
+- y:```int``` The new y coordinate the frame will be set to
+
+#### Method ```scrap_engine.Frame.rechar(self, corner_chars=["+", "+", "+", "+"], horizontal_char="-", vertical_char="|")```
+Changes char for the character of the rectangle.
+- corner_chars:```list<String>``` Chars used for frame corners, [lefttop, righttop, leftbottom, rightbottom]
+- horizontal_chars:```list<String>``` Chars used for horizontals, [top, bottom]
+- vertical_chars:```list<String>``` Chars used for verticals, [left, right]
+
+#### Method ```scrap_engine.Frame.remove(self)```
+Removes the frame from the map.
+---
+
+### scrap_engine.Box
+A box to pack objects/groups/frames etc. into relative to a coordinate. This is a daughter class of ```scrap_engine.ObjectGroup``` and shares all its methods.
+
+#### Method ```scrap_engine.Box.__init__(self, height, width)```
+Constructor.
+- height:```int``` Height of the box
+- width:```int``` Width of the box
+
+#### Method ```scrap_engine.Box.add(self, map, x, y)```
+Adds the box to a map.
+- map:```scrap_engine.Map``` The map the box should be added to
+- x:```int``` The x coordinate the box will be set to
+- y:```int``` The y coordinate the box will be set to
+
+#### Method ```scrap_engine.Box.add_ob(self, ob, rx, ry)```
+Adds an object/group etc. to the box.
+- ob:```scrap_engine.Object```/```scrap_engine.ObjectGroup``` etc. The object/group that's added to the box
+- rx:```int``` The x coordinate the object will be set to in the box
+- ry:```int``` The y coordinate the object will be set to in the box
+
+#### Method ```scrap_engine.Box.set_ob(self, ob, rx, ry)```
+Sets an object to another coordinate in the box.
+- ob:```scrap_engine.Object```/```scrap_engine.ObjectGroup``` etc. The object/group that's is
+- rx:```int``` The new x coordinate the object will be set to in the box
+- ry:```int``` The new y coordinate the object will be set to in the box
+
+#### Method ```scrap_engine.Box.remove(self)```
+Removes the box from the map.
