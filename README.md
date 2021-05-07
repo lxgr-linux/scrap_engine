@@ -16,9 +16,6 @@ To run the examples install python and the pynput module via pip. Then just run 
 ## Usage
 See scrap_test.py
 
-## Dependencies
-scrap_test.py and scrape.py both require pynput when running on windows
-
 ## File explaination
 - LICENSE : obvious
 - README.md : ...
@@ -30,7 +27,6 @@ scrap_test.py and scrape.py both require pynput when running on windows
 
 ## Notes
 Scrap_engine, scrap_test.py and scrape.py where all tested working in the xfce4-terminal terminal emulator, other terminal emulators will work for sure.
-For reading keyboard input in TTY or via ssh or telnet you may use reader.sh to capture the keyboard like demonstrated in scrape.py and lil_t.py instead of pynput.
 
 ## Examples and tests
 The examples and tests in ```tests``` and ```examples``` can be ran by either installing scrap_engine like in the installation section or by moving the ```scrap_engine.py``` file in their directorys, and then just executing them.
