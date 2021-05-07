@@ -7,7 +7,7 @@ On this maps ```objects``` can be added, moved, and removed acording to given ru
 ### scrap_engine.Map
 The basic map class to add scrap_engine.objects on.
 #### Methods
-##### ```scrap_engine.Map.__init__(self, height=height-1, width=width, background="#", dynfps=True)```
+##### scrap_engine.Map.__init__(self, height=height-1, width=width, background="#", dynfps=True)
 Constructor.
 ###### Args:
 - height:```int``` Heigt of the map
@@ -15,19 +15,19 @@ Constructor.
 - background:```String``` Default char, that will be used as the maps background
 - dynfps:```boolean``` If changes of the map will be checked a ```scrap_engine.Map.show()```
 
-##### ```scrap_engine.Map.show(self, init=False)```
+##### scrap_engine.Map.show(self, init=False)
 Shows a frame.
 ###### Args:
 - init:```boolean``` Forces printing
 
-##### ```scrap_engine.Map.resize(self, height, width, background="#")```
+##### scrap_engine.Map.resize(self, height, width, background="#")
 Resizes the map.
 ###### Args:
 - height:```int``` New heigt of the map
 - width:```int``` New width of the map
 - background:```String``` Default char, that will be used as the maps background
 
-##### ```scrap_engine.Mapblur_in(self, blurmap, esccode="\033[37m")```
+##### scrap_engine.Mapblur_in(self, blurmap, esccode="\033[37m")
 Blurs another map as the background into the map
 ###### Args:
 - blurmap:```scrap_engine.Map``` The map to use as the background
