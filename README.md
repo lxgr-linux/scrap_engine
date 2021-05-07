@@ -18,8 +18,6 @@ scrap_test.py and scrape.py both require pynput when running on windows
 - LICENSE : obvious
 - README.md : ...
 - scrap_engine.py : Python module that contains the engine
-- scrap_engine.cpp : the same but just in c++, is just a proof of concept
-- a.out : the compiled version of scrap_engine.cpp (x86_64)
 - scrap_test.py : file that explains basic functionality of scrap_engine and tests them
 - scrap_bench.py : little benchmarking tool that shows frametimes and does some nice looking calculations
 - scrape.py : implimentation of snake
@@ -31,7 +29,11 @@ For reading keyboard input in TTY or via ssh or telnet you may use reader.sh to 
 
 
 # Scrape
-![Demo](demo.gif)
+![Demo](pics/demo.gif)
+
+## Installation
+Move ```./examples/scrape.py``` into the parent directory or make sure scrap_engine.py is in it's path
+
 ## What the game is about
 Scrape is basicaly a clone of the snake game, but with some additional modes. The Main goal of the player is to eat as many apples while not dieing.
 
