@@ -10,6 +10,7 @@
    5. [scrap_engine.Square](#scrap_enginesquare)
    6. [scrap_engine.Box](#scrap_enginebox)
    7. [scrap_engine.Submap](#scrap_enginesubmap)
+3. [Examples](#examples)
 ## Concept
 The basic concept of scrap_engine evolves around having a ```map``` that is basicaly a cordinatesystem that represents the colloms and rows in the console/terminal.
 On this maps ```objects``` can be added, moved, and removed acording to given rules.
@@ -275,3 +276,32 @@ Moves the map to a given coordinate.
 #### Method ```scrap_engine.Submap.full_show(self, init=False)```
 A wrapper for ```scrap_engine.Submap.show()``` and ```scrap_engine.Submap.remap(self)```
 - init:```boolean``` Forces printing
+
+## Examples
+This is just a simple example program that adds a an "a" to the coordinate (10|5) in the terminal.
+```python
+import scrap_engine as se  # imports scrap_engine
+
+mymap = se.Map(background=" ")  # defines mymap as a map as big as the terminal window with the background " "
+myob = se.Object("a")  # defines myob as an object with "a" as character
+
+myob.add(mymap, 10, 5)  # adds myob to mymap at (10|5)
+mymap.show()  # shows mymap
+```
+
+Another small example that moves the a in a line over the screen.
+```python
+import scrap_engine as se  # imports scrap_engine
+import time
+
+mymap = se.Map(background=" ")  # defines mymap as a map as big as the terminal window with the background " "
+myob = se.Object("a")  # defines myob as an object with "a" as character
+
+myob.add(mymap, 10, 5)  # adds myob to mymap at (10|5)
+mymap.show()  # shows mymap
+
+for i in range(5):
+  time.sleep(0.3)  # waiting 0.3 seconds
+  myob.set(myob.x+1, 5)  # sets myob to its own x coordinate +1 and y coordinate 5
+  mymap.show()  # shows mymap
+```
