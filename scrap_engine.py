@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
 # This software is licensed under the GPL3
+# You should have gotten an copy of the GPL3 license anlonside this software
+# Feel free to contribute what ever you want to this engine
+# You can contribute here: https://github.com/lxgr-linux/scrap_engine
 
 import time, os, threading
 
