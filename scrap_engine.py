@@ -301,18 +301,18 @@ class Square(ObjectGroup):
         self.threads=threads
         for l in range(height):
             if threads:
-                threading.Thread(target=self.one_line_create, args=(l,), daemon=True).start()
+                threading.Thread(target=self.__one_line_create, args=(l,), daemon=True).start()
             else:
-                self.one_line_create(l)
+                self.__one_line_create(l)
         for ob in self.obs:
             ob.group=self
 
-    def one_line_create(self, l):
+    def __one_line_create(self, l):
         for i in range(self.width):
             exec("self.ob_"+str(i)+str(l)+"=self.ob_class(self.char, self.state, arg_proto=self.ob_args)")
             exec("self.obs.append(self.ob_"+str(i)+str(l)+")")
 
-    def one_line_add(self, l):
+    def __one_line_add(self, l):
         for i in range(self.width):
             exec("self.exits.append(self.ob_"+str(i)+str(l)+".add(self.map, self.x+i, self.y+l))")
 
@@ -322,9 +322,9 @@ class Square(ObjectGroup):
         self.map=map
         for l in range(self.height):
             if self.threads:
-                threading.Thread(target=self.one_line_add, args=(l,), daemon=True).start()
+                threading.Thread(target=self.__one_line_add, args=(l,), daemon=True).start()
             else:
-                self.one_line_add(l)
+                self.__one_line_add(l)
         if 1 in self.exits:
             return 1
         return 0
