@@ -31,4 +31,4 @@ Scrap_engine, scrap_test.py and scrape.py where all tested working in the xfce4-
 ## Examples and tests
 The examples and tests in ```tests``` and ```examples``` can be ran by either installing scrap_engine like in the installation section or by moving the ```scrap_engine.py``` file in their directorys, and then just executing them.
 The examples are resources to understand the key functionality ot scrap_engine and the tests are just used to test some of those functions.
-For example for scrape see [scrape](examples/README.md).
+For example for scrape see [scrape](https://github.com/lxgr-linux/scrape).
