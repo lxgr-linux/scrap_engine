@@ -2,15 +2,11 @@
 by LXGR <lxgr@protonmail.com>
 
 ## Installation
-Linux:
-Copy scrap_engine.py to /usr/lib/python3.9/site-packages.
 ```shell
-# cp ./scrap_engine.py /usr/lib/python3.9/site-packages
+# python setup.py install
 ```
 
 Windoofs:
-Move the ```scrap_engine.py``` file somehow into your python path.
-
 To run the examples install python and the pynput module via pip. Then just run what ever file you want (for example scrape).
 
 ## Usage
