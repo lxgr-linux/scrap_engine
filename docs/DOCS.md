@@ -50,7 +50,7 @@ An object that can be added and moved on a ```scrap_engine.Map```.
 #### Method ```scrap_engine.Object.__init__(self, char, state="solid", arg_proto={})```
 Constructor.
 - char:```String``` A string that represents to object on the map
-- state:```String``` State ```"solid"``` or ```"float"```, that indices the behaviour of the Obeject. ```"solid"``` means that not other objects can be put over the object, ```"float"``` means that it is possible.
+- state:```String``` State ```"solid"``` or ```"float"```, that indices the behaviour of the Object. ```"solid"``` means that not other objects can be put over the object, ```"float"``` means that it is possible.
 - arg_proto:```dictionary``` A custom dictionary that can be passed to custom objects in, for example ```scrap_engine.Text```
 
 #### Method ```scrap_engine.Object.add(self, map, x, y)```

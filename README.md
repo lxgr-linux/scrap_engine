@@ -1,30 +1,30 @@
 # Scrap_engine
-by LXGR <lxgr@protonmail.com>
+By lxgr <lxgr@protonmail.com>
 
 ## Installation
+Manually:
 ```shell
 # python setup.py install
 ```
-
-Windoofs:
-To run the examples install python and the pynput module via pip. Then just run what ever file you want (for example scrape).
+Via pip (This will just install the latest stable releas):
+```shell
+# python -m pip install scrap_engine
+```
+From the AUR (when using Arch Linux):
+```
+$ buildaur -S python-scrap_engine-git  # You can use what ever AUR-helper you want
+```
+To run the examples install python and the pynput module via pip.
 
 ## Usage
-See examples and [Documentation](docs/DOCS.md)
-
-## File explaination
-- LICENSE : obvious
-- README.md : ...
-- scrap_engine.py : Python module that contains the engine
-- scrap_test.py : file that explains basic functionality of scrap_engine and tests them
-- scrap_bench.py : little benchmarking tool that shows frametimes and does some nice looking calculations
-- scrape.py : implimentation of snake
-- lil_t.py : implimentation of a basic jump and run game
-
-## Notes
-Scrap_engine, scrap_test.py and scrape.py where all tested working in the xfce4-terminal terminal emulator, other terminal emulators will work for sure.
+See [examples](examples) and [Documentation](docs/DOCS.md).
 
 ## Examples and tests
-The examples and tests in ```tests``` and ```examples``` can be ran by either installing scrap_engine like in the installation section or by moving the ```scrap_engine.py``` file in their directorys, and then just executing them.
-The examples are resources to understand the key functionality ot scrap_engine and the tests are just used to test some of those functions.
-For example for scrape see [scrape](https://github.com/lxgr-linux/scrape).
+The examples in [examples](examples) are made to show how scrap_engine works in a simple and commented way by, in case of scrap_test, building a little game. For more examples you can look at [tests](tests) which also contain explanatory programs.
+
+They can be ran by either installing scrap_engine like in the installation section or by moving the ```scrap_engine.py``` file in their directories, and then just executing them.
+
+Another source to understand the functionality of scrap_engine is the small snake implementation [scrape](https://github.com/lxgr-linux/scrape), that was firstly designed to be a tutorial but was later split out due to it's size. This may also help to implement a proper game using scrap_engine.
+
+## Notes
+The examples and tests where all tested on Arch Linux x86.
