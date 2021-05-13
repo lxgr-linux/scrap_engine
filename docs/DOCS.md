@@ -263,10 +263,13 @@ Removes the box from the map.
 ### scrap_engine.Circle
 An easy way to create a circle with a given radius, that's more like an ellipse. This is a daughter class of ```scrap_engine.Box``` and shares all its methods.
 
-#### Method ```scrap_engine.Circle.__init__(self, char, radius)```
+#### Method ```scrap_engine.Circle.__init__(self, char, radius, state="solid", ob_class=Object, ob_args={})```
 Constructor.
 - char:```String``` Character used for the circle
 - radius:```float``` Radius of the circle
+- state:```String``` State ```"solid"``` or ```"float"```, that indices the behaviour of the Object. ```"solid"``` means that not other objects can be put over the object, ```"float"``` means that it is possible.
+- ob_class:```class``` The class of the objects in the label, that should be used
+- ob_args:```dictionary``` This dictionary is passed as ```arg_proto``` to the objects
 
 ---
 

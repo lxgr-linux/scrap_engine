@@ -417,11 +417,11 @@ class Box(ObjectGroup):
 
 
 class Circle(Box):
-    def __init__(self, char, radius):
+    def __init__(self, char, radius, state="solid", ob_class=Object, ob_args={}):
         super().__init__(0, 0)
         self.char = char
         self.radius = radius
         for i in range(-(int(radius)+1), int(radius+1)+1):
             for j in range(-(int(radius)+1), int(radius+1)+1):
                 if math.sqrt((i)**2+(j)**2) <= radius:
-                    self.add_ob(se.Object(char), i, j)
+                    self.add_ob(ob_class(char, state=state, arg_proto=ob_args), i, j)
