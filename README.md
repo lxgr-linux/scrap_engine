@@ -6,12 +6,12 @@ Manually:
 ```shell
 # python setup.py install
 ```
-Via pip (This will just install the latest stable releas):
+Via pip (This will just install the latest stable release):
 ```shell
 # python -m pip install scrap_engine
 ```
-From the AUR (when using Arch Linux):
-```
+From the AUR (When using Arch Linux):
+```shell
 $ buildaur -S python-scrap_engine-git  # You can use what ever AUR-helper you want
 ```
 To run the examples install python and the pynput module via pip.
@@ -27,4 +27,4 @@ They can be ran by either installing scrap_engine like in the installation secti
 Another source to understand the functionality of scrap_engine is the small snake implementation [scrape](https://github.com/lxgr-linux/scrape), that was firstly designed to be a tutorial but was later split out due to it's size. This may also help to implement a proper game using scrap_engine.
 
 ## Notes
-The examples and tests where all tested on Arch Linux x86.
+The examples and tests where all tested on Arch Linux x86 and Windows 10.

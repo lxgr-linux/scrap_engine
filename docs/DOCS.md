@@ -3,17 +3,18 @@
 ## Table of contents
 1. [Concept](#concept)
 2. [Classes](#classes)
-   1. [scrap_engine.Map](#scrap_enginemap)
-   2. [scrap_engine.Object](#scrap_engineobject)
-   3. [scrap_engine.ObjectGroup](#scrap_engineobjectgroup)
-   4. [scrap_engine.Text](#scrap_enginetext)
-   5. [scrap_engine.Square](#scrap_enginesquare)
-   6. [scrap_engine.Box](#scrap_enginebox)
-   7. [scrap_engine.Submap](#scrap_enginesubmap)
+  	1. [scrap_engine.Map](#scrap_enginemap)
+  	2. [scrap_engine.Object](#scrap_engineobject)
+  	3. [scrap_engine.ObjectGroup](#scrap_engineobjectgroup)
+  	4. [scrap_engine.Text](#scrap_enginetext)
+  	5. [scrap_engine.Square](#scrap_enginesquare)
+  	6. [scrap_engine.Frame](#scrap_engineframe)
+  	7. [scrap_engine.Box](#scrap_enginebox)
+  	8. [scrap_engine.Submap](#scrap_enginesubmap)
 3. [Examples](#examples)
 ## Concept
-The basic concept of scrap_engine evolves around having a ```map``` that is basicaly a cordinatesystem that represents the colloms and rows in the console/terminal.
-On this maps ```objects``` can be added, moved, and removed acording to given rules.
+The basic concept of scrap_engine evolves around having a ```map``` that is basically a coordinate system that represents the column and rows in the console/terminal.
+On this maps ```objects``` can be added, moved, and removed according to given rules.
 ![example](../pics/example1.jpg)
 
 ## Classes
@@ -170,11 +171,11 @@ Constructor.
 - char:```String``` The character that's used in the rectangle
 - width:```int``` Width of the rectangle
 - height:```int``` Height of the rectangle
-- state:```String``` State ```"solid"``` or ```"float"```, that indices the behaviour of the Obeject. ```"solid"``` means that not other objects can be put over the object, ```"float"``` means that it is possible.
+- state:```String``` State ```"solid"``` or ```"float"```, that indices the behaviour of the Object. ```"solid"``` means that not other objects can be put over the object, ```"float"``` means that it is possible.
 - esccode:```String``` The ansii escape code that can be used to color the text or make it bold/italic...
 - ob_class:```class``` The class of the objects in the label, that should be used
 - ob_args:```dictionary``` This dictionary is passed as ```arg_proto``` to the objects
-- threads:```boolean``` If or if not threading should be used for generating the rectangle (usefull for big rectangles)
+- threads:```boolean``` If or if not threading should be used for generating the rectangle (useful for big rectangles)
 
 #### Method ```scrap_engine.Square.add(self, map, x, y)```
 Adds the rectangle to a map.
@@ -197,7 +198,7 @@ Constructor.
 - corner_chars:```list<String>``` Chars used for frame corners, [lefttop, righttop, leftbottom, rightbottom]
 - horizontal_chars:```list<String>``` Chars used for horizontals, [top, bottom]
 - vertical_chars:```list<String>``` Chars used for verticals, [left, right]
-- state:```String``` State ```"solid"``` or ```"float"```, that indices the behaviour of the Obeject. ```"solid"``` means that not other objects can be put over the object, ```"float"``` means that it is possible.
+- state:```String``` State ```"solid"``` or ```"float"```, that indices the behaviour of the Object. ```"solid"``` means that not other objects can be put over the object, ```"float"``` means that it is possible.
 - ob_class:```class``` The class of the objects in the label, that should be used
 - ob_args:```dictionary``` This dictionary is passed as ```arg_proto``` to the objects
 
@@ -254,7 +255,7 @@ Removes the box from the map.
 ---
 
 ### scrap_engine.Submap
-A map thats background is a cut-out of another map. This is a daughter class of ```scrap_engine.Map``` and shares all its methods.
+A map that's background is a cut-out of another map. This is a daughter class of ```scrap_engine.Map``` and shares all its methods.
 
 #### Method ```scrap_engine.Submap.__init__(self, bmap, x, y, height=height-1, width=width, dynfps=True)```
 Constructor.
@@ -304,4 +305,20 @@ for i in range(5):
   time.sleep(0.3)  # waiting 0.3 seconds
   myob.set(myob.x+1, 5)  # sets myob to its own x coordinate +1 and y coordinate 5
   mymap.show()  # shows mymap
+```
+
+An example of the Text, Square and Frame class.
+```python
+import scrap_engine as se  # imports scrap_engine
+
+mymap = se.Map(background=" ")  # defines mymap as a map as big as the terminal window with the background " "
+mytext = se.Text("Hello world")  # defines a text as "Hello world"
+myrectangle = se.Square(height=5, width=6, char="#")  # defines a rectangle width height 5, width 6 and the character "#"
+myframe = se.Frame(height=7, width=8, corner_chars=["┌", "┐", "└", "┘"], horizontal_chars=["─", "─"], vertical_chars=["│", "│"])  # defines a frame see scrap_engine.Frame
+
+mytext.add(mymap, 0, 0)  # adds mytext to (0|0)
+myrectangle.add(mymap, 2, 2)  # adds myrectangle to (2|2)
+myframe.add(mymap, 1, 1)  # adds myframe to (1|1)
+
+mymap.show()  # now a frame with a rectangle and a text above it should be shown
 ```
