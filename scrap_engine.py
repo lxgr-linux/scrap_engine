@@ -421,6 +421,9 @@ class Circle(Box):
         super().__init__(0, 0)
         self.char = char
         self.radius = radius
+        self.ob_class = ob_class
+        self.ob_args = ob_args
+        self.state = state
         for i in range(-(int(radius)+1), int(radius+1)+1):
             for j in range(-(int(radius)+1), int(radius+1)+1):
                 if math.sqrt((i)**2+(j)**2) <= radius:

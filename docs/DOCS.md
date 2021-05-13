@@ -23,6 +23,17 @@ On this maps ```objects``` can be added, moved, and removed according to given r
 ### scrap_engine.Map
 The basic map class to add scrap_engine.objects on.
 
+#### Attributes
+Attribute|Type|Description 
+---|---|---
+height|```int```|Height of the map
+width|```int```|Width of the map
+dynfps|```boolean```|Whether or not dynfps is on
+background|```String```|Background of the map
+obmap|```list<list<list<scrap_engine.Object>>>```|3D list of all Objects arranged by coordinate and layer
+map|```list<list<String>>```|2D list of the Objects chars arranged by coordinate
+obs|```list<scrap_engine.Object>```|List of all obs on the map
+
 #### Method ```scrap_engine.Map.__init__(self, height=height-1, width=width, background="#", dynfps=True)```
 Constructor.
 - height:```int``` Height of the map
@@ -49,6 +60,18 @@ Blurs another map as the background into the map
 
 ### scrap_engine.Object
 An object that can be added and moved on a ```scrap_engine.Map```.
+
+#### Attributes
+Attribute|Type|Description 
+---|---|---
+char|```String```|Character of the Object
+backup|```String```|Character of coordinate the Object is set to
+x|```int```|X coordinate
+y|```int```|Y coordinate
+map|```scrap_engine.Map```|The map the Object is added to
+state|```String```|The Objects state
+added|```boolean```|Whether or not the Object is added
+arg_proto|```dictionary```|A custom dictionary that can be passed to custom objects
 
 #### Method ```scrap_engine.Object.__init__(self, char, state="solid", arg_proto={})```
 Constructor.
@@ -108,6 +131,11 @@ This method is executed when trying to move self from a place out of the boarder
 ### scrap_engine.ObjectGroup
 More a meta class to organize ```scrap_engine.Object```s and daughter objects to do certain actions with a group of those at once.
 
+#### Attributes
+Attribute|Type|Description 
+---|---|---
+obs|```list<Object>```|List of all Objects in the Group
+
 #### Method ```scrap_engine.ObjectGroup.__init__(self, obs)```
 Constructor.
 - obs:```list<scrap_engine.Object>``` The initial list of ```scrap_engine.Object```s.
@@ -141,6 +169,21 @@ Moves the group to a given coordinate. THIS JUST WORKS WITH DAUGHTER CLASSES, BE
 
 ### scrap_engine.Text
 An easy way to generate text labels. This is a daughter class of ```scrap_engine.ObjectGroup``` and shares all its methods.
+
+#### Attributes
+Attribute|Type|Description 
+---|---|---
+text|```String```|Text of the Text
+esccode|```String```|The ansii escape code of the Text
+x|```int```|X coordinate
+y|```int```|Y coordinate
+map|```scrap_engine.Map```|The map the Text is added to
+obs|```list<Object>```|List of all Objects in the Group
+state|```String```|The Texts state
+added|```boolean```|Whether or not the Text is added
+ignore|```String```|Character of objects that should be ignored not be added to the map.
+ob_class|```class```|The class of the objects in the label
+ob_args|```dictionary```|A custom dictionary that can be passed to custom objects
 
 #### Method ```scrap_engine.Text.__init__(self, text, state="solid", esccode="", ob_class=Object, ob_args={}, ignore="")```
 Constructor.
