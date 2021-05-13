@@ -4,7 +4,6 @@ import scrap_engine as se
 import math, time
 
 
-
 map = se.Map(background=" ")
 
 def circle(x, y, radius):

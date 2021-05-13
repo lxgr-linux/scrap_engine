@@ -3,14 +3,15 @@
 ## Table of contents
 1. [Concept](#concept)
 2. [Classes](#classes)
-  	1. [scrap_engine.Map](#scrap_enginemap)
+	1. [scrap_engine.Map](#scrap_enginemap)
   	2. [scrap_engine.Object](#scrap_engineobject)
   	3. [scrap_engine.ObjectGroup](#scrap_engineobjectgroup)
   	4. [scrap_engine.Text](#scrap_enginetext)
   	5. [scrap_engine.Square](#scrap_enginesquare)
   	6. [scrap_engine.Frame](#scrap_engineframe)
   	7. [scrap_engine.Box](#scrap_enginebox)
-  	8. [scrap_engine.Submap](#scrap_enginesubmap)
+    8. [scrap_engine.Circle](#scrap_enginecircle)
+    9. [scrap_engine.Submap](#scrap_enginesubmap)
 3. [Examples](#examples)
 ## Concept
 The basic concept of scrap_engine evolves around having a ```map``` that is basically a coordinate system that represents the column and rows in the console/terminal.
@@ -43,6 +44,7 @@ Resizes the map.
 Blurs another map as the background into the map
 - blurmap:```scrap_engine.Map``` The map to use as the background
 - esccode:```String``` Escape code used to blur the blurmap
+
 ---
 
 ### scrap_engine.Object
@@ -134,6 +136,7 @@ Removes all ```scrap_engine.Object```s in the group from the map.
 Moves the group to a given coordinate. THIS JUST WORKS WITH DAUGHTER CLASSES, BECAUSE ```scrap_engine.ObjectGroup``` HAS NO COORDINATE BY IT SELF.
 - x:```int``` The new x coordinate the group will be set to
 - y:```int``` The new y coordinate the group will be set to
+
 ---
 
 ### scrap_engine.Text
@@ -161,6 +164,7 @@ Removes the text from the map.
 Changes the text of the text.
 - text:```String``` The text of the label.
 - esccode:```String``` The ansii escape code that can be used to colour the text or make it bold/italic...
+
 ---
 
 ### scrap_engine.Square
@@ -186,6 +190,7 @@ Adds the rectangle to a map.
 #### Method ```scrap_engine.Square.rechar(self, char)```
 Changes char for the character of the rectangle.
 - char:```String``` The new character of the rectangle
+
 ---
 
 ### scrap_engine.Frame
@@ -221,6 +226,7 @@ Changes char for the character of the rectangle.
 
 #### Method ```scrap_engine.Frame.remove(self)```
 Removes the frame from the map.
+
 ---
 
 ### scrap_engine.Box
@@ -251,6 +257,16 @@ Sets an object to another coordinate in the box.
 
 #### Method ```scrap_engine.Box.remove(self)```
 Removes the box from the map.
+
+---
+
+### scrap_engine.Circle
+An easy way to create a circle with a given radius, that's more like an ellipse. This is a daughter class of ```scrap_engine.Box``` and shares all its methods.
+
+#### Method ```scrap_engine.Circle.__init__(self, char, radius)```
+Constructor.
+- char:```String``` Character used for the circle
+- radius:```float``` Radius of the circle
 
 ---
 

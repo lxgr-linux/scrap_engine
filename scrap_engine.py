@@ -4,7 +4,7 @@
 # Feel free to contribute what ever you want to this engine
 # You can contribute here: https://github.com/lxgr-linux/scrap_engine
 
-import time, os, threading
+import time, os, threading, math
 
 width, height = os.get_terminal_size()
 
@@ -414,3 +414,14 @@ class Box(ObjectGroup):
         for ob in self.obs:
             ob.remove()
         self.added = False
+
+
+class Circle(Box):
+    def __init__(self, char, radius):
+        super().__init__(0, 0)
+        self.char = char
+        self.radius = radius
+        for i in range(-(int(radius)+1), int(radius+1)+1):
+            for j in range(-(int(radius)+1), int(radius+1)+1):
+                if math.sqrt((i)**2+(j)**2) <= radius:
+                    self.add_ob(se.Object(char), i, j)
