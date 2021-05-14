@@ -134,14 +134,15 @@ class Object():
             if ob.state == "solid":
                 self.bump(ob, self.x-x, self.y-y)
                 return 1
-            elif ob.state == "float":
-                ob.action(self)
         self.__backup_setter()
         self.map.obmap[y][x].append(self)
         self.backup = self.map.map[y][x]
         self.x = x
         self.y = y
         self.map.map[y][x] = self.char
+        for ob in self.map.obmap[y][x]:
+            if ob.state == "float":
+                ob.action(self)
         return 0
 
     def redraw(self):
