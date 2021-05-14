@@ -65,6 +65,7 @@ class Submap(Map):
         self.map = [[self.bmap.background for j in range(width)] for i in range(height)]
         self.obmap = [[[] for j in range(width)] for i in range(height)]
         self.obs = []
+        self.out_old = ""
         self.remap()
 
     def remap(self):
