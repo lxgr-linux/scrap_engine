@@ -100,7 +100,7 @@ class Object():
         self.arg_proto = arg_proto  # This was added to enable more than the default args for custom objects in Text and Square
 
     def add(self, map, x, y):
-        if "solid" in map.obmap[y][x]:
+        if "solid" in [ob.state for ob in map.obmap[y][x]]:
             return 1
         self.backup = map.map[y][x]
         self.x = x
