@@ -17,6 +17,7 @@ class Map():
         self.map = [[self.background for j in range(width)] for i in range(height)]
         self.obmap = [[[] for j in range(width)] for i in range(height)]
         self.obs = []
+        self.out_old = ""
 
     def blur_in(self, blurmap, esccode="\033[37m"):
         for l in range(self.height):
@@ -29,10 +30,6 @@ class Map():
             ob.redraw()
 
     def show(self, init=False):
-        try:
-            self.out_old
-        except:
-            self.out_old = "test"
         self.out="\r\u001b["+str(self.height)+"A"
         for arr in self.map:
             self.out_line = ""
@@ -102,9 +99,8 @@ class Object():
         self.arg_proto = arg_proto  # This was added to enable more than the default args for custom objects in Text and Square
 
     def add(self, map, x, y):
-        for ob in map.obmap[y][x]:
-            if ob.state == "solid":
-                return 1
+        if "solid" in map.obmap[y][x]:
+            return 1
         self.backup = map.map[y][x]
         self.x = x
         self.y = y
@@ -116,41 +112,35 @@ class Object():
         return 0
 
     def set(self, x, y):
-        if self.added == False:
+        if not self.added:
             return 1
-        if x > self.map.width-1:
+        elif x > self.map.width-1:
             self.bump_right()
             return 1
-        if x < 0:
+        elif x < 0:
             self.bump_left()
             return 1
-        if y > self.map.height-1:
+        elif y > self.map.height-1:
             self.bump_bottom()
             return 1
-        if y < 0:
+        elif y < 0:
             self.bump_top()
+            return 1
+        elif self.x > self.map.width-1 or self.y > self.map.height-1:
+            self.pull_ob()
             return 1
         for ob in self.map.obmap[y][x]:
             if ob.state == "solid":
                 self.bump(ob, self.x-x, self.y-y)
                 return 1
-        try:
-            if self.map.obmap[self.y][self.x][0] == self and len(self.map.obmap[self.y][self.x]) > 1:
-                self.map.obmap[self.y][self.x][1].backup = self.backup
-            else:
-                self.map.map[self.y][self.x] = self.backup
-        except:
-            self.pull_ob()
-            return 1
-        del self.map.obmap[self.y][self.x][self.map.obmap[self.y][self.x].index(self)]
+            elif ob.state == "float":
+                ob.action(self)
+        self.__backup_setter()
         self.map.obmap[y][x].append(self)
         self.backup = self.map.map[y][x]
         self.x = x
         self.y = y
         self.map.map[y][x] = self.char
-        for ob in self.map.obmap[y][x]:
-            if ob.state == "float":
-                ob.action(self)
         return 0
 
     def redraw(self):
@@ -159,6 +149,13 @@ class Object():
         self.backup = self.map.map[self.y][self.x]
         self.map.map[self.y][self.x] = self.char
         return 0
+
+    def __backup_setter(self):
+        if len(self.map.obmap[self.y][self.x]) > self.map.obmap[self.y][self.x].index(self)+1:
+            self.map.obmap[self.y][self.x][self.map.obmap[self.y][self.x].index(self)+1].backup = self.backup
+        else:
+            self.map.map[self.y][self.x] = self.backup
+        del self.map.obmap[self.y][self.x][self.map.obmap[self.y][self.x].index(self)]
 
     def action(self, ob):
         return
@@ -192,12 +189,8 @@ class Object():
         if not self.added:
             return 1
         self.added = False
-        if len(self.map.obmap[self.y][self.x]) > self.map.obmap[self.y][self.x].index(self)+1:
-            self.map.obmap[self.y][self.x][self.map.obmap[self.y][self.x].index(self)+1].backup = self.backup
-        else:
-            self.map.map[self.y][self.x] = self.backup
+        self.__backup_setter()
         del self.map.obs[self.map.obs.index(self)]
-        del self.map.obmap[self.y][self.x][self.map.obmap[self.y][self.x].index(self)]
 
 
 class ObjectGroup():
