@@ -234,6 +234,11 @@ Adds the rectangle to a map.
 Changes char for the character of the rectangle.
 - char:```String``` The new character of the rectangle
 
+#### Method ```scrap_engine.Square.resize(self, width, height)```
+Changes the size of the rectangle.
+- width:```int``` Width of the rectangle
+- height:```int``` Height of the rectangle
+
 ---
 
 ### scrap_engine.Frame
@@ -313,6 +318,14 @@ Constructor.
 - state:```String``` State ```"solid"``` or ```"float"```, that indices the behaviour of the Object. ```"solid"``` means that not other objects can be put over the object, ```"float"``` means that it is possible.
 - ob_class:```class``` The class of the objects in the label, that should be used
 - ob_args:```dictionary``` This dictionary is passed as ```arg_proto``` to the objects
+
+#### Method ```scrap_engine.Circle.rechar(self, char)```
+Changes char for the character of the circle.
+- char:```String``` The new character of the circle
+
+#### Method ```scrap_engine.Circle.resize(self, radius)```
+Changes the radius of the circle
+- radius:```float``` Radius of the circle
 
 ---
 

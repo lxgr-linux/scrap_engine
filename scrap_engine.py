@@ -289,18 +289,22 @@ class Square(ObjectGroup):
         self.ob_class = ob_class
         self.width = width
         self.height = height
+        self.added = False
         self.char = char
         self.state = state
         self.exits = []
         self.ob_args = ob_args
         self.threads = threads
+        self.__create()
+        for ob in self.obs:
+            ob.group = self
+
+    def __create(self):
         for l in range(height):
-            if threads:
+            if self.threads:
                 threading.Thread(target=self.__one_line_create, args=(l,), daemon=True).start()
             else:
                 self.__one_line_create(l)
-        for ob in self.obs:
-            ob.group = self
 
     def __one_line_create(self, l):
         for i in range(self.width):
@@ -320,13 +324,31 @@ class Square(ObjectGroup):
                 threading.Thread(target=self.__one_line_add, args=(l,), daemon=True).start()
             else:
                 self.__one_line_add(l)
+        self.added = True
         if 1 in self.exits:
             return 1
         return 0
 
+    def remove(self):
+        self.added = False
+        for ob in self.obs:
+            ob.remove()
+
     def rechar(self, char):
         for ob in self.obs:
             ob.rechar(char)
+
+    def resize(self, width, height):
+        self.width = width
+        self.height = height
+        if self.added:
+            self.remove()
+            self.obs = []
+            self.__create()
+            self.add(self.map, self.x, self.y)
+        else:
+            self.obs = []
+            self.__create()
 
 
 class Frame(ObjectGroup):
@@ -415,11 +437,29 @@ class Circle(Box):
     def __init__(self, char, radius, state="solid", ob_class=Object, ob_args={}):
         super().__init__(0, 0)
         self.char = char
-        self.radius = radius
         self.ob_class = ob_class
         self.ob_args = ob_args
         self.state = state
+        self.__gen(radius)
+
+    def __gen(self, radius):
+        self.radius = radius
         for i in range(-(int(radius)+1), int(radius+1)+1):
             for j in range(-(int(radius)+1), int(radius+1)+1):
                 if math.sqrt((i)**2+(j)**2) <= radius:
-                    self.add_ob(ob_class(char, state=state, arg_proto=ob_args), i, j)
+                    self.add_ob(self.ob_class(self.char, state=self.state, arg_proto=self.ob_args), i, j)
+
+    def rechar(self, char):
+        self.char = char
+        for ob in self.obs:
+            ob.rechar(char)
+
+    def resize(self, radius):
+        if self.added:
+            self.remove()
+            self.obs = []
+            self.__gen(radius)
+            self.add(self.map, self.x, self.y)
+        else:
+            self.obs = []
+            self.__gen(radius)
