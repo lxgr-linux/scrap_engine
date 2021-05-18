@@ -300,7 +300,7 @@ class Square(ObjectGroup):
             ob.group = self
 
     def __create(self):
-        for l in range(height):
+        for l in range(self.height):
             if self.threads:
                 threading.Thread(target=self.__one_line_create, args=(l,), daemon=True).start()
             else:
