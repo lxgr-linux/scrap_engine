@@ -463,3 +463,41 @@ class Circle(Box):
         else:
             self.obs = []
             self.__gen(radius)
+
+
+class Line(Box):
+    def __init__(self, char, cx, cy, type="straight", state="solid", ob_class=Object, ob_args={}):
+        super().__init__(0, 0)
+        self.char = char
+        self.ob_class = ob_class
+        self.ob_args = ob_args
+        self.state = state
+        self.type = type
+        self.__gen(cx, cy)
+
+    def __gen(self, cx, cy):
+        self.cx = cx
+        self.cy = cy
+        if cx >= cy:
+            for i in range(int(cx)):
+                j = {"straight": int, "crippled": round}[self.type](cy*i/cx)
+                self.add_ob(self.ob_class(self.char, state=self.state, arg_proto=self.ob_args), i, j)
+        else:
+            for j in range(int(cy)):
+                i = {"straight": int, "crippled": round}[self.type](cx*j/cy)
+                self.add_ob(self.ob_class(self.char, state=self.state, arg_proto=self.ob_args), i, j)
+
+    def rechar(self, char):
+        self.char = char
+        for ob in self.obs:
+            ob.rechar(char)
+
+    def resize(self, cx, cy):
+        if self.added:
+            self.remove()
+            self.obs = []
+            self.__gen(cx, cy)
+            self.add(self.map, self.x, self.y)
+        else:
+            self.obs = []
+            self.__gen(cx, cy)
