@@ -329,6 +329,29 @@ Changes the radius of the circle
 
 ---
 
+### scrap_engine.Line
+A line that can be drawn on the map, that's described by a vector. This is a daughter class of ```scrap_engine.Box``` and shares all its methods.
+
+#### Method ```scrap_engine.Line.__init__(self, char, cx, cy, state="straight", state="solid", ob_class=Object, ob_args={})```
+Constructor.
+- char:```String``` Character used for the circle
+- cx: ```float``` X component of the vector
+- cy: ```float``` Y component of the vector
+- state:```String``` State ```"solid"``` or ```"float"```, that indices the behaviour of the Object. ```"solid"``` means that not other objects can be put over the object, ```"float"``` means that it is possible.
+- ob_class:```class``` The class of the objects in the label, that should be used
+- ob_args:```dictionary``` This dictionary is passed as ```arg_proto``` to the objects
+
+#### Method ```scrap_engine.Line.rechar(self, char)```
+Changes char for the character of the line.
+- char:```String``` The new character of the circle
+
+#### Method ```scrap_engine.Line.resize(self, cx, cy)```
+Changes the vector of the line.
+- cx: ```float``` X component of the vector
+- cy: ```float``` Y component of the vector
+
+---
+
 ### scrap_engine.Submap
 A map that's background is a cut-out of another map. This is a daughter class of ```scrap_engine.Map``` and shares all its methods.
 
