@@ -478,14 +478,14 @@ class Line(Box):
     def __gen(self, cx, cy):
         self.cx = cx
         self.cy = cy
-        if cx >= cy:
-            for i in range(int(cx)):
-                j = {"straight": int, "crippled": round}[self.type](cy*i/cx)
-                self.add_ob(self.ob_class(self.char, state=self.state, arg_proto=self.ob_args), i, j)
+        if cx**2 >= cy**2:
+            for i in range(int(math.sqrt(cx**2))):
+                j = {"straight": int, "crippled": round}[self.type](cy*(cx/math.sqrt(cx**2))*i/cx)
+                self.add_ob(self.ob_class(self.char, state=self.state, arg_proto=self.ob_args), int(cx/math.sqrt(cx**2))*i, j)
         else:
-            for j in range(int(cy)):
-                i = {"straight": int, "crippled": round}[self.type](cx*j/cy)
-                self.add_ob(self.ob_class(self.char, state=self.state, arg_proto=self.ob_args), i, j)
+            for j in range(int(math.sqrt(cy**2))):
+                i = {"straight": int, "crippled": round}[self.type](cx*(cy/math.sqrt(cy**2))*j/cy)
+                self.add_ob(self.ob_class(self.char, state=self.state, arg_proto=self.ob_args), i, int(cy//math.sqrt(cy*2))*j)
 
     def rechar(self, char):
         self.char = char
