@@ -485,7 +485,7 @@ class Line(Box):
         else:
             for j in range(int(math.sqrt(cy**2))):
                 i = {"straight": int, "crippled": round}[self.type](cx*(cy/math.sqrt(cy**2))*j/cy)
-                self.add_ob(self.ob_class(self.char, state=self.state, arg_proto=self.ob_args), i, int(cy//math.sqrt(cy*2))*j)
+                self.add_ob(self.ob_class(self.char, state=self.state, arg_proto=self.ob_args), i, int(cy/math.sqrt(cy**2))*j)
 
     def rechar(self, char):
         self.char = char
