@@ -290,7 +290,7 @@ Changes the radius of the circle
 ---
 
 ### scrap_engine.Line
-A line that can be drawn on the map, that's described by a vector. This is a daughter class of ```scrap_engine.Box``` and shares all its methods.
+A line that can be drawn on the map, that's described by a vector. This is a daughter class of ```scrap_engine.Box``` and shares all its methods. The unrounded coordinates of the single points Objects of the line are passed in arg_proto to the Objects.
 
 #### Method ```scrap_engine.Line.__init__(self, char, cx, cy, state="straight", state="solid", ob_class=Object, ob_args={})```
 Constructor.

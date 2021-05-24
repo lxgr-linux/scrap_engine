@@ -480,12 +480,14 @@ class Line(Box):
         self.cy = cy
         if cx**2 >= cy**2:
             for i in range(int(math.sqrt(cx**2))):
-                j = {"straight": int, "crippled": round}[self.type](cy*(cx/math.sqrt(cx**2))*i/cx)
-                self.add_ob(self.ob_class(self.char, state=self.state, arg_proto=self.ob_args), int(cx/math.sqrt(cx**2))*i, j)
+                i = int(cx/math.sqrt(cx**2)*i)
+                j = {"straight": int, "crippled": round}[self.type](cy*i/cx)
+                self.add_ob(self.ob_class(self.char, state=self.state, arg_proto={**self.ob_args, **{"x": i, "y": cy*i/cx}}), i, j)
         else:
             for j in range(int(math.sqrt(cy**2))):
-                i = {"straight": int, "crippled": round}[self.type](cx*(cy/math.sqrt(cy**2))*j/cy)
-                self.add_ob(self.ob_class(self.char, state=self.state, arg_proto=self.ob_args), i, int(cy/math.sqrt(cy**2))*j)
+                j = int(cy/math.sqrt(cy**2)*j)
+                i = {"straight": int, "crippled": round}[self.type](cx*j/cy)
+                self.add_ob(self.ob_class(self.char, state=self.state, arg_proto={**self.ob_args, **{"x": cx*j/cy, "y": j}}), i, j)
 
     def rechar(self, char):
         self.char = char
