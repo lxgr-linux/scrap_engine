@@ -380,3 +380,41 @@ myframe.add(mymap, 1, 1)  # adds myframe to (1|1)
 
 mymap.show()  # now a frame with a rectangle and a text above it should be shown
 ```
+
+An example of a line across the screen with a moving "#" in it.
+```python
+import scrap_engine as se
+import time
+
+map = se.Map(background=" ")
+line = se.Line("a", 10, 5, type="straight")  # makes a straight line described by the vector (10 5) with "a" as its char
+
+line.add(map, 0, 0)  # addes line to (0|0)
+
+map.show()
+
+for i in range(len(line.obs)):  # list.obs is the list of all Objects that are part of the line
+    line.obs[i].rechar("#")  # rechars the Object to "#"
+    if i != 0:
+        line.obs[i-1].rechar(line.char)  # line.char is the default char of the line
+    time.sleep(0.4)
+    map.show()
+```
+
+Example for a clock like line rotation.
+```python
+import scrap_engine as se
+import time, math
+
+map = se.Map(background=" ")
+line = se.Line("#", 0, 10)  # downwards facing line of the vector (0 10)
+line.add(map, 10, 10)
+map.show()
+
+# loops i until 360 and resizes the line with the vector (sin(i)*10 cos(i)*10)
+for i in range(360):
+    line.resize(math.sin(math.radians(i))*10, math.cos(math.radians(i))*10)
+    time.sleep(0.05)
+    map.show()
+
+```
