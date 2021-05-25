@@ -106,6 +106,10 @@ This method is executed when trying to set self over the bottom boarders of the 
 #### Method ```scrap_engine.Object.pull_ob(self)```
 This method is executed when trying to move self from a place out of the boarders of the map to a place inside the boarders. This function returns nothing and does nothing, it can be used in custom daughter classes of ```scrap_engine.Object```.
 
+#### Method ```scrap_engine.Object.set_state(self, state)```
+Sets the state of the Object.
+- state:```String``` The new state ("float" or "solid")
+
 ---
 
 ### scrap_engine.ObjectGroup
@@ -139,6 +143,10 @@ Removes all ```scrap_engine.Object```s in the group from the map.
 Moves the group to a given coordinate. THIS JUST WORKS WITH DAUGHTER CLASSES, BECAUSE ```scrap_engine.ObjectGroup``` HAS NO COORDINATE BY IT SELF.
 - x:```int``` The new x coordinate the group will be set to
 - y:```int``` The new y coordinate the group will be set to
+
+#### Method ```scrap_engine.ObjectGroup.set_state(self, state)```
+Sets the state of the Object.
+- state:```String``` The new state ("float" or "solid")
 
 ---
 

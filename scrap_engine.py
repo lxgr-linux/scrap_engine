@@ -194,6 +194,9 @@ class Object():
         self.__backup_setter()
         del self.map.obs[self.map.obs.index(self)]
 
+    def set_state(self, state):
+        self.state = state
+
 
 class ObjectGroup():
     def __init__(self, obs):
@@ -231,6 +234,11 @@ class ObjectGroup():
         self.move(x-self.x, y-self.y)
         self.x = x
         self.y = y
+
+    def set_state(self, state):
+        self.state = state
+        for i in self.obs:
+            i.set_state(state)
 
 
 class Text(ObjectGroup):
