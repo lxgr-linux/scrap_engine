@@ -6,14 +6,17 @@ Manually:
 ```shell
 # python setup.py install
 ```
+
 Via pip (This will just install the latest stable release):
 ```shell
 # python -m pip install scrap_engine
 ```
+
 From the AUR (When using Arch Linux):
 ```shell
 $ buildaur -S python-scrap_engine-git  # You can use what ever AUR-helper you want
 ```
+
 To run the examples install python and the pynput module via pip.
 
 ## Usage
