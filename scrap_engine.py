@@ -316,12 +316,12 @@ class Square(ObjectGroup):
 
     def __one_line_create(self, l):
         for i in range(self.width):
-            exec("self.ob_"+str(i)+str(l)+" = self.ob_class(self.char, self.state, arg_proto=self.ob_args)")
-            exec("self.obs.append(self.ob_"+str(i)+str(l)+")")
+            exec("self.ob_"+str(i)+"_"+str(l)+" = self.ob_class(self.char, self.state, arg_proto=self.ob_args)")
+            exec("self.obs.append(self.ob_"+str(i)+"_"+str(l)+")")
 
     def __one_line_add(self, l):
         for i in range(self.width):
-            exec("self.exits.append(self.ob_"+str(i)+str(l)+".add(self.map, self.x+i, self.y+l))")
+            exec("self.exits.append(self.ob_"+str(i)+"_"+str(l)+".add(self.map, self.x+i, self.y+l))")
 
     def add(self, map, x, y):
         self.x = x
