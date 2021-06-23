@@ -1,6 +1,7 @@
 *.out
-__pycache__/*
+**/__pycache__
 build
 dist
 scrap_engine.egg-info
 submit.sh
+.eggs
