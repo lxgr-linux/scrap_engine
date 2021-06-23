@@ -14,7 +14,7 @@ setup(
     license='GPL3',
     author='lxgr',
     author_email='lxgr@protonmail.com',
-    description='a 2D ascii game engine for the terminal',
+    description='A 2D ascii game engine for the terminal',
     python_requires='>=3',
     long_description=long_description,
     long_description_content_type='text/markdown',
