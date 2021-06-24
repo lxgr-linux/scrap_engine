@@ -442,8 +442,8 @@ class Box(ObjectGroup):
             ob.add(self.map, ob.rx+self.x, ob.ry+self.y)
 
     def set_ob(self, ob, x, y):
-        ob.rx = rx
-        ob.ry = ry
+        ob.rx = x
+        ob.ry = y
         if self.added:
             ob.set(ob.rx+self.x, ob.ry+self.y)
 
