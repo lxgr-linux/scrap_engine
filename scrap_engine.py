@@ -9,13 +9,12 @@ import time, os, threading, math
 width, height = os.get_terminal_size()
 
 class CoordinateError(Exception):
-    def __init__(self, ob, x, y, height, width):
+    def __init__(self, ob, map, x, y):
         self.ob = ob
         self.x = x
         self.y = y
-        self.height = height
-        self.width = width
-        super().__init__(f"The {ob}s coordinate ({x}|{y}) is not in {width-1}x{height-1}")
+        self.map = map
+        super().__init__(f"The {ob}s coordinate ({x}|{y}) is not in {map.width-1}x{map.height-1}")
 
 
 class Map():
@@ -111,7 +110,7 @@ class Object():
 
     def add(self, map, x, y):
         if not (0 <= x < map.width) or not (0 <= y < map.height):
-            raise CoordinateError(self, x, y, map.height, map.width)
+            raise CoordinateError(self, map, x, y)
         if "solid" in [ob.state for ob in map.obmap[y][x]]:
             return 1
         self.backup = map.map[y][x]
