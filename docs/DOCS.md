@@ -12,7 +12,9 @@
   	7. [scrap_engine.Box](#scrap_enginebox)
     8. [scrap_engine.Circle](#scrap_enginecircle)
     9. [scrap_engine.Submap](#scrap_enginesubmap)
-3. [Examples](#examples)
+3. [Errors](#errors)
+	1. [CoordinateError](#coordinateerror)
+4. [Examples](#examples)
 ## Concept
 The basic concept of scrap_engine evolves around having a ```map``` that is basically a coordinate system that represents the column and rows in the console/terminal.
 On this maps ```objects``` can be added, moved, and removed according to given rules.
@@ -343,6 +345,15 @@ Moves the map to a given coordinate.
 #### Method ```scrap_engine.Submap.full_show(self, init=False)```
 A wrapper for ```scrap_engine.Submap.show()``` and ```scrap_engine.Submap.remap(self)```
 - init:```boolean``` Forces printing
+
+## Errors
+### CoordinateError
+The CoordinateError is raised, when an Object is tried to add to an impossible coordinate.
+Its' attributes are:
+- ob:`scrap_engine.Object` The Object that's tried to add
+- map:`scrap_engine.Map` The Map the Object is tried to add to
+- x:`int` The x coordinate the Object is tried to add to
+- y:`int` The y coordinate the Object is tried to add to
 
 ## Examples
 This is just a simple example program that adds a an "a" to the coordinate (10|5) in the terminal.
