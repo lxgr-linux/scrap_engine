@@ -257,12 +257,23 @@ class Text(ObjectGroup):
         self.obs = []
         self.ob_class = ob_class
         self.added = False
+        self.map = None
+        self.x = None
+        self.y = None
         self.text = text
         self.esccode = esccode
         self.state = state
         self.ignore = ignore
         self.ob_args = ob_args
         self.__texter(text)
+
+    def __add__(self, other):
+        self.text += other.text
+        self.obs += other.obs
+        if self.added:
+            self.remove()
+            self.add(self.map, self.x, self.y)
+        return self
 
     def __texter(self, text):
         for text in text.split("\n"):
