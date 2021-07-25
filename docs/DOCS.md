@@ -153,7 +153,7 @@ Sets the state of the Object.
 ---
 
 ### scrap_engine.Text
-An easy way to generate text labels. This is a daughter class of ```scrap_engine.ObjectGroup``` and shares all its methods.
+An easy way to generate text labels. This is a daughter class of ```scrap_engine.ObjectGroup``` and shares all its methods. Texts can be added together.
 
 #### Method ```scrap_engine.Text.__init__(self, text, state="solid", esccode="", ob_class=Object, ob_args={}, ignore="")```
 Constructor.
@@ -435,5 +435,20 @@ for i in range(360):
     line.resize(math.sin(math.radians(i))*10, math.cos(math.radians(i))*10)
     time.sleep(0.05)
     map.show()
+
+```
+
+An example that shows how Texts are added.
+```python
+import scrap_engine as se
+
+map = se.Map(background=" ")
+text1 = se.Text("Hey")
+text2 = se.Text(" You!")
+
+text1 += text2
+text1.add(map, 0, 0) # Those two steps can even be switched
+
+#>>> Hey You!
 
 ```
