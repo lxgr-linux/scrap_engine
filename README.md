@@ -19,6 +19,8 @@ $ buildaur -S python-scrap_engine-git  # You can use what ever AUR-helper you wa
 
 To run the examples install python and the pynput module via pip.
 
+See the project on [pypi](https://pypi.org/project/scrap-engine/)
+
 ## Usage
 See [examples](examples) and [Documentation](docs/DOCS.md).
 
