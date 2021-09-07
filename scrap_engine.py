@@ -4,7 +4,7 @@
 # Feel free to contribute what ever you want to this engine
 # You can contribute here: https://github.com/lxgr-linux/scrap_engine
 
-import time, os, threading, math
+import os, threading, math
 
 width, height = os.get_terminal_size()
 
@@ -14,16 +14,19 @@ class CoordinateError(Exception):
         self.x = x
         self.y = y
         self.map = map
-        super().__init__(f"The {ob}s coordinate ({x}|{y}) is not in {map.width-1}x{map.height-1}")
+        super().__init__(f"The {ob}s coordinate ({x}|{y}) is \
+not in {map.width-1}x{map.height-1}")
 
 
 class Map():
-    def __init__(self, height=height-1, width=width, background="#", dynfps=True):
+    def __init__(self, height=height-1, width=width, background="#",
+            dynfps=True):
         self.height = height
         self.width = width
         self.dynfps = dynfps
         self.background = background
-        self.map = [[self.background for j in range(width)] for i in range(height)]
+        self.map = [[self.background for j in range(width)]
+                for i in range(height)]
         self.obmap = [[[] for j in range(width)] for i in range(height)]
         self.obs = []
         self.out_old = ""
@@ -32,7 +35,9 @@ class Map():
         for l in range(self.height):
             for i in range(self.width):
                 if blurmap.map[l][i] != " ":
-                    self.map[l][i] = esccode+blurmap.map[l][i].replace("\033[0m", "")[-1]+"\033[0m"
+                    self.map[l][i] = (esccode +
+                            blurmap.map[l][i].replace("\033[0m", "")[-1] +
+                            "\033[0m")
                 else:
                     self.map[l][i] = " "
         for ob in self.obs:
@@ -51,8 +56,12 @@ class Map():
 
     def resize(self, height, width, background="#"):
         self.background = background
-        self.map = [[self.background for j in range(width)] for i in range(height)]
-        self.obmap = [[[] for j in range(width if width > self.width else self.width)] for i in range(height if height > self.height else self.height)]
+        self.map = [[self.background for j in range(width)]
+                for i in range(height)]
+        self.obmap = [[[] for j in range(width
+                                    if width > self.width else self.width)]
+                    for i in range(height
+                                    if height > self.height else self.height)]
         self.width = width
         self.height = height
         for ob in self.obs:
@@ -71,16 +80,20 @@ class Submap(Map):
         self.x = x
         self.dynfps = dynfps
         self.bmap = bmap
-        self.map = [[self.bmap.background for j in range(width)] for i in range(height)]
+        self.map = [[self.bmap.background for j in range(width)]
+                for i in range(height)]
         self.obmap = [[[] for j in range(width)] for i in range(height)]
         self.obs = []
         self.out_old = ""
         self.remap()
 
     def remap(self):
-        self.map = [[self.bmap.background for j in range(self.width)] for i in range(self.height)]
-        for sy, y in zip(range(0, self.height), range(self.y, self.y+self.height)):
-            for sx, x in zip(range(0, self.width), range(self.x, self.x+self.width)):
+        self.map = [[self.bmap.background for j in range(self.width)]
+                for i in range(self.height)]
+        for sy, y in zip(range(0, self.height),
+                range(self.y, self.y+self.height)):
+            for sx, x in zip(range(0, self.width),
+                    range(self.x, self.x+self.width)):
                 try:
                     self.map[sy][sx] = self.bmap.map[y][x]
                 except:
@@ -89,7 +102,7 @@ class Submap(Map):
             ob.redraw()
 
     def set(self, x, y):
-        if x < 0 or y < 0: #or x+self.width>self.bmap.width or y+self.height>self.bmap.height:
+        if x < 0 or y < 0:
             return 1
         self.x = x
         self.y = y
@@ -106,7 +119,8 @@ class Object():
         self.char = char
         self.state = state
         self.added = False
-        self.arg_proto = arg_proto  # This was added to enable more than the default args for custom objects in Text and Square
+        self.arg_proto = arg_proto  # This was added to enable more than the
+# default args for custom objects in Text and Square
 
     def add(self, map, x, y):
         if not (0 <= x < map.width) or not (0 <= y < map.height):
@@ -164,7 +178,8 @@ class Object():
         return 0
 
     def __backup_setter(self):
-        if len(self.map.obmap[self.y][self.x]) > self.map.obmap[self.y][self.x].index(self)+1:
+        if (len(self.map.obmap[self.y][self.x])
+                > self.map.obmap[self.y][self.x].index(self)+1):
             self.map.obmap[self.y][self.x][self.map.obmap[self.y][self.x].index(self)+1].backup = self.backup
         else:
             self.map.map[self.y][self.x] = self.backup
@@ -253,7 +268,8 @@ class ObjectGroup():
 
 
 class Text(ObjectGroup):
-    def __init__(self, text, state="solid", esccode="", ob_class=Object, ob_args={}, ignore=""):
+    def __init__(self, text, state="solid", esccode="", ob_class=Object,
+            ob_args={}, ignore=""):
         self.obs = []
         self.ob_class = ob_class
         self.added = False
@@ -280,7 +296,8 @@ class Text(ObjectGroup):
             for i, char in enumerate(text):
                 if self.esccode != "":
                     char = self.esccode+char+"\033[0m"
-                self.obs.append(self.ob_class(char, self.state, arg_proto=self.ob_args))
+                self.obs.append(self.ob_class(char, self.state,
+                                            arg_proto=self.ob_args))
         for ob in self.obs:
             ob.group = self
 
@@ -314,7 +331,8 @@ class Text(ObjectGroup):
 
 
 class Square(ObjectGroup):
-    def __init__(self, char, width, height, state="solid", ob_class=Object, ob_args={}, threads=False):
+    def __init__(self, char, width, height, state="solid", ob_class=Object,
+            ob_args={}, threads=False):
         self.obs = []
         self.ob_class = ob_class
         self.width = width
@@ -332,18 +350,21 @@ class Square(ObjectGroup):
     def __create(self):
         for l in range(self.height):
             if self.threads:
-                threading.Thread(target=self.__one_line_create, args=(l,), daemon=True).start()
+                threading.Thread(target=self.__one_line_create,
+                        args=(l,), daemon=True).start()
             else:
                 self.__one_line_create(l)
 
     def __one_line_create(self, l):
         for i in range(self.width):
-            exec("self.ob_"+str(i)+"_"+str(l)+" = self.ob_class(self.char, self.state, arg_proto=self.ob_args)")
-            exec("self.obs.append(self.ob_"+str(i)+"_"+str(l)+")")
+            exec(f"self.ob_{i}_{l} = self.ob_class(self.char, self.state,\
+arg_proto=self.ob_args)")
+            exec(f"self.obs.append(self.ob_{i}_{l})")
 
     def __one_line_add(self, l):
         for i in range(self.width):
-            exec("self.exits.append(self.ob_"+str(i)+"_"+str(l)+".add(self.map, self.x+i, self.y+l))")
+            exec(f"self.exits.append(self.ob_{i}_{l}.add(self.map, self.x+i,\
+self.y+l))")
 
     def add(self, map, x, y):
         self.x = x
@@ -351,7 +372,8 @@ class Square(ObjectGroup):
         self.map = map
         for l in range(self.height):
             if self.threads:
-                threading.Thread(target=self.__one_line_add, args=(l,), daemon=True).start()
+                threading.Thread(target=self.__one_line_add, args=(l,),
+                        daemon=True).start()
             else:
                 self.__one_line_add(l)
         self.added = True
@@ -382,19 +404,31 @@ class Square(ObjectGroup):
 
 
 class Frame(ObjectGroup):
-    def __init__(self, height, width, corner_chars=["+", "+", "+", "+"], horizontal_chars=["-", "-"], vertical_chars=["|", "|"], state="solid", ob_class=Object, ob_args={}):
+    def __init__(self, height, width, corner_chars=["+", "+", "+", "+"],
+            horizontal_chars=["-", "-"], vertical_chars=["|", "|"],
+            state="solid", ob_class=Object, ob_args={}):
         self.height = height
         self.width = width
         self.ob_class = ob_class
         self.ob_args = ob_args
         self.added = False
         self.state = state
-        self.corners = [self.ob_class(i, arg_proto=self.ob_args, state=self.state) for i, j in zip(corner_chars, range(4))]
-        self.horizontals = [Square(char=i, width=self.width-2, height=1, state=self.state, ob_class=Object, ob_args={}) for i, j in zip(horizontal_chars, range(2))]
-        self.verticals = [Square(char=i, width=1, height=self.height-2, state=self.state, ob_class=Object, ob_args={}) for i, j in zip(vertical_chars, range(2))]
+        self.corner_chars = corner_chars
+        self.horizontal_chars = horizontal_chars
+        self.vertical_chars = vertical_chars
+        self.corners = [self.ob_class(i, arg_proto=self.ob_args,
+                            state=self.state)
+                        for i, j in zip(corner_chars, range(4))]
+        self.horizontals = [Square(char=i, width=self.width-2, height=1,
+                                state=self.state, ob_class=Object, ob_args={})
+                            for i, j in zip(horizontal_chars, range(2))]
+        self.verticals = [Square(char=i, width=1, height=self.height-2,
+                            state=self.state, ob_class=Object, ob_args={})
+                        for i, j in zip(vertical_chars, range(2))]
 
     def __add_obs(self):
-        for ob, rx, ry in zip(self.corners, [0, self.width-1, 0, self.width-1], [0, 0, self.height-1, self.height-1]):
+        for ob, rx, ry in zip(self.corners, [0, self.width-1, 0, self.width-1],
+                [0, 0, self.height-1, self.height-1]):
             ob.add(self.map, self.x+rx, self.y+ry)
         for ob, rx, ry in zip(self.horizontals, [1, 1], [0, self.height-1]):
             ob.add(self.map, self.x+rx, self.y+ry)
@@ -415,7 +449,8 @@ class Frame(ObjectGroup):
             ob.remove()
         self.__add_obs()
 
-    def rechar(self, corner_chars=["+", "+", "+", "+"], horizontal_char="-", vertical_char="|"):
+    def rechar(self, corner_chars=["+", "+", "+", "+"], horizontal_char="-",
+            vertical_char="|"):
         for ob, c in zip(self.corners, corner_chars):
             ob.rechar(c)
         for ob in self.horizontals:
@@ -427,6 +462,17 @@ class Frame(ObjectGroup):
         for ob in self.corners + self.horizontals + self.verticals:
             ob.remove()
         self.added = False
+
+    def resize(self, height, width):
+        added = self.added
+        if added:
+            self.remove()
+        self.__init__(height, width, corner_chars=self.corner_chars,
+            horizontal_chars=self.horizontal_chars,
+            vertical_chars=self.vertical_chars, state=self.state,
+            ob_class=self.ob_class, ob_args=self.ob_args)
+        if added:
+            self.add(self.map, self.x, self.y)
 
 
 class Box(ObjectGroup):
@@ -462,9 +508,14 @@ class Box(ObjectGroup):
             ob.remove()
         self.added = False
 
+    def resize(self, height, width):
+        self.heigth = height
+        self.width = width
+
 
 class Circle(Box):
-    def __init__(self, char, radius, state="solid", ob_class=Object, ob_args={}):
+    def __init__(self, char, radius, state="solid", ob_class=Object,
+            ob_args={}):
         super().__init__(0, 0)
         self.char = char
         self.ob_class = ob_class
@@ -477,7 +528,8 @@ class Circle(Box):
         for i in range(-(int(radius)+1), int(radius+1)+1):
             for j in range(-(int(radius)+1), int(radius+1)+1):
                 if math.sqrt((i)**2+(j)**2) <= radius:
-                    self.add_ob(self.ob_class(self.char, state=self.state, arg_proto=self.ob_args), i, j)
+                    self.add_ob(self.ob_class(self.char, state=self.state,
+                                            arg_proto=self.ob_args), i, j)
 
     def rechar(self, char):
         self.char = char
@@ -496,7 +548,8 @@ class Circle(Box):
 
 
 class Line(Box):
-    def __init__(self, char, cx, cy, type="straight", state="solid", ob_class=Object, ob_args={}):
+    def __init__(self, char, cx, cy, type="straight", state="solid",
+            ob_class=Object, ob_args={}):
         super().__init__(0, 0)
         self.char = char
         self.ob_class = ob_class
@@ -512,12 +565,16 @@ class Line(Box):
             for i in range(int(math.sqrt(cx**2))):
                 i = int(cx/math.sqrt(cx**2)*i)
                 j = {"straight": int, "crippled": round}[self.type](cy*i/cx)
-                self.add_ob(self.ob_class(self.char, state=self.state, arg_proto={**self.ob_args, **{"x": i, "y": cy*i/cx}}), i, j)
+                self.add_ob(self.ob_class(self.char, state=self.state,
+                    arg_proto={**self.ob_args, **{"x": i, "y": cy*i/cx}}),
+                    i, j)
         else:
             for j in range(int(math.sqrt(cy**2))):
                 j = int(cy/math.sqrt(cy**2)*j)
                 i = {"straight": int, "crippled": round}[self.type](cx*j/cy)
-                self.add_ob(self.ob_class(self.char, state=self.state, arg_proto={**self.ob_args, **{"x": cx*j/cy, "y": j}}), i, j)
+                self.add_ob(self.ob_class(self.char, state=self.state,
+                    arg_proto={**self.ob_args, **{"x": cx*j/cy, "y": j}}),
+                    i, j)
 
     def rechar(self, char):
         self.char = char

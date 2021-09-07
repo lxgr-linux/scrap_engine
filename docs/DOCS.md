@@ -245,6 +245,11 @@ Changes char for the character of the rectangle.
 #### Method ```scrap_engine.Frame.remove(self)```
 Removes the frame from the map.
 
+#### Method ```scrap_engine.Frame.resize(self, height, width)```
+Resizes the frame.
+- height:```int``` Height of the frame
+- width:```int``` Width of the frame
+
 ---
 
 ### scrap_engine.Box
@@ -275,6 +280,11 @@ Sets an object to another coordinate in the box.
 
 #### Method ```scrap_engine.Box.remove(self)```
 Removes the box from the map.
+
+#### Method ```scrap_engine.Box.resize(self, height, width)```
+Resizes the box.
+- height:```int``` Height of the box
+- width:```int``` Width of the box
 
 ---
 
