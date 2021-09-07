@@ -462,6 +462,10 @@ class Box(ObjectGroup):
             ob.remove()
         self.added = False
 
+    def resize(self, height, width):
+        self.heigth = height
+        self.width = width
+
 
 class Circle(Box):
     def __init__(self, char, radius, state="solid", ob_class=Object, ob_args={}):
