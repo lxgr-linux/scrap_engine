@@ -382,13 +382,18 @@ class Square(ObjectGroup):
 
 
 class Frame(ObjectGroup):
-    def __init__(self, height, width, corner_chars=["+", "+", "+", "+"], horizontal_chars=["-", "-"], vertical_chars=["|", "|"], state="solid", ob_class=Object, ob_args={}):
+    def __init__(self, height, width, corner_chars=["+", "+", "+", "+"], 
+            horizontal_chars=["-", "-"], vertical_chars=["|", "|"], 
+            state="solid", ob_class=Object, ob_args={}):
         self.height = height
         self.width = width
         self.ob_class = ob_class
         self.ob_args = ob_args
         self.added = False
         self.state = state
+        self.corner_chars = corner_chars
+        self.horizontal_chars = horizontal_chars
+        self.vertical_chars = vertical_chars
         self.corners = [self.ob_class(i, arg_proto=self.ob_args, state=self.state) for i, j in zip(corner_chars, range(4))]
         self.horizontals = [Square(char=i, width=self.width-2, height=1, state=self.state, ob_class=Object, ob_args={}) for i, j in zip(horizontal_chars, range(2))]
         self.verticals = [Square(char=i, width=1, height=self.height-2, state=self.state, ob_class=Object, ob_args={}) for i, j in zip(vertical_chars, range(2))]
@@ -427,6 +432,17 @@ class Frame(ObjectGroup):
         for ob in self.corners + self.horizontals + self.verticals:
             ob.remove()
         self.added = False
+
+    def resize(self, height, width):
+        added = self.added
+        if added:
+            self.remove()
+        self.__init__(height, width, corner_chars=self.corner_chars,
+            horizontal_chars=self.horizontal_chars, 
+            vertical_chars=self.vertical_chars, state=self.state, 
+            ob_class=self.ob_class, ob_args=self.ob_args)
+        if added:
+            self.add(self.map, self.x, self.y)
 
 
 class Box(ObjectGroup):
