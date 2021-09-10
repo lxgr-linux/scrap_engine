@@ -22,7 +22,6 @@ class Map():
         self.width=width
         self.dynfps=dynfps
         self.background=background
-        #self.map=[[self.background for j in range(width)] for i in range(height)]
         self.obmap=[[[Object(self.background, state="float")] 
             for j in range(width)] for i in range(height)]
         self.obs=[]
@@ -34,14 +33,11 @@ class Map():
                 self.map[l][i]=esccode+(blurmap.map[l][i].replace("\033[0m", "")[-1] if blurmap.obmap[l][i] == [] else blurmap.obmap[l][i][-1].char.replace("\033[0m", "")[-1])+"\033[0m"
 
     def show(self, init=False):
-        self.out = "\r\u001b["+str(self.height)+"A"
-        for y in range(self.height):
-            self.out_line = ""
-            for x in range(self.width):
-                self.out_line += self.obmap[y][x][-1].char
-            self.out += self.out_line
+        self.out = (f"\r\u001b[{self.height}A"
+                +"".join("".join(i[-1].char for i in j) for j in self.obmap)
+                +"\n\u001b[1000D")
         if self.out_old != self.out or self.dynfps == False or init == True:
-            print(self.out+"\n\u001b[1000D", end="")
+            print(self.out, end="")
             self.out_old = self.out
 
 
