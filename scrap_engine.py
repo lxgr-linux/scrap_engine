@@ -36,8 +36,9 @@ class Map():
 
     def resize(self, height, width, background="#"):
         self.background=background
-        self.map=[[self.background for j in range(width if width > self.width else self.width)] for i in range(height if height > self.height else self.height)]
-        self.obmap=[[[] for j in range(width)] for i in range(height)]
+        #self.map=[[self.background for j in range(width if width > self.width else self.width)] for i in range(height if height > self.height else self.height)]
+        self.obmap=[[[Object(self.background, state="float")] 
+            for j in range(width)] for i in range(height)]
         self.width=width
         self.height=height
         for ob in self.obs:
