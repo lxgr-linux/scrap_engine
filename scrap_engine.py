@@ -5,6 +5,17 @@ import time, os, threading
 
 width, height = os.get_terminal_size()
 
+
+class CoordinateError(Exception):
+    def __init__(self, ob, map, x, y):
+        self.ob = ob
+        self.x = x
+        self.y = y
+        self.map = map
+        super().__init__(f"The {ob}s coordinate ({x}|{y}) is \
+not in {map.width-1}x{map.height-1}")
+
+
 class Map():
     def __init__(self, height=height-1, width=width, background="#", dynfps=True):
         self.height=height
@@ -36,7 +47,6 @@ class Map():
 
     def resize(self, height, width, background="#"):
         self.background=background
-        #self.map=[[self.background for j in range(width if width > self.width else self.width)] for i in range(height if height > self.height else self.height)]
         self.obmap=[[[Object(self.background, state="float")] 
             for j in range(width)] for i in range(height)]
         self.width=width
@@ -57,17 +67,11 @@ class Submap(Map):
         self.x=x
         self.dynfps=dynfps
         self.bmap=bmap
-        #self.map=[["" for j in range(width)] for i in range(height)]
         self.obmap=[[[Object(" ", state="float")] 
                 for j in range(width)] for i in range(height)]        
         self.obs=[]
         self.out_old = ""
         self.remap()
-
-#    def remap(self):
- #       for l in range(self.height):
-  #          for i in range(self.width):
-   #             self.map[l][i]=self.bmap.map[self.y+l][self.x+i] if self.bmap.obmap[self.y+l][self.x+i] == [] else self.bmap.obmap[self.y+l][self.x+i][-1].char
 
     def remap(self):
         for h in range(self.height):
@@ -128,12 +132,11 @@ class Object():
         elif self.x > self.map.width-1 or self.y > self.map.height-1:
             self.pull_ob()
             return 1
-        for ob in self.map.obmap[y][x]:
-            if ob.state == "solid":
-                self.bump(ob, self.x-x, self.y-y)
-                return 1
-            elif ob.state == "float":
-                ob.action(self)
+        elif (ob := self.map.obmap[y][x][-1]).state == "solid":
+            self.bump(ob, self.x-x, self.y-y)
+            return 1
+        elif ob.state == "float":
+            ob.action(self)
         del self.map.obmap[self.y][self.x][self.map.obmap[self.y][self.x].index(self)]
         self.map.obmap[y][x].append(self)
         self.x=x
