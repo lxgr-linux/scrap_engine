@@ -104,6 +104,8 @@ class Object():
         self.arg_proto = arg_proto
 
     def add(self, map, x, y):
+        if not (0 <= x < map.width) or not (0 <= y < map.height):
+            raise CoordinateError(self, map, x, y)
         if "solid" == map.obmap[y][x][-1].state:
             return 1
         self.x=x
