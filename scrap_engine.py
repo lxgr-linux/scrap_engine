@@ -80,7 +80,7 @@ class Submap(Map):
                 self.obmap[h][w][0].rechar(char)
 
     def set(self, x, y):
-        if x<0 or y<0 or x+self.width>self.bmap.width or y+self.height>self.bmap.height:
+        if x<0 or y<0:
             return 1
         self.x=x
         self.y=y
