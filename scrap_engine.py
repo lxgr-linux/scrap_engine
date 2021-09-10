@@ -12,7 +12,8 @@ class Map():
         self.dynfps=dynfps
         self.background=background
         #self.map=[[self.background for j in range(width)] for i in range(height)]
-        self.obmap=[[[Object(self.background, state="float")] for j in range(width)] for i in range(height)]
+        self.obmap=[[[Object(self.background, state="float")] 
+            for j in range(width)] for i in range(height)]
         self.obs=[]
         self.out_old = ""
 
@@ -32,21 +33,6 @@ class Map():
             print(self.out+"\n\u001b[1000D", end="")
             self.out_old = self.out
 
-    #
-    # def show(self, init=False):
-    #     try:
-    #         self.out_old
-    #     except:
-    #         self.out_old = "test"
-    #     self.out="\r\u001b["+str(self.height)+"A"
-    #     for arr in self.map:
-    #         self.out_line = ""
-    #         for i in arr:
-    #             self.out_line += i
-    #         self.out += self.out_line
-    #     if self.out_old != self.out or self.dynfps == False or init == True:
-    #         print(self.out+"\n\u001b[1000D", end="")
-    #         self.out_old = self.out
 
     def resize(self, height, width, background="#"):
         self.background=background
@@ -70,15 +56,27 @@ class Submap(Map):
         self.x=x
         self.dynfps=dynfps
         self.bmap=bmap
-        self.map=[["" for j in range(width)] for i in range(height)]
-        self.obmap=[[[] for j in range(width)] for i in range(height)]
+        #self.map=[["" for j in range(width)] for i in range(height)]
+        self.obmap=[[[Object(" ", state="float")] 
+                for j in range(width)] for i in range(height)]        
         self.obs=[]
+        self.out_old = ""
         self.remap()
 
+#    def remap(self):
+ #       for l in range(self.height):
+  #          for i in range(self.width):
+   #             self.map[l][i]=self.bmap.map[self.y+l][self.x+i] if self.bmap.obmap[self.y+l][self.x+i] == [] else self.bmap.obmap[self.y+l][self.x+i][-1].char
+
     def remap(self):
-        for l in range(self.height):
-            for i in range(self.width):
-                self.map[l][i]=self.bmap.map[self.y+l][self.x+i] if self.bmap.obmap[self.y+l][self.x+i] == [] else self.bmap.obmap[self.y+l][self.x+i][-1].char
+        for h in range(self.height):
+            for w in range(self.width):
+                # print(h+self.y, self.bmap.height, w+self.x, self.bmap.width)
+                if h+self.y < self.bmap.height and w+self.x < self.bmap.width:
+                    char = self.bmap.obmap[h+self.y][w+self.x][-1].char
+                else:
+                    char = " "
+                self.obmap[h][w][0].rechar(char)
 
     def set(self, x, y):
         if x<0 or y<0 or x+self.width>self.bmap.width or y+self.height>self.bmap.height:
