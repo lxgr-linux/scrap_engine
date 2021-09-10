@@ -135,12 +135,12 @@ class Object():
         elif (ob := self.map.obmap[y][x][-1]).state == "solid":
             self.bump(ob, self.x-x, self.y-y)
             return 1
-        elif ob.state == "float":
-            ob.action(self)
         del self.map.obmap[self.y][self.x][self.map.obmap[self.y][self.x].index(self)]
         self.map.obmap[y][x].append(self)
         self.x=x
         self.y=y
+        if ob.state == "float":
+            ob.action(self)
         return 0
 
     def redraw(self):
