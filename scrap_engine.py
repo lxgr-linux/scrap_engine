@@ -100,7 +100,7 @@ class Object():
         self.arg_proto = arg_proto
 
     def add(self, map, x, y):
-        if "solid" in map.obmap[y][x]:
+        if "solid" == map.obmap[y][x][-1].state:
             return 1
         self.x=x
         self.y=y
