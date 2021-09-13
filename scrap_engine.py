@@ -1,8 +1,15 @@
 #!/usr/bin/env python3
-# This software is licensed under the GPL3
-# You should have gotten an copy of the GPL3 license anlonside this software
-# Feel free to contribute what ever you want to this engine
-# You can contribute here: https://github.com/lxgr-linux/scrap_engine
+"""
+Ascii game engine for the terminal.
+
+This software is licensed under the GPL3
+You should have gotten an copy of the GPL3 license anlonside this software
+Feel free to contribute what ever you want to this engine
+You can contribute here: https://github.com/lxgr-linux/scrap_engine
+"""
+
+__author__ = "lxgr <lxgr@protonmail.com>"
+__version__ = "0.3.3"
 
 import os, threading, math
 
