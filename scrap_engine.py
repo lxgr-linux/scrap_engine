@@ -117,7 +117,7 @@ class Map:
             try:
                 self.obmap[ob.y][ob.x].append(ob)
                 ob.redraw()
-            except:    # TODO: Check possible exceptions and specify
+            except IndexError:
                 pass
 
 
@@ -145,7 +145,7 @@ class Submap(Map):
                              range(self.x, self.x + self.width)):
                 try:
                     self.map[sy][sx] = self.bmap.map[y][x]
-                except:    # TODO: Check possible exceptions and specify
+                except IndexError:
                     continue
         for ob in self.obs:
             ob.redraw()
