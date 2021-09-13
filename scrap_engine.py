@@ -2,6 +2,27 @@
 """
 Ascii game engine for the terminal.
 
+The main data scructures are Map and Object.
+Maps are objects, Object objects can be added to and then can be shown on
+the screen.
+
+ObjectGroup and their daughters can be used to automate generetaing, adding,  
+removing etc. for a list of objects in their defined manner. 
+
+States:
+    Possible states an object can have are 'solid' and 'float'.
+    If an objects state is 'solid' no other object can be set over it,
+    so the other objects .set() method will return 1.
+    If an objects state i 'float' other objects can be set over them,
+    so their .set() methods will return 0.
+
+arg_proto:
+    arg_proto is an dictionary that is given to an object by 
+    the programmer or an object_group(circle, frame, etc.) via the ob_args 
+    argument.
+    This can be used to store various extra values and is especially usefull 
+    when using daughter classes of Object that needs extra values.
+
 This software is licensed under the GPL3
 You should have gotten an copy of the GPL3 license anlonside this software
 Feel free to contribute what ever you want to this engine
@@ -31,7 +52,7 @@ not in {map.width-1}x{map.height-1}")
 
 class Map():
     """
-    The map, objects can be added to
+    The map, objects can be added to.
     """
     def __init__(self, height=height-1, width=width, background="#",
             dynfps=True):
@@ -46,6 +67,9 @@ class Map():
         self.out_old = ""
 
     def blur_in(self, blurmap, esccode="\033[37m"):
+        """
+        Sets another maps content as its background.
+        """
         for l in range(self.height):
             for i in range(self.width):
                 if blurmap.map[l][i] != " ":
@@ -373,7 +397,7 @@ class ObjectGroup():
 
 class Text(ObjectGroup):
     """
-    A datatype containing a string.
+    A datatype containing a string, that can be added to a map.
     Different Texts can be added together with the '+' operator.
     """
     def __init__(self, text, state="solid", esccode="", ob_class=Object,
@@ -449,7 +473,7 @@ class Text(ObjectGroup):
 
 class Square(ObjectGroup):
     """
-    A rectangle.
+    A rectangle, that can be added to a map.
     """
     def __init__(self, char, width, height, state="solid", ob_class=Object,
             ob_args={}, threads=False):
@@ -543,6 +567,8 @@ class Frame(ObjectGroup):
     |    |
     |    |
     +----*
+
+    That can be added to map.
     """
     def __init__(self, height, width, corner_chars=["+", "+", "+", "+"],
             horizontal_chars=["-", "-"], vertical_chars=["|", "|"],
@@ -633,7 +659,7 @@ class Frame(ObjectGroup):
 class Box(ObjectGroup):
     """
     A datastucture used to group objects(groups) relative to a certain 
-    coordinate.
+    coordinate, that can be added to a map.
     """
     def __init__(self, height, width):
         self.height = height
@@ -689,7 +715,7 @@ class Box(ObjectGroup):
 
 class Circle(Box):
     """
-    A circle.
+    A circle, that can be added to a map.
     """
     def __init__(self, char, radius, state="solid", ob_class=Object,
             ob_args={}):
@@ -732,7 +758,7 @@ class Circle(Box):
 
 class Line(Box):
     """
-    A line described by a vector.
+    A line described by a vector, that cam be added to map.
     """
     def __init__(self, char, cx, cy, type="straight", state="solid",
             ob_class=Object, ob_args={}):
