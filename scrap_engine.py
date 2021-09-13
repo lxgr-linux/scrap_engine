@@ -179,8 +179,8 @@ class Object:
         self.char = char
         self.state = state
         self.added = False
-        self.arg_proto = arg_proto  # This was added to enable more than the
-        self.x = None               # default args for custom objects in Text and Square
+        self.arg_proto = arg_proto
+        self.x = None
         self.y = None
         self.backup = None
         self.map = None
@@ -225,9 +225,9 @@ class Object:
         elif self.x > self.map.width - 1 or self.y > self.map.height - 1:
             self.pull_ob()
             return 1
-        for ob in self.map.obmap[y][x]:
-            if ob.state == "solid":
-                self.bump(ob, self.x - x, self.y - y)
+        for obj in self.map.obmap[y][x]:
+            if obj.state == "solid":
+                self.bump(obj, self.x - x, self.y - y)
                 return 1
         self.__backup_setter()
         self.map.obmap[y][x].append(self)
@@ -666,8 +666,7 @@ class Frame(ObjectGroup):
         """
         Changes the frames size.
         """
-        added = self.added
-        if added:
+        if added := self.added:
             self.remove()
         self.__init__(height, width, corner_chars=self.corner_chars,
                       horizontal_chars=self.horizontal_chars,
