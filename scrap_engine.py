@@ -46,7 +46,7 @@ class CoordinateError(Exception):
     An Error that is thrown, when an object is added to a non-existing 
     part of a map.
     """
-    def __init__(self, ob, map, x, y):
+    def __init__(self, ob, map, x, y):  # TODO: rename map
         self.ob = ob
         self.x = x
         self.y = y
@@ -69,9 +69,7 @@ class Map:
                     for _ in range(height)]
         self.obmap = [[[] for _ in range(width)] for _ in range(height)]
         self.obs = []
-        self.out = "\r\u001b[" + str(self.height) + "A"
         self.out_old = ""
-        self.out_line = ""
 
     def blur_in(self, blurmap, esccode="\033[37m"):
         """
@@ -92,15 +90,15 @@ class Map:
         """
         Prints the maps content.
         """
-        self.out = "\r\u001b[" + str(self.height) + "A"
+        out = f"\r\u001b[{self.height}A"
         for arr in self.map:
-            self.out_line = ""
+            out_line = ""
             for i in arr:
-                self.out_line += i
-            self.out += self.out_line
-        if self.out_old != self.out or self.dynfps is False or init:
-            print(self.out + "\n\u001b[1000D", end="")
-            self.out_old = self.out
+                out_line += i
+            out += out_line
+        if self.out_old != out or not self.dynfps  or init:
+            print(out + "\n\u001b[1000D", end="")
+            self.out_old = out
 
     def resize(self, height, width, background="#"):
         """
