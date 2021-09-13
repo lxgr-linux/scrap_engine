@@ -75,14 +75,14 @@ class Map:
         """
         Sets another maps content as its background.
         """
-        for l in range(self.height):
-            for i in range(self.width):
-                if blurmap.map[l][i] != " ":
-                    self.map[l][i] = (esccode +
-                                      blurmap.map[l][i].replace("\033[0m", "")[-1] +
+        for h in range(self.height):
+            for w in range(self.width):
+                if blurmap.map[h][w] != " ":
+                    self.map[h][w] = (esccode +
+                                      blurmap.map[h][w].replace("\033[0m", "")[-1] +
                                       "\033[0m")
                 else:
-                    self.map[l][i] = " "
+                    self.map[h][w] = " "
         for ob in self.obs:
             ob.redraw()
 
@@ -93,8 +93,8 @@ class Map:
         out = f"\r\u001b[{self.height}A"
         for arr in self.map:
             out_line = ""
-            for i in arr:
-                out_line += i
+            for char in arr:
+                out_line += char
             out += out_line
         if self.out_old != out or not self.dynfps  or init:
             print(out + "\n\u001b[1000D", end="")
@@ -180,12 +180,10 @@ class Object:
         self.state = state
         self.added = False
         self.arg_proto = arg_proto  # This was added to enable more than the
-        self.x = None
+        self.x = None               # default args for custom objects in Text and Square
         self.y = None
         self.backup = None
         self.map = None
-
-    # default args for custom objects in Text and Square
 
     def add(self, map, x, y):
         """
@@ -401,8 +399,8 @@ class ObjectGroup:
         Sets all objects states to a certain state.
         """
         self.state = state
-        for i in self.obs:
-            i.set_state(state)
+        for ob in self.obs:
+            ob.set_state(state)
 
 
 class Text(ObjectGroup):
@@ -501,23 +499,23 @@ class Square(ObjectGroup):
         self.__create()
 
     def __create(self):
-        for l in range(self.height):
+        for i in range(self.height):
             if self.threads:
                 threading.Thread(target=self.__one_line_create,
-                                 args=(l,), daemon=True).start()
+                                 args=(i,), daemon=True).start()
             else:
-                self.__one_line_create(l)
+                self.__one_line_create(i)
 
-    def __one_line_create(self, l):
+    def __one_line_create(self, j):
         for i in range(self.width):
-            exec(f"self.ob_{i}_{l} = self.ob_class(self.char, self.state,\
+            exec(f"self.ob_{i}_{j} = self.ob_class(self.char, self.state,\
 arg_proto=self.ob_args)")
-            exec(f"self.obs.append(self.ob_{i}_{l})")
+            exec(f"self.obs.append(self.ob_{i}_{j})")
 
-    def __one_line_add(self, l):
+    def __one_line_add(self, j):
         for i in range(self.width):
-            exec(f"self.exits.append(self.ob_{i}_{l}.add(self.map, self.x+i,\
-self.y+l))")
+            exec(f"self.exits.append(self.ob_{i}_{j}.add(self.map, self.x+i,\
+self.y+j))")
 
     def add(self, map, x, y):
         """
@@ -526,12 +524,12 @@ self.y+l))")
         self.x = x
         self.y = y
         self.map = map
-        for l in range(self.height):
+        for i in range(self.height):
             if self.threads:
-                threading.Thread(target=self.__one_line_add, args=(l,),
+                threading.Thread(target=self.__one_line_add, args=(i,),
                                  daemon=True).start()
             else:
-                self.__one_line_add(l)
+                self.__one_line_add(i)
         self.added = True
         if 1 in self.exits:
             return 1
