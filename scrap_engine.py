@@ -184,6 +184,7 @@ class Object:
         self.y = None
         self.backup = None
         self.map = None
+        self.group = None
 
     def add(self, map_, x, y):
         """
@@ -343,8 +344,8 @@ class ObjectGroup:
         self.state = None
         self.obs = obs
         self.map = None
-        for ob in obs:
-            ob.group = self
+        for obj in obs:
+            obj.group = self
 
     def add_ob(self, ob):
         """
@@ -365,7 +366,7 @@ class ObjectGroup:
         Removes an object from the group.
         """
         if ob in self.obs:
-            ob.group = ""
+            ob.group = None
             self.obs.pop(self.obs.index(ob))
             return 0
         return 1
@@ -374,17 +375,17 @@ class ObjectGroup:
         """
         Moves all objects in the group by a certain vector.
         """
-        for ob in self.obs:
-            ob.remove()
-        for ob in self.obs:
-            ob.add(self.map, ob.x + x, ob.y + y)
+        for obj in self.obs:
+            obj.remove()
+        for obj in self.obs:
+            obj.add(self.map, obj.x + x, obj.y + y)
 
     def remove(self):
         """
         Removes all objects from their maps.
         """
-        for ob in self.obs:
-            ob.remove()
+        for obj in self.obs:
+            obj.remove()
 
     def set(self, x, y):
         """
@@ -400,8 +401,8 @@ class ObjectGroup:
         Sets all objects states to a certain state.
         """
         self.state = state
-        for ob in self.obs:
-            ob.set_state(state)
+        for obj in self.obs:
+            obj.set_state(state)
 
 
 class Text(ObjectGroup):
@@ -432,14 +433,14 @@ class Text(ObjectGroup):
         return self
 
     def __texter(self, text):
-        for text in text.split("\n"):
-            for char in text:
+        for txt in text.split("\n"):
+            for char in txt:
                 if self.esccode != "":
                     char = self.esccode + char + "\033[0m"
                 self.obs.append(self.ob_class(char, self.state,
                                               arg_proto=self.ob_args))
-        for ob in self.obs:
-            ob.group = self
+        for obj in self.obs:
+            obj.group = self
 
     def add(self, map_, x, y):
         """
@@ -451,9 +452,9 @@ class Text(ObjectGroup):
         self.y = y
         count = 0
         for l, text in enumerate(self.text.split("\n")):
-            for i, ob in enumerate(self.obs[count:count + len(text)]):
-                if ob.char != self.ignore:
-                    ob.add(self.map, x + i, y + l)
+            for i, obj in enumerate(self.obs[count:count + len(text)]):
+                if obj.char != self.ignore:
+                    obj.add(self.map, x + i, y + l)
             count += len(text)
 
     def remove(self):
@@ -461,8 +462,8 @@ class Text(ObjectGroup):
         Removes the text from the map.
         """
         self.added = False
-        for ob in self.obs:
-            ob.remove()
+        for obj in self.obs:
+            obj.remove()
 
     def rechar(self, text, esccode=""):
         """
@@ -470,8 +471,8 @@ class Text(ObjectGroup):
         """
         self.esccode = esccode
         if self.added:
-            for ob in self.obs:
-                ob.remove()
+            for obj in self.obs:
+                obj.remove()
         self.obs = []
         self.__texter(text)
         self.text = text
@@ -541,15 +542,15 @@ self.y+j))")
         Removes the square from the map.
         """
         self.added = False
-        for ob in self.obs:
-            ob.remove()
+        for obj in self.obs:
+            obj.remove()
 
     def rechar(self, char):
         """
         Changes the chars the Square is filled with.
         """
-        for ob in self.obs:
-            ob.rechar(char)
+        for obj in self.obs:
+            obj.rechar(char)
 
     def resize(self, width, height):
         """
@@ -581,6 +582,7 @@ class Frame(ObjectGroup):
     def __init__(self, height, width, corner_chars=None,
                  horizontal_chars=None, vertical_chars=None,
                  state="solid", ob_class=Object, ob_args=None):
+        super().__init__([])
         if ob_args is None:
             ob_args = {}
         if vertical_chars is None:
@@ -610,13 +612,13 @@ class Frame(ObjectGroup):
         self.map = None
 
     def __add_obs(self):
-        for ob, rx, ry in zip(self.corners, [0, self.width - 1, 0, self.width - 1],
+        for obj, rx, ry in zip(self.corners, [0, self.width - 1, 0, self.width - 1],
                               [0, 0, self.height - 1, self.height - 1]):
-            ob.add(self.map, self.x + rx, self.y + ry)
-        for ob, rx, ry in zip(self.horizontals, [1, 1], [0, self.height - 1]):
-            ob.add(self.map, self.x + rx, self.y + ry)
-        for ob, rx, ry in zip(self.verticals, [0, self.width - 1], [1, 1]):
-            ob.add(self.map, self.x + rx, self.y + ry)
+            obj.add(self.map, self.x + rx, self.y + ry)
+        for obj, rx, ry in zip(self.horizontals, [1, 1], [0, self.height - 1]):
+            obj.add(self.map, self.x + rx, self.y + ry)
+        for obj, rx, ry in zip(self.verticals, [0, self.width - 1], [1, 1]):
+            obj.add(self.map, self.x + rx, self.y + ry)
 
     def add(self, map_, x, y):
         """
@@ -634,8 +636,8 @@ class Frame(ObjectGroup):
         """
         self.x = x
         self.y = y
-        for ob in self.corners + self.horizontals + self.verticals:
-            ob.remove()
+        for obj in self.corners + self.horizontals + self.verticals:
+            obj.remove()
         self.__add_obs()
 
     def rechar(self, corner_chars=None, horizontal_char="-",
@@ -645,19 +647,19 @@ class Frame(ObjectGroup):
         """
         if corner_chars is None:
             corner_chars = ["+", "+", "+", "+"]
-        for ob, c in zip(self.corners, corner_chars):
-            ob.rechar(c)
-        for ob in self.horizontals:
-            ob.rechar(horizontal_char)
-        for ob in self.verticals:
-            ob.rechar(vertical_char)
+        for obj, c in zip(self.corners, corner_chars):
+            obj.rechar(c)
+        for obj in self.horizontals:
+            obj.rechar(horizontal_char)
+        for obj in self.verticals:
+            obj.rechar(vertical_char)
 
     def remove(self):
         """
         Removes the frame from the map.
         """
-        for ob in self.corners + self.horizontals + self.verticals:
-            ob.remove()
+        for obj in self.corners + self.horizontals + self.verticals:
+            obj.remove()
         self.added = False
 
     def resize(self, height, width):
@@ -693,8 +695,8 @@ class Box(ObjectGroup):
         self.x = x
         self.y = y
         self.map = map_
-        for ob in self.obs:
-            ob.add(self.map, ob.rx + self.x, ob.ry + self.y)
+        for obj in self.obs:
+            obj.add(self.map, obj.rx + self.x, obj.ry + self.y)
         self.added = True
 
     def add_ob(self, ob, x, y):
@@ -720,8 +722,8 @@ class Box(ObjectGroup):
         """
         Removes the box from the map.
         """
-        for ob in self.obs:
-            ob.remove()
+        for obj in self.obs:
+            obj.remove()
         self.added = False
 
     def resize(self, height, width):
@@ -760,8 +762,8 @@ class Circle(Box):
         Changes the chars the circle is filled with.
         """
         self.char = char
-        for ob in self.obs:
-            ob.rechar(char)
+        for obj in self.obs:
+            obj.rechar(char)
 
     def resize(self, radius):
         """
@@ -816,8 +818,8 @@ class Line(Box):
         Changes the chars the line is made from.
         """
         self.char = char
-        for ob in self.obs:
-            ob.rechar(char)
+        for obj in self.obs:
+            obj.rechar(char)
 
     def resize(self, cx, cy):
         """
