@@ -22,7 +22,7 @@ To run the examples install python and the pynput module via pip.
 See the project on [pypi](https://pypi.org/project/scrap-engine/)
 
 ## Usage
-See [examples](examples) and [Documentation](docs/DOCS.md).
+See [examples](examples) and [Documentation](docs/DOCS.md). For further documentation see ```pydoc scrap_engine.py```
 
 ## Examples and tests
 The examples in [examples](examples) are made to show how scrap_engine works in a simple and commented way by, in case of scrap_test, building a little game. For more examples you can look at [tests](tests) which also contain explanatory programs.
