@@ -46,11 +46,11 @@ class CoordinateError(Exception):
     An Error that is thrown, when an object is added to a non-existing 
     part of a map.
     """
-    def __init__(self, ob, map, x, y):  # TODO: rename map
+    def __init__(self, ob, map_, x, y):  # TODO: rename map
         self.ob = ob
         self.x = x
         self.y = y
-        self.map = map
+        self.map = map_
         super().__init__(f"The {ob}s coordinate ({x}|{y}) is \
 not in {map.width - 1}x{map.height - 1}")
 
@@ -185,21 +185,21 @@ class Object:
         self.backup = None
         self.map = None
 
-    def add(self, map, x, y):
+    def add(self, map_, x, y):
         """
         Adds the object to a certain coordinate on a certain map.
         """
-        if not (0 <= x < map.width) or not (0 <= y < map.height):
-            raise CoordinateError(self, map, x, y)
-        if "solid" in [ob.state for ob in map.obmap[y][x]]:
+        if not (0 <= x < map_.width) or not (0 <= y < map_.height):
+            raise CoordinateError(self, map_, x, y)
+        if "solid" in [ob.state for ob in map_.obmap[y][x]]:
             return 1
-        self.backup = map.map[y][x]
+        self.backup = map_.map[y][x]
         self.x = x
         self.y = y
-        map.map[y][x] = self.char
-        map.obmap[y][x].append(self)
-        map.obs.append(self)
-        self.map = map
+        map_.map[y][x] = self.char
+        map_.obmap[y][x].append(self)
+        map_.obs.append(self)
+        self.map = map_
         self.added = True
         return 0
 
@@ -440,19 +440,19 @@ class Text(ObjectGroup):
         for ob in self.obs:
             ob.group = self
 
-    def add(self, map, x, y):
+    def add(self, map_, x, y):
         """
         Adds the text to a certain coordinate on a certain map.
         """
         self.added = True
-        self.map = map
+        self.map = map_
         self.x = x
         self.y = y
         count = 0
         for l, text in enumerate(self.text.split("\n")):
             for i, ob in enumerate(self.obs[count:count + len(text)]):
                 if ob.char != self.ignore:
-                    ob.add(map, x + i, y + l)
+                    ob.add(self.map, x + i, y + l)
             count += len(text)
 
     def remove(self):
@@ -517,13 +517,13 @@ arg_proto=self.ob_args)")
             exec(f"self.exits.append(self.ob_{i}_{j}.add(self.map, self.x+i,\
 self.y+j))")
 
-    def add(self, map, x, y):
+    def add(self, map_, x, y):
         """
         Adds the square to a certain coordinate on a certain map.
         """
         self.x = x
         self.y = y
-        self.map = map
+        self.map = map_
         for i in range(self.height):
             if self.threads:
                 threading.Thread(target=self.__one_line_add, args=(i,),
@@ -617,13 +617,13 @@ class Frame(ObjectGroup):
         for ob, rx, ry in zip(self.verticals, [0, self.width - 1], [1, 1]):
             ob.add(self.map, self.x + rx, self.y + ry)
 
-    def add(self, map, x, y):
+    def add(self, map_, x, y):
         """
         Adds the frame to a certain coordinate on a certain map.
         """
         self.x = x
         self.y = y
-        self.map = map
+        self.map = map_
         self.__add_obs()
         self.added = True
 
@@ -685,13 +685,13 @@ class Box(ObjectGroup):
         self.width = width
         self.added = False
 
-    def add(self, map, x, y):
+    def add(self, map_, x, y):
         """
         Adds the box to a certain coordinate on a certain map.
         """
         self.x = x
         self.y = y
-        self.map = map
+        self.map = map_
         for ob in self.obs:
             ob.add(self.map, ob.rx + self.x, ob.ry + self.y)
         self.added = True
