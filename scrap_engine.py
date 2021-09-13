@@ -32,13 +32,12 @@ You can contribute here: https://github.com/lxgr-linux/scrap_engine
 __author__ = "lxgr <lxgr@protonmail.com>"
 __version__ = "0.3.3"
 
-# TODO: add comments or use more verbose var names (im looking at you "l")
 
 import math
 import os
 import threading
 
-width, height = os.get_terminal_size()
+screen_width, screen_height = os.get_terminal_size()
 
 
 class CoordinateError(Exception):
@@ -46,7 +45,7 @@ class CoordinateError(Exception):
     An Error that is thrown, when an object is added to a non-existing
     part of a map.
     """
-    def __init__(self, ob, map_, x, y):  # TODO: rename map
+    def __init__(self, ob, map_, x, y):
         self.ob = ob
         self.x = x
         self.y = y
@@ -59,7 +58,7 @@ class Map:
     """
     The map, objects can be added to.
     """
-    def __init__(self, height=height - 1, width=width, background="#",
+    def __init__(self, height=screen_height - 1, width=screen_width, background="#",
                  dynfps=True):
         self.height = height
         self.width = width
@@ -125,7 +124,8 @@ class Submap(Map):
     """
     Behaves just like a map, but it self contains a part of another map.
     """
-    def __init__(self, bmap, x, y, height=height - 1, width=width, dynfps=True):
+    def __init__(self, bmap, x, y, height=screen_height - 1,
+                 width=screen_width, dynfps=True):
         super().__init__(height, width, dynfps=dynfps)
         del self.background
         self.y = y
@@ -312,6 +312,7 @@ class Object:
             return 1
         self.map.map[self.y][self.x] = self.backup
         self.redraw()
+        return 0
 
     def remove(self):
         """
@@ -322,6 +323,7 @@ class Object:
         self.added = False
         self.__backup_setter()
         del self.map.obs[self.map.obs.index(self)]
+        return 0
 
     def set_state(self, state):
         """
@@ -362,11 +364,10 @@ class ObjectGroup:
         """
         Removes an object from the group.
         """
-        for i in range(len(self.obs)):
-            if ob == self.obs[i]:
-                self.obs[i].group = ""
-                del self.obs[i]
-                return 0
+        if ob in self.obs:
+            ob.group = ""
+            self.obs.pop(self.obs.index(ob))
+            return 0
         return 1
 
     def move(self, x=0, y=0):
@@ -432,7 +433,7 @@ class Text(ObjectGroup):
 
     def __texter(self, text):
         for text in text.split("\n"):
-            for i, char in enumerate(text):
+            for char in text:
                 if self.esccode != "":
                     char = self.esccode + char + "\033[0m"
                 self.obs.append(self.ob_class(char, self.state,
