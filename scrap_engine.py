@@ -558,14 +558,12 @@ self.y+j))")
         """
         self.width = width
         self.height = height
-        if self.added:
+        if added := self.added:
             self.remove()
-            self.obs = []
-            self.__create()
+        self.obs = []
+        self.__create()
+        if added:
             self.add(self.map, self.x, self.y)
-        else:
-            self.obs = []
-            self.__create()
 
 
 class Frame(ObjectGroup):
@@ -768,14 +766,12 @@ class Circle(Box):
         """
         Resizes the circle.
         """
-        if self.added:
+        if added := self.added:
             self.remove()
-            self.obs = []
-            self.__gen(radius)
+        self.obs = []
+        self.__gen(radius)
+        if added:
             self.add(self.map, self.x, self.y)
-        else:
-            self.obs = []
-            self.__gen(radius)
 
 
 class Line(Box):
@@ -824,11 +820,9 @@ class Line(Box):
         """
         Resizes the line.
         """
-        if self.added:
+        if added := self.added:
             self.remove()
-            self.obs = []
-            self.__gen(cx, cy)
+        self.obs = []
+        self.__gen(cx, cy)
+        if added:
             self.add(self.map, self.x, self.y)
-        else:
-            self.obs = []
-            self.__gen(cx, cy)
