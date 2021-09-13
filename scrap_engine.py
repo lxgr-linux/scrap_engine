@@ -6,8 +6,8 @@ The main data scructures are Map and Object.
 Maps are objects, Object objects can be added to and then can be shown on
 the screen.
 
-ObjectGroup and their daughters can be used to automate generetaing, adding,  
-removing etc. for a list of objects in their defined manner. 
+ObjectGroup and their daughters can be used to automate generetaing, adding,
+removing etc. for a list of objects in their defined manner.
 
 States:
     Possible states an object can have are 'solid' and 'float'.
@@ -17,10 +17,10 @@ States:
     so their .set() methods will return 0.
 
 arg_proto:
-    arg_proto is an dictionary that is given to an object by 
-    the programmer or an object_group(circle, frame, etc.) via the ob_args 
+    arg_proto is an dictionary that is given to an object by
+    the programmer or an object_group(circle, frame, etc.) via the ob_args
     argument.
-    This can be used to store various extra values and is especially usefull 
+    This can be used to store various extra values and is especially usefull
     when using daughter classes of Object that needs extra values.
 
 This software is licensed under the GPL3
@@ -43,7 +43,7 @@ width, height = os.get_terminal_size()
 
 class CoordinateError(Exception):
     """
-    An Error that is thrown, when an object is added to a non-existing 
+    An Error that is thrown, when an object is added to a non-existing
     part of a map.
     """
     def __init__(self, ob, map_, x, y):  # TODO: rename map
@@ -52,7 +52,7 @@ class CoordinateError(Exception):
         self.y = y
         self.map = map_
         super().__init__(f"The {ob}s coordinate ({x}|{y}) is \
-not in {map.width - 1}x{map.height - 1}")
+not in {self.map.width - 1}x{self.map.height - 1}")
 
 
 class Map:
@@ -189,7 +189,7 @@ class Object:
         """
         Adds the object to a certain coordinate on a certain map.
         """
-        if not (0 <= x < map_.width) or not (0 <= y < map_.height):
+        if not 0 <= x < map_.width or not 0 <= y < map_.height:
             raise CoordinateError(self, map_, x, y)
         if "solid" in [ob.state for ob in map_.obmap[y][x]]:
             return 1
@@ -296,9 +296,9 @@ class Object:
 
     def pull_ob(self):
         """
-        This is triggered, when trying to set an object from a non existing 
+        This is triggered, when trying to set an object from a non existing
         spot on the map to an existing one.
-        This is just usefull when resizing maps with objects out of the 
+        This is just usefull when resizing maps with objects out of the
         new size.
         """
         return
@@ -676,7 +676,7 @@ class Frame(ObjectGroup):
 
 class Box(ObjectGroup):
     """
-    A datastucture used to group objects(groups) relative to a certain 
+    A datastucture used to group objects(groups) relative to a certain
     coordinate, that can be added to a map.
     """
     def __init__(self, height, width):
@@ -780,7 +780,7 @@ class Line(Box):
     """
     A line described by a vector, that cam be added to map.
     """
-    def __init__(self, char, cx, cy, type="straight", state="solid",
+    def __init__(self, char, cx, cy, l_type="straight", state="solid",
                  ob_class=Object, ob_args=None):
         super().__init__(0, 0)
         if ob_args is None:
@@ -789,7 +789,7 @@ class Line(Box):
         self.ob_class = ob_class
         self.ob_args = ob_args
         self.state = state
-        self.type = type
+        self.type = l_type
         self.__gen(cx, cy)
 
     def __gen(self, cx, cy):
