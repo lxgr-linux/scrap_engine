@@ -141,12 +141,10 @@ class Submap(Map):
                          range(self.y, self.y + self.height)):
             for sx, x in zip(range(0, self.width),
                              range(self.x, self.x + self.width)):
-                try:
+                if y < self.bmap.height and x < self.bmap.width:
                     self.map[sy][sx] = self.bmap.map[y][x]
-                except IndexError:
-                    continue
-        for ob in self.obs:
-            ob.redraw()
+        for obj in self.obs:
+            obj.redraw()
 
     def set(self, x, y):
         """
