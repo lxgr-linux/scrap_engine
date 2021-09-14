@@ -505,15 +505,13 @@ class Square(ObjectGroup):
                 self.__one_line_create(i)
 
     def __one_line_create(self, j):
-        for i in range(self.width):
-            exec(f"self.ob_{i}_{j} = self.ob_class(self.char, self.state,\
-arg_proto=self.ob_args)")
-            exec(f"self.obs.append(self.ob_{i}_{j})")
+        for _ in range(self.width):
+            self.obs.append(self.ob_class(self.char, self.state,
+                            arg_proto=self.ob_args))
 
     def __one_line_add(self, j):
-        for i in range(self.width):
-            exec(f"self.exits.append(self.ob_{i}_{j}.add(self.map, self.x+i,\
-self.y+j))")
+        for i, obj in enumerate(self.obs[j*self.width : (j+1)*self.width]):
+            self.exits.append(obj.add(self.map, self.x+i, self.y+j))
 
     def add(self, map_, x, y):
         """
