@@ -13,7 +13,7 @@ States:
     Possible states an object can have are 'solid' and 'float'.
     If an objects state is 'solid' no other object can be set over it,
     so the other objects .set() method will return 1.
-    If an objects state i 'float' other objects can be set over them,
+    If an objects state is 'float' other objects can be set over them,
     so their .set() methods will return 0.
 
 arg_proto:
