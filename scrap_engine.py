@@ -2,11 +2,11 @@
 """
 Ascii game engine for the terminal.
 
-The main data scructures are Map and Object.
+The main data structures are Map and Object.
 Maps are objects, Object objects can be added to and then can be shown on
 the screen.
 
-ObjectGroup and their daughters can be used to automate generetaing, adding,  
+ObjectGroup and their daughters can be used to automate generating, adding,
 removing etc. for a list of objects in their defined manner. 
 
 States:
@@ -20,11 +20,11 @@ arg_proto:
     arg_proto is an dictionary that is given to an object by 
     the programmer or an object_group(circle, frame, etc.) via the ob_args 
     argument.
-    This can be used to store various extra values and is especially usefull 
+    This can be used to store various extra values and is especially useful
     when using daughter classes of Object that needs extra values.
 
 This software is licensed under the GPL3
-You should have gotten an copy of the GPL3 license anlonside this software
+You should have gotten an copy of the GPL3 license alongside this software
 Feel free to contribute what ever you want to this engine
 You can contribute here: https://github.com/lxgr-linux/scrap_engine
 """
@@ -32,11 +32,15 @@ You can contribute here: https://github.com/lxgr-linux/scrap_engine
 __author__ = "lxgr <lxgr@protonmail.com>"
 __version__ = "0.3.3"
 
-# TODO: add comments or use more verbose var names (im looking at you "l")
-
 import math
 import os
 import threading
+import functools
+
+MAXCACHE_LINE = 512
+MAXCACHE_FRAME = 64
+
+# TODO: add comments or use more verbose var names (im looking at you "l")
 
 width, height = os.get_terminal_size()
 
@@ -46,6 +50,7 @@ class CoordinateError(Exception):
     An Error that is thrown, when an object is added to a non-existing 
     part of a map.
     """
+
     def __init__(self, ob, map, x, y):
         self.ob = ob
         self.x = x
@@ -59,6 +64,7 @@ class Map:
     """
     The map, objects can be added to.
     """
+
     def __init__(self, height=height - 1, width=width, background="#",
                  dynfps=True):
         self.height = height
@@ -69,7 +75,6 @@ class Map:
                     for _ in range(height)]
         self.obmap = [[[] for _ in range(width)] for _ in range(height)]
         self.obs = []
-        self.out = "\r\u001b[" + str(self.height) + "A"
         self.out_old = ""
         self.out_line = ""
 
@@ -92,15 +97,27 @@ class Map:
         """
         Prints the maps content.
         """
-        self.out = "\r\u001b[" + str(self.height) + "A"
-        for arr in self.map:
-            self.out_line = ""
-            for i in arr:
-                self.out_line += i
-            self.out += self.out_line
-        if self.out_old != self.out or self.dynfps is False or init:
-            print(self.out + "\n\u001b[1000D", end="")
-            self.out_old = self.out
+        map = tuple([tuple(arr) for arr in self.map])
+        out = self.show_map(self.height, self.show_line,map)
+        if self.out_old != out or self.dynfps is False or init:
+            print(out + "\n\u001b[1000D", end="")
+            self.out_old = out
+
+    @staticmethod
+    @functools.lru_cache(MAXCACHE_FRAME)
+    def show_map(height, show_line, map):
+        out = "\r\u001b[" + str(height) + "A"
+        for arr in map:
+            out += show_line(arr)
+        return out
+
+    @staticmethod
+    @functools.lru_cache(MAXCACHE_LINE)
+    def show_line(arr):
+        out_line = ""
+        for i in arr:
+            out_line += i
+        return out_line
 
     def resize(self, height, width, background="#"):
         """
@@ -119,14 +136,16 @@ class Map:
             try:
                 self.obmap[ob.y][ob.x].append(ob)
                 ob.redraw()
-            except:    # TODO: Check possible exceptions and specify
-                pass
+            except Exception as err:  # TODO: Check possible exceptions and specify
+                print("please add specific error handling instead of blank except")
+                raise err
 
 
 class Submap(Map):
     """
     Behaves just like a map, but it self contains a part of another map.
     """
+
     def __init__(self, bmap, x, y, height=height - 1, width=width, dynfps=True):
         super().__init__(height, width, dynfps=dynfps)
         del self.background
@@ -139,18 +158,34 @@ class Submap(Map):
         """
         Updates the map (rereads the map, the submap contains a part from)
         """
-        self.map = [[self.bmap.background for _ in range(self.width)]
-                    for _ in range(self.height)]
-        for sy, y in zip(range(0, self.height),
+        self.map = self.full_bg(self.bmap.background, self.width, self.height)
+        """for sy, y in zip(range(0, self.height),
                          range(self.y, self.y + self.height)):
             for sx, x in zip(range(0, self.width),
                              range(self.x, self.x + self.width)):
                 try:
                     self.map[sy][sx] = self.bmap.map[y][x]
-                except:    # TODO: Check possible exceptions and specify
-                    continue
+                except Exception as err:  # TODO: Check possible exceptions and specify
+                    raise err"""
         for ob in self.obs:
             ob.redraw()
+
+    @staticmethod
+    def map_to_parent():
+        for sy, y in zip(range(0, self.height),
+                                 range(self.y, self.y + self.height)):
+                    for sx, x in zip(range(0, self.width),
+                                     range(self.x, self.x + self.width)):
+                        try:
+                            self.map[sy][sx] = self.bmap.map[y][x]
+                        except Exception as err:  # TODO: Check possible exceptions and specify
+                            raise err
+                
+    @staticmethod
+    @functools.lru_cache(1)
+    def full_bg(background, width, height):
+        return [[background for _ in range(width)]
+                for _ in range(height)]
 
     def set(self, x, y):
         """
@@ -175,6 +210,7 @@ class Object:
     """
     An object, containing a character, that can be added to a map.
     """
+
     def __init__(self, char, state="solid", arg_proto=None):
         if arg_proto is None:
             arg_proto = {}
@@ -339,6 +375,7 @@ class ObjectGroup:
     A datatype used to group objects together and do things with them
     simultaniuously.
     """
+
     def __init__(self, obs):
         self.y = None
         self.x = None
@@ -412,6 +449,7 @@ class Text(ObjectGroup):
     A datatype containing a string, that can be added to a map.
     Different Texts can be added together with the '+' operator.
     """
+
     def __init__(self, text, state="solid", esccode="", ob_class=Object,
                  ob_args=None, ignore=""):
         super().__init__([])
@@ -486,6 +524,7 @@ class Square(ObjectGroup):
     """
     A rectangle, that can be added to a map.
     """
+
     def __init__(self, char, width, height, state="solid", ob_class=Object,
                  ob_args=None, threads=False):
         super().__init__([])
@@ -581,6 +620,7 @@ class Frame(ObjectGroup):
 
     That can be added to map.
     """
+
     def __init__(self, height, width, corner_chars=None,
                  horizontal_chars=None, vertical_chars=None,
                  state="solid", ob_class=Object, ob_args=None):
@@ -683,6 +723,7 @@ class Box(ObjectGroup):
     A datastucture used to group objects(groups) relative to a certain 
     coordinate, that can be added to a map.
     """
+
     def __init__(self, height, width):
         super().__init__([])
         self.height = height
@@ -739,6 +780,7 @@ class Circle(Box):
     """
     A circle, that can be added to a map.
     """
+
     def __init__(self, char, radius, state="solid", ob_class=Object,
                  ob_args=None):
         super().__init__(0, 0)
@@ -784,6 +826,7 @@ class Line(Box):
     """
     A line described by a vector, that cam be added to map.
     """
+
     def __init__(self, char, cx, cy, type="straight", state="solid",
                  ob_class=Object, ob_args=None):
         super().__init__(0, 0)
