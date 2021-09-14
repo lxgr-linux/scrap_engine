@@ -36,6 +36,8 @@ __version__ = "0.3.3"
 import math
 import os
 import threading
+import functools
+import copy
 
 screen_width, screen_height = os.get_terminal_size()
 
@@ -64,8 +66,7 @@ class Map:
         self.width = width
         self.dynfps = dynfps
         self.background = background
-        self.map = [[self.background for _ in range(width)]
-                    for _ in range(height)]
+        self.map = self.gen_map(height, width, background)
         self.obmap = [[[] for _ in range(width)] for _ in range(height)]
         self.obs = []
         self.out_old = ""
@@ -82,8 +83,8 @@ class Map:
                                       "\033[0m")
                 else:
                     self.map[h][w] = " "
-        for ob in self.obs:
-            ob.redraw()
+        for obj in self.obs:
+            obj.redraw()
 
     def show(self, init=False):
         """
@@ -104,8 +105,7 @@ class Map:
         Resizes the map to a certain size.
         """
         self.background = background
-        self.map = [[self.background for _ in range(width)]
-                    for _ in range(height)]
+        self.map = self.gen_map(height, width, background)
         self.obmap = [[[] for _ in range(width
                                          if width > self.width else self.width)]
                       for _ in range(height
@@ -116,6 +116,15 @@ class Map:
             if obj.y < height and obj.x < width:
                 self.obmap[obj.y][obj.x].append(obj)
                 obj.redraw()
+
+    @staticmethod
+    @functools.lru_cache(100)
+    def __gen_map(height, width, background):
+        return [[background for _ in range(width)]
+                    for _ in range(height)]
+
+    def gen_map(self, height, width, background):
+        return copy.deepcopy(self.__gen_map(height, width, background))
 
 
 class Submap(Map):
@@ -135,8 +144,8 @@ class Submap(Map):
         """
         Updates the map (rereads the map, the submap contains a part from)
         """
-        self.map = [[self.bmap.background for _ in range(self.width)]
-                    for _ in range(self.height)]
+        self.map = self.gen_map(self.height, self.width, 
+                                  self.bmap.background)
         for sy, y in zip(range(0, self.height),
                          range(self.y, self.y + self.height)):
             for sx, x in zip(range(0, self.width),
