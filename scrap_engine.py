@@ -231,9 +231,9 @@ class Object:
         self.x = x
         self.y = y
         self.map.map[y][x] = self.char
-        for ob in self.map.obmap[y][x]:
-            if ob.state == "float":
-                ob.action(self)
+        for obj in self.map.obmap[y][x]:
+            if obj.state == "float":
+                obj.action(self)
         return 0
 
     def redraw(self):
@@ -354,8 +354,8 @@ class ObjectGroup:
         """
         Adds a list of objects to th group.
         """
-        for ob in obs:
-            self.add_ob(ob)
+        for obj in obs:
+            self.add_ob(obj)
 
     def rem_ob(self, ob):
         """
