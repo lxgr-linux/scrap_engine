@@ -112,12 +112,10 @@ class Map:
                                      if height > self.height else self.height)]
         self.width = width
         self.height = height
-        for ob in self.obs:
-            try:
-                self.obmap[ob.y][ob.x].append(ob)
-                ob.redraw()
-            except IndexError:
-                pass
+        for obj in self.obs:
+            if obj.y < height and obj.x < width:
+                self.obmap[obj.y][obj.x].append(obj)
+                obj.redraw()
 
 
 class Submap(Map):
@@ -606,7 +604,7 @@ class Frame(ObjectGroup):
                                       state=self.state)
                         for i, j in zip(self.corner_chars, range(4))]
         self.horizontals = [Square(char=i, width=self.width - 2, height=1,
-                                   state=self.state, ob_class=Object, 
+                                   state=self.state, ob_class=Object,
                                    ob_args={})
                             for i, j in zip(self.horizontal_chars, range(2))]
         self.verticals = [Square(char=i, width=1, height=self.height - 2,
