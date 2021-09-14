@@ -82,8 +82,8 @@ class Map:
                                       "\033[0m")
                 else:
                     self.map[h][w] = " "
-        for ob in self.obs:
-            ob.redraw()
+        for obj in self.obs:
+            obj.redraw()
 
     def show(self, init=False):
         """
@@ -188,7 +188,7 @@ class Object:
         """
         if not 0 <= x < map_.width or not 0 <= y < map_.height:
             raise CoordinateError(self, map_, x, y)
-        if "solid" in [ob.state for ob in map_.obmap[y][x]]:
+        if len(lis := map_.obmap[y][x]) != 0 and lis[-1].state == "solid":
             return 1
         self.backup = map_.map[y][x]
         self.x = x
