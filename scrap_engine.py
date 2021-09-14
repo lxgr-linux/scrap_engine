@@ -159,14 +159,14 @@ class Submap(Map):
         Updates the map (rereads the map, the submap contains a part from)
         """
         self.map = self.full_bg(self.bmap.background, self.width, self.height)
-        """for sy, y in zip(range(0, self.height),
+        for sy, y in zip(range(0, self.height),
                          range(self.y, self.y + self.height)):
             for sx, x in zip(range(0, self.width),
                              range(self.x, self.x + self.width)):
                 try:
                     self.map[sy][sx] = self.bmap.map[y][x]
                 except Exception as err:  # TODO: Check possible exceptions and specify
-                    raise err"""
+                    raise err
         for ob in self.obs:
             ob.redraw()
 
