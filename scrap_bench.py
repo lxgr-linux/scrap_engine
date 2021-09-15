@@ -25,13 +25,29 @@ def main():
     while True:
         time0 = time.time()
         times += time2
-        for ob in rectangle.obs:
-            ob.set(random.choice([ob.x, ob.x+1, ob.x-1]), random.choice([ob.y, ob.y+1, ob.y-1]))
+        """for ob in rectangle.obs:
+            ob.set(random.choice([ob.x, ob.x+1, ob.x-1]), random.choice([ob.y, ob.y+1, ob.y-1]))"""
+        r_list = []
+        t1 = time.perf_counter_ns()
+        for x in range(len(rectangle.obs)):
+            r_list.append((random.randint(-1, 1), random.randint(-1, 1)))
+        for ob_id in range(len(rectangle.obs)):
+            rectangle.obs[ob_id].set(rectangle.obs[ob_id].x+r_list[ob_id][0], rectangle.obs[ob_id].y+r_list[ob_id][1])
+        t2 = time.perf_counter_ns()
         text.rechar(str(time2))
+        t3 = time.perf_counter_ns()
         avr.rechar(str(times/tcount if tcount != 0 else 1))
         b_map.show()
+        t4 = time.perf_counter_ns()
+        b_map.show()
+        t5 = time.perf_counter_ns()
         tcount += 1
         time2 = time.time()-time0
+        """perf_times = [t1,t2,t3,t4,t5]
+        for x in range(len(perf_times)-1):
+            print(str(x)+"\t"+str(perf_times[x+1]-perf_times[x]))
+        time.sleep(2)"""
+
 
 if __name__ == "__main__":
     try:
