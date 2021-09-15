@@ -13,7 +13,7 @@ States:
     Possible states an object can have are 'solid' and 'float'.
     If an objects state is 'solid' no other object can be set over it,
     so the other objects .set() method will return 1.
-    If an objects state i 'float' other objects can be set over them,
+    If an objects state is 'float' other objects can be set over them,
     so their .set() methods will return 0.
 
 arg_proto:
@@ -90,8 +90,8 @@ class Map:
                                       "\033[0m")
                 else:
                     self.map[h][w] = " "
-        for ob in self.obs:
-            ob.redraw()
+        for obj in self.obs:
+            obj.redraw()
 
     def show(self, init=False):
         """
@@ -132,12 +132,10 @@ class Map:
                                      if height > self.height else self.height)]
         self.width = width
         self.height = height
-        for ob in self.obs:
-            try:
-                self.obmap[ob.y][ob.x].append(ob)
-                ob.redraw()
-            except IndexError:
-                pass
+        for obj in self.obs:
+            if obj.y < height and obj.x < width:
+                self.obmap[obj.y][obj.x].append(obj)
+                obj.redraw()
 
 
 class Submap(Map):
@@ -163,12 +161,10 @@ class Submap(Map):
                          range(self.y, self.y + self.height)):
             for sx, x in zip(range(0, self.width),
                              range(self.x, self.x + self.width)):
-                try:
+                if y < self.bmap.height and x < self.bmap.width:
                     self.map[sy][sx] = self.bmap.map[y][x]
-                except Exception as err:  # TODO: Check possible exceptions and specify
-                    raise err
-        for ob in self.obs:
-            ob.redraw()
+        for obj in self.obs:
+            obj.redraw()
 
     def map_to_parent(self):
         for sy, y in zip(range(0, self.height),
@@ -229,7 +225,7 @@ class Object:
         """
         if not 0 <= x < map_.width or not 0 <= y < map_.height:
             raise CoordinateError(self, map_, x, y)
-        if "solid" in [ob.state for ob in map_.obmap[y][x]]:
+        if len(lis := map_.obmap[y][x]) != 0 and lis[-1].state == "solid":
             return 1
         self.backup = map_.map[y][x]
         self.x = x
@@ -272,9 +268,9 @@ class Object:
         self.x = x
         self.y = y
         self.map.map[y][x] = self.char
-        for ob in self.map.obmap[y][x]:
-            if ob.state == "float":
-                ob.action(self)
+        for obj in self.map.obmap[y][x]:
+            if obj.state == "float":
+                obj.action(self)
         return 0
 
     def redraw(self):
@@ -396,8 +392,8 @@ class ObjectGroup:
         """
         Adds a list of objects to th group.
         """
-        for ob in obs:
-            self.add_ob(ob)
+        for obj in obs:
+            self.add_ob(obj)
 
     def rem_ob(self, ob):
         """
@@ -549,15 +545,13 @@ class Square(ObjectGroup):
                 self.__one_line_create(i)
 
     def __one_line_create(self, j):
-        for i in range(self.width):
-            exec(f"self.ob_{i}_{j} = self.ob_class(self.char, self.state,\
-arg_proto=self.ob_args)")
-            exec(f"self.obs.append(self.ob_{i}_{j})")
+        for _ in range(self.width):
+            self.obs.append(self.ob_class(self.char, self.state,
+                            arg_proto=self.ob_args))
 
     def __one_line_add(self, j):
-        for i in range(self.width):
-            exec(f"self.exits.append(self.ob_{i}_{j}.add(self.map, self.x+i,\
-self.y+j))")
+        for i, obj in enumerate(self.obs[j*self.width : (j+1)*self.width]):
+            self.exits.append(obj.add(self.map, self.x+i, self.y+j))
 
     def add(self, map_, x, y):
         """
@@ -639,16 +633,21 @@ class Frame(ObjectGroup):
         self.corner_chars = corner_chars
         self.horizontal_chars = horizontal_chars
         self.vertical_chars = vertical_chars
+        self.__gen_obs()
+        self.map = None
+
+    def __gen_obs(self):
         self.corners = [self.ob_class(i, arg_proto=self.ob_args,
                                       state=self.state)
-                        for i, j in zip(corner_chars, range(4))]
+                        for i, j in zip(self.corner_chars, range(4))]
         self.horizontals = [Square(char=i, width=self.width - 2, height=1,
-                                   state=self.state, ob_class=Object, ob_args={})
-                            for i, j in zip(horizontal_chars, range(2))]
+                                   state=self.state, ob_class=Object,
+                                   ob_args={})
+                            for i, j in zip(self.horizontal_chars, range(2))]
         self.verticals = [Square(char=i, width=1, height=self.height - 2,
                                  state=self.state, ob_class=Object, ob_args={})
-                          for i, j in zip(vertical_chars, range(2))]
-        self.map = None
+                          for i, j in zip(self.vertical_chars, range(2))]
+
 
     def __add_obs(self):
         for obj, rx, ry in zip(self.corners, [0, self.width - 1, 0, self.width - 1],
@@ -705,12 +704,11 @@ class Frame(ObjectGroup):
         """
         Changes the frames size.
         """
+        self.height = height
+        self.width = width
         if added := self.added:
             self.remove()
-        self.__init__(height, width, corner_chars=self.corner_chars,
-                      horizontal_chars=self.horizontal_chars,
-                      vertical_chars=self.vertical_chars, state=self.state,
-                      ob_class=self.ob_class, ob_args=self.ob_args)
+        self.__gen_obs()
         if added:
             self.add(self.map, self.x, self.y)
 
