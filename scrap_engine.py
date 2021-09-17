@@ -32,7 +32,6 @@ You can contribute here: https://github.com/lxgr-linux/scrap_engine
 __author__ = "lxgr <lxgr@protonmail.com>"
 __version__ = "0.3.3"
 
-
 import math
 import os
 import threading
@@ -44,6 +43,8 @@ MAXCACHE_FRAME = 64
 # TODO: add comments or use more verbose var names (im looking at you "l")
 
 screen_width, screen_height = os.get_terminal_size()
+
+width, height = screen_width, screen_height  # backwards compatibility
 
 
 class CoordinateError(Exception):
@@ -98,7 +99,7 @@ class Map:
         Prints the maps content.
         """
         map = tuple([tuple(arr) for arr in self.map])
-        out = self.show_map(self.height, self.show_line,map)
+        out = self.show_map(self.height, self.show_line, map)
         if self.out_old != out or self.dynfps is False or init:
             print(out + "\n\u001b[1000D", end="")
             self.out_old = out
@@ -157,24 +158,32 @@ class Submap(Map):
         Updates the map (rereads the map, the submap contains a part from)
         """
         self.map = self.full_bg(self.bmap.background, self.width, self.height)
-        for sy, y in zip(range(0, self.height),
+        """for sy, y in zip(range(0, self.height),
                          range(self.y, self.y + self.height)):
             for sx, x in zip(range(0, self.width),
                              range(self.x, self.x + self.width)):
                 if y < self.bmap.height and x < self.bmap.width:
-                    self.map[sy][sx] = self.bmap.map[y][x]
+                    self.map[sy][sx] = self.bmap.map[y][x]"""
+        self.map = self.map_to_parent(self.height, self.width, self.y, self.x,
+                                      tuple([tuple(line) for line in self.map]),
+                                      tuple([tuple(line) for line in self.bmap.map]))
         for obj in self.obs:
             obj.redraw()
 
-    def map_to_parent(self):
-        for sy, y in zip(range(0, self.height),
-                                 range(self.y, self.y + self.height)):
-                    for sx, x in zip(range(0, self.width),
-                                     range(self.x, self.x + self.width)):
-                        try:
-                            self.map[sy][sx] = self.bmap.map[y][x]
-                        except IndexError:  # TODO: Check possible exceptions and specify
-                            continue
+    @staticmethod
+    @functools.lru_cache()
+    def map_to_parent(height, width, y_, x_, parent, child):
+        parent = [list(line) for line in parent]
+        child = [list(line) for line in child]
+        for sy, y in zip(range(0, height),
+                         range(y_, y_ + height)):
+            for sx, x in zip(range(0, width),
+                             range(x_, x_ + width)):
+                try:
+                    parent[sy][sx] = child[y][x]
+                except IndexError:
+                    continue
+        return parent
 
     @staticmethod
     @functools.lru_cache(1)
@@ -547,11 +556,11 @@ class Square(ObjectGroup):
     def __one_line_create(self, j):
         for _ in range(self.width):
             self.obs.append(self.ob_class(self.char, self.state,
-                            arg_proto=self.ob_args))
+                                          arg_proto=self.ob_args))
 
     def __one_line_add(self, j):
-        for i, obj in enumerate(self.obs[j*self.width : (j+1)*self.width]):
-            self.exits.append(obj.add(self.map, self.x+i, self.y+j))
+        for i, obj in enumerate(self.obs[j * self.width: (j + 1) * self.width]):
+            self.exits.append(obj.add(self.map, self.x + i, self.y + j))
 
     def add(self, map_, x, y):
         """
@@ -648,10 +657,9 @@ class Frame(ObjectGroup):
                                  state=self.state, ob_class=Object, ob_args={})
                           for i, j in zip(self.vertical_chars, range(2))]
 
-
     def __add_obs(self):
         for obj, rx, ry in zip(self.corners, [0, self.width - 1, 0, self.width - 1],
-                              [0, 0, self.height - 1, self.height - 1]):
+                               [0, 0, self.height - 1, self.height - 1]):
             obj.add(self.map, self.x + rx, self.y + ry)
         for obj, rx, ry in zip(self.horizontals, [1, 1], [0, self.height - 1]):
             obj.add(self.map, self.x + rx, self.y + ry)
