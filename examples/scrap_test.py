@@ -194,99 +194,87 @@ recognising.start()
 
 smap.remap()
 smap.show() # showing smap Map
-
-time_1 = 0
-time_2 = 0
-
-try:
-    while True:
-        if ev == "'w'":
-            player.direction="t"
-            player.set(player.x, player.y-1) # Doing something on keypress w
-            ev=0
-        elif ev == "'a'":
-            player.direction="l"
-            player.set(player.x-1, player.y) # Doing something different on keypress a
-            ev=0
-        elif ev == "'s'":
-            player.direction="b"
-            player.set(player.x, player.y+1) # Doing something more different on keypress s
-            ev=0
-        elif ev == "'d'":
-            player.direction="r"
-            player.set(player.x+1, player.y) # Doing yet another different thing on keypress d
-            ev=0
-        elif ev2 == "Key.up":
-            player0.direction="t"
-            player0.set(player0.x, player0.y-1) # Doing something on keypress w
-            ev2=0
-        elif ev2 == "Key.left":
-            player0.direction="l"
-            player0.set(player0.x-1, player0.y) # Doing something different on keypress a
-            ev2=0
-        elif ev2 == "Key.down":
-            player0.direction="b"
-            player0.set(player0.x, player0.y+1) # Doing something more different on keypress s
-            ev2=0
-        elif ev2 == "Key.right":
-            player0.direction="r"
-            player0.set(player0.x+1, player0.y) # Doing yet another different thing on keypress d
-            ev2=0
-        elif ev == "'e'":
-            text2.rechar("thus\nus\nmultiline mext!")
-            square2.rechar("A") # Doing some weird shit on keypress e
-            ev=0
-        elif ev == "'q'":
-            # Creating and adding some Object on keypress q
-            exec("ob_"+str(obcount)+"=se.Object('A', state='solid')")
-            exec("ob_"+str(obcount)+".add(map, player.x+1, player.y)")
-            obcount+=1
-            ev=0
-        elif ev == "'m'":
-            menu() # Running the menu function on keypress q to open the menu
-            smap.show(init=True) # The init=True option ensures, the map Map is drawn after closing the menu, even if no changes accured in the map
-            smap.remap()
-            ev=0
-        elif ev == "Key.space":
-            shoot(player)
-            ev=0
-        elif ev2 == "'#'":
-            shoot(player0)
-            ev2=0
-        else:
-            time.sleep(0.05) # Else just wait 0.05 seconds
-        # Let lui run
-        if luisframe+20 == framenum:
-            if lui.x == 20 and luisview == "l":
-                lui.set(19, 10)
-                luisview="r"
-            elif lui.x == 20 and luisview == "r":
-                lui.set(21, 10)
-                luisview="l"
-            elif lui.x == 19 or lui.x == 21:
-                lui.set(20, 10)
-            luisframe+=20
-        for ob in [player, player0]:
-            if ob.x+5 > smap.x+smap.width:
-                smap.set(smap.x+1 ,smap.y)
-            if ob.x < smap.x+5:
-                smap.set(smap.x-1 ,smap.y)
-        for ob in bullets:
-            if ob.direction == "t":
-                ob.set(ob.x, ob.y-1)
-            elif ob.direction == "l":
-                ob.set(ob.x-1, ob.y)
-            elif ob.direction == "b":
-                ob.set(ob.x, ob.y+1)
-            elif ob.direction == "r":
-                ob.set(ob.x+1, ob.y)
-        t2 = time.perf_counter_ns()
+while True:
+    if ev == "'w'":
+        player.direction="t"
+        player.set(player.x, player.y-1) # Doing something on keypress w
+        ev=0
+    elif ev == "'a'":
+        player.direction="l"
+        player.set(player.x-1, player.y) # Doing something different on keypress a
+        ev=0
+    elif ev == "'s'":
+        player.direction="b"
+        player.set(player.x, player.y+1) # Doing something more different on keypress s
+        ev=0
+    elif ev == "'d'":
+        player.direction="r"
+        player.set(player.x+1, player.y) # Doing yet another different thing on keypress d
+        ev=0
+    elif ev2 == "Key.up":
+        player0.direction="t"
+        player0.set(player0.x, player0.y-1) # Doing something on keypress w
+        ev2=0
+    elif ev2 == "Key.left":
+        player0.direction="l"
+        player0.set(player0.x-1, player0.y) # Doing something different on keypress a
+        ev2=0
+    elif ev2 == "Key.down":
+        player0.direction="b"
+        player0.set(player0.x, player0.y+1) # Doing something more different on keypress s
+        ev2=0
+    elif ev2 == "Key.right":
+        player0.direction="r"
+        player0.set(player0.x+1, player0.y) # Doing yet another different thing on keypress d
+        ev2=0
+    elif ev == "'e'":
+        text2.rechar("thus\nus\nmultiline mext!")
+        square2.rechar("A") # Doing some weird shit on keypress e
+        ev=0
+    elif ev == "'q'":
+        # Creating and adding some Object on keypress q
+        exec("ob_"+str(obcount)+"=se.Object('A', state='solid')")
+        exec("ob_"+str(obcount)+".add(map, player.x+1, player.y)")
+        obcount+=1
+        ev=0
+    elif ev == "'m'":
+        menu() # Running the menu function on keypress q to open the menu
+        smap.show(init=True) # The init=True option ensures, the map Map is drawn after closing the menu, even if no changes accured in the map
         smap.remap()
-        t1 = time.perf_counter_ns()
-        smap.show()  # Draw the frame
-        time_1 += time.perf_counter_ns() - t1
-        time_2 += t1 - t2
-        framenum+=1
-except KeyboardInterrupt:
-    print(str((time_1/framenum)/10**9)+"s")
-    print(str((time_2/framenum)/10**9)+"s")
+        ev=0
+    elif ev == "Key.space":
+        shoot(player)
+        ev=0
+    elif ev2 == "'#'":
+        shoot(player0)
+        ev2=0
+    else:
+        time.sleep(0.05) # Else just wait 0.05 seconds
+    # Let lui run
+    if luisframe+20 == framenum:
+        if lui.x == 20 and luisview == "l":
+            lui.set(19, 10)
+            luisview="r"
+        elif lui.x == 20 and luisview == "r":
+            lui.set(21, 10)
+            luisview="l"
+        elif lui.x == 19 or lui.x == 21:
+            lui.set(20, 10)
+        luisframe+=20
+    for ob in [player, player0]:
+        if ob.x+5 > smap.x+smap.width:
+            smap.set(smap.x+1 ,smap.y)
+        if ob.x < smap.x+5:
+            smap.set(smap.x-1 ,smap.y)
+    for ob in bullets:
+        if ob.direction == "t":
+            ob.set(ob.x, ob.y-1)
+        elif ob.direction == "l":
+            ob.set(ob.x-1, ob.y)
+        elif ob.direction == "b":
+            ob.set(ob.x, ob.y+1)
+        elif ob.direction == "r":
+            ob.set(ob.x+1, ob.y)
+    smap.remap()
+    smap.show() # Draw the frame
+    framenum+=1
