@@ -312,12 +312,13 @@ Changes the radius of the circle
 ### scrap_engine.Line
 A line that can be drawn on the map, that's described by a vector. This is a daughter class of ```scrap_engine.Box``` and shares all its methods. The unrounded coordinates of the single points Objects of the line are passed in arg_proto to the Objects.
 
-#### Method ```scrap_engine.Line.__init__(self, char, cx, cy, state="straight", state="solid", ob_class=Object, ob_args={})```
+#### Method ```scrap_engine.Line.__init__(self, char, cx, cy, l_type="straight", state="solid", ob_class=Object, ob_args={})```
 Constructor.
 - char:```String``` Character used for the circle
 - cx: ```float``` X component of the vector
 - cy: ```float``` Y component of the vector
 - state:```String``` State ```"solid"``` or ```"float"```, that indices the behaviour of the Object. ```"solid"``` means that not other objects can be put over the object, ```"float"``` means that it is possible.
+- l_type:```String``` The type the line should have `straight` or `crippled` 
 - ob_class:```class``` The class of the objects in the label, that should be used
 - ob_args:```dictionary``` This dictionary is passed as ```arg_proto``` to the objects
 
@@ -360,8 +361,8 @@ A wrapper for ```scrap_engine.Submap.show()``` and ```scrap_engine.Submap.remap(
 ### CoordinateError
 The CoordinateError is raised, when an Object is tried to add to an impossible coordinate.
 Its' attributes are:
-- ob:`scrap_engine.Object` The Object that's tried to add
-- map:`scrap_engine.Map` The Map the Object is tried to add to
+- obj:`scrap_engine.Object` The Object that's tried to add
+- map_:`scrap_engine.Map` The Map the Object is tried to add to
 - x:`int` The x coordinate the Object is tried to add to
 - y:`int` The y coordinate the Object is tried to add to
 

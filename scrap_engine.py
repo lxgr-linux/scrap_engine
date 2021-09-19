@@ -2,29 +2,29 @@
 """
 Ascii game engine for the terminal.
 
-The main data scructures are Map and Object.
+The main data structures are Map and Object.
 Maps are objects, Object objects can be added to and then can be shown on
 the screen.
 
-ObjectGroup and their daughters can be used to automate generetaing, adding,  
-removing etc. for a list of objects in their defined manner. 
+ObjectGroup and their daughters can be used to automate generating, adding,
+removing etc. for a list of objects in their defined manner.
 
 States:
     Possible states an object can have are 'solid' and 'float'.
     If an objects state is 'solid' no other object can be set over it,
     so the other objects .set() method will return 1.
-    If an objects state i 'float' other objects can be set over them,
+    If an objects state is 'float' other objects can be set over them,
     so their .set() methods will return 0.
 
 arg_proto:
-    arg_proto is an dictionary that is given to an object by 
-    the programmer or an object_group(circle, frame, etc.) via the ob_args 
+    arg_proto is an dictionary that is given to an object by
+    the programmer or an object_group(circle, frame, etc.) via the ob_args
     argument.
-    This can be used to store various extra values and is especially usefull 
+    This can be used to store various extra values and is especially useful
     when using daughter classes of Object that needs extra values.
 
 This software is licensed under the GPL3
-You should have gotten an copy of the GPL3 license anlonside this software
+You should have gotten an copy of the GPL3 license alongside this software
 Feel free to contribute what ever you want to this engine
 You can contribute here: https://github.com/lxgr-linux/scrap_engine
 """
@@ -32,35 +32,38 @@ You can contribute here: https://github.com/lxgr-linux/scrap_engine
 __author__ = "lxgr <lxgr@protonmail.com>"
 __version__ = "0.3.3"
 
-# TODO: add comments or use more verbose var names (im looking at you "l")
-
 import math
 import os
 import threading
+import functools
 
-width, height = os.get_terminal_size()
+MAXCACHE_LINE = 512
+MAXCACHE_FRAME = 64
 
+screen_width, screen_height = os.get_terminal_size()
 
 class CoordinateError(Exception):
     """
-    An Error that is thrown, when an object is added to a non-existing 
+    An Error that is thrown, when an object is added to a non-existing
     part of a map.
     """
-    def __init__(self, ob, map, x, y):
-        self.ob = ob
+
+    def __init__(self, obj, map_, x, y):
+        self.ob = obj
         self.x = x
         self.y = y
-        self.map = map
-        super().__init__(f"The {ob}s coordinate ({x}|{y}) is \
-not in {map.width - 1}x{map.height - 1}")
+        self.map = map_
+        super().__init__(f"The {obj}s coordinate ({x}|{y}) is \
+not in {self.map.width - 1}x{self.map.height - 1}")
 
 
 class Map:
     """
     The map, objects can be added to.
     """
-    def __init__(self, height=height - 1, width=width, background="#",
-                 dynfps=True):
+
+    def __init__(self, height=screen_height - 1, width=screen_width,
+                 background="#", dynfps=True):
         self.height = height
         self.width = width
         self.dynfps = dynfps
@@ -69,38 +72,48 @@ class Map:
                     for _ in range(height)]
         self.obmap = [[[] for _ in range(width)] for _ in range(height)]
         self.obs = []
-        self.out = "\r\u001b[" + str(self.height) + "A"
         self.out_old = ""
-        self.out_line = ""
 
     def blur_in(self, blurmap, esccode="\033[37m"):
         """
         Sets another maps content as its background.
         """
-        for l in range(self.height):
-            for i in range(self.width):
-                if blurmap.map[l][i] != " ":
-                    self.map[l][i] = (esccode +
-                                      blurmap.map[l][i].replace("\033[0m", "")[-1] +
+        for h in range(self.height):
+            for w in range(self.width):
+                if blurmap.map[h][w] != " ":
+                    self.map[h][w] = (esccode +
+                                      blurmap.map[h][w].replace("\033[0m", "")[-1] +
                                       "\033[0m")
                 else:
-                    self.map[l][i] = " "
-        for ob in self.obs:
-            ob.redraw()
+                    self.map[h][w] = " "
+        for obj in self.obs:
+            obj.redraw()
 
     def show(self, init=False):
         """
         Prints the maps content.
         """
-        self.out = "\r\u001b[" + str(self.height) + "A"
-        for arr in self.map:
-            self.out_line = ""
-            for i in arr:
-                self.out_line += i
-            self.out += self.out_line
-        if self.out_old != self.out or self.dynfps is False or init:
-            print(self.out + "\n\u001b[1000D", end="")
-            self.out_old = self.out
+        map = (tuple(arr) for arr in self.map)
+        out = self.__show_map(self.height, self.__show_line, map)
+        if self.out_old != out or not self.dynfps or init:
+            print(out + "\n\u001b[1000D", end="")
+            self.out_old = out
+
+    @staticmethod
+    @functools.lru_cache(MAXCACHE_FRAME)
+    def __show_map(height, show_line, map):
+        out = f"\r\u001b[{height}A"
+        for arr in map:
+            out += show_line(arr)
+        return out
+
+    @staticmethod
+    @functools.lru_cache(MAXCACHE_LINE)
+    def __show_line(arr):
+        out_line = ""
+        for char in arr:
+            out_line += char
+        return out_line
 
     def resize(self, height, width, background="#"):
         """
@@ -115,19 +128,19 @@ class Map:
                                      if height > self.height else self.height)]
         self.width = width
         self.height = height
-        for ob in self.obs:
-            try:
-                self.obmap[ob.y][ob.x].append(ob)
-                ob.redraw()
-            except:    # TODO: Check possible exceptions and specify
-                pass
+        for obj in self.obs:
+            if obj.y < height and obj.x < width:
+                self.obmap[obj.y][obj.x].append(obj)
+                obj.redraw()
 
 
 class Submap(Map):
     """
     Behaves just like a map, but it self contains a part of another map.
     """
-    def __init__(self, bmap, x, y, height=height - 1, width=width, dynfps=True):
+
+    def __init__(self, bmap, x, y, height=screen_height - 1,
+                 width=screen_width, dynfps=True):
         super().__init__(height, width, dynfps=dynfps)
         del self.background
         self.y = y
@@ -139,18 +152,33 @@ class Submap(Map):
         """
         Updates the map (rereads the map, the submap contains a part from)
         """
-        self.map = [[self.bmap.background for _ in range(self.width)]
-                    for _ in range(self.height)]
-        for sy, y in zip(range(0, self.height),
-                         range(self.y, self.y + self.height)):
-            for sx, x in zip(range(0, self.width),
-                             range(self.x, self.x + self.width)):
+        self.map = self.__full_bg(self.bmap.background, self.width, self.height)
+        self.map = self.__map_to_parent(self.height, self.width, self.y, self.x,
+                                        (tuple(line) for line in self.map),
+                                        (tuple(line) for line in self.bmap.map))
+        for obj in self.obs:
+            obj.redraw()
+
+    @staticmethod
+    @functools.lru_cache()
+    def __map_to_parent(height, width, y_, x_, parent, child):
+        parent = [list(line) for line in parent]
+        child = [list(line) for line in child]
+        for sy, y in zip(range(0, height),
+                         range(y_, y_ + height)):
+            for sx, x in zip(range(0, width),
+                             range(x_, x_ + width)):
                 try:
-                    self.map[sy][sx] = self.bmap.map[y][x]
-                except:    # TODO: Check possible exceptions and specify
+                    parent[sy][sx] = child[y][x]
+                except IndexError:
                     continue
-        for ob in self.obs:
-            ob.redraw()
+        return parent
+
+    @staticmethod
+    @functools.lru_cache(1)
+    def __full_bg(background, width, height):
+        return [[background for _ in range(width)]
+                for _ in range(height)]
 
     def set(self, x, y):
         """
@@ -175,35 +203,35 @@ class Object:
     """
     An object, containing a character, that can be added to a map.
     """
+
     def __init__(self, char, state="solid", arg_proto=None):
         if arg_proto is None:
             arg_proto = {}
         self.char = char
         self.state = state
         self.added = False
-        self.arg_proto = arg_proto  # This was added to enable more than the
+        self.arg_proto = arg_proto
         self.x = None
         self.y = None
         self.backup = None
         self.map = None
+        self.group = None
 
-    # default args for custom objects in Text and Square
-
-    def add(self, map, x, y):
+    def add(self, map_, x, y):
         """
         Adds the object to a certain coordinate on a certain map.
         """
-        if not (0 <= x < map.width) or not (0 <= y < map.height):
-            raise CoordinateError(self, map, x, y)
-        if "solid" in [ob.state for ob in map.obmap[y][x]]:
+        if not 0 <= x < map_.width or not 0 <= y < map_.height:
+            raise CoordinateError(self, map_, x, y)
+        if len(lis := map_.obmap[y][x]) != 0 and lis[-1].state == "solid":
             return 1
-        self.backup = map.map[y][x]
+        self.backup = map_.map[y][x]
         self.x = x
         self.y = y
-        map.map[y][x] = self.char
-        map.obmap[y][x].append(self)
-        map.obs.append(self)
-        self.map = map
+        map_.map[y][x] = self.char
+        map_.obmap[y][x].append(self)
+        map_.obs.append(self)
+        self.map = map_
         self.added = True
         return 0
 
@@ -228,9 +256,9 @@ class Object:
         elif self.x > self.map.width - 1 or self.y > self.map.height - 1:
             self.pull_ob()
             return 1
-        for ob in self.map.obmap[y][x]:
-            if ob.state == "solid":
-                self.bump(ob, self.x - x, self.y - y)
+        for obj in self.map.obmap[y][x]:
+            if obj.state == "solid":
+                self.bump(obj, self.x - x, self.y - y)
                 return 1
         self.__backup_setter()
         self.map.obmap[y][x].append(self)
@@ -238,9 +266,9 @@ class Object:
         self.x = x
         self.y = y
         self.map.map[y][x] = self.char
-        for ob in self.map.obmap[y][x]:
-            if ob.state == "float":
-                ob.action(self)
+        for obj in self.map.obmap[y][x]:
+            if obj.state == "float":
+                obj.action(self)
         return 0
 
     def redraw(self):
@@ -300,9 +328,9 @@ class Object:
 
     def pull_ob(self):
         """
-        This is triggered, when trying to set an object from a non existing 
+        This is triggered, when trying to set an object from a non existing
         spot on the map to an existing one.
-        This is just usefull when resizing maps with objects out of the 
+        This is just usefull when resizing maps with objects out of the
         new size.
         """
         return
@@ -316,6 +344,7 @@ class Object:
             return 1
         self.map.map[self.y][self.x] = self.backup
         self.redraw()
+        return 0
 
     def remove(self):
         """
@@ -326,6 +355,7 @@ class Object:
         self.added = False
         self.__backup_setter()
         del self.map.obs[self.map.obs.index(self)]
+        return 0
 
     def set_state(self, state):
         """
@@ -339,14 +369,15 @@ class ObjectGroup:
     A datatype used to group objects together and do things with them
     simultaniuously.
     """
+
     def __init__(self, obs):
         self.y = None
         self.x = None
         self.state = None
         self.obs = obs
         self.map = None
-        for ob in obs:
-            ob.group = self
+        for obj in obs:
+            obj.group = self
 
     def add_ob(self, ob):
         """
@@ -359,35 +390,34 @@ class ObjectGroup:
         """
         Adds a list of objects to th group.
         """
-        for ob in obs:
-            self.add_ob(ob)
+        for obj in obs:
+            self.add_ob(obj)
 
     def rem_ob(self, ob):
         """
         Removes an object from the group.
         """
-        for i in range(len(self.obs)):
-            if ob == self.obs[i]:
-                self.obs[i].group = ""
-                del self.obs[i]
-                return 0
+        if ob in self.obs:
+            ob.group = None
+            self.obs.pop(self.obs.index(ob))
+            return 0
         return 1
 
     def move(self, x=0, y=0):
         """
         Moves all objects in the group by a certain vector.
         """
-        for ob in self.obs:
-            ob.remove()
-        for ob in self.obs:
-            ob.add(self.map, ob.x + x, ob.y + y)
+        for obj in self.obs:
+            obj.remove()
+        for obj in self.obs:
+            obj.add(self.map, obj.x + x, obj.y + y)
 
     def remove(self):
         """
         Removes all objects from their maps.
         """
-        for ob in self.obs:
-            ob.remove()
+        for obj in self.obs:
+            obj.remove()
 
     def set(self, x, y):
         """
@@ -403,8 +433,8 @@ class ObjectGroup:
         Sets all objects states to a certain state.
         """
         self.state = state
-        for i in self.obs:
-            i.set_state(state)
+        for obj in self.obs:
+            obj.set_state(state)
 
 
 class Text(ObjectGroup):
@@ -412,6 +442,7 @@ class Text(ObjectGroup):
     A datatype containing a string, that can be added to a map.
     Different Texts can be added together with the '+' operator.
     """
+
     def __init__(self, text, state="solid", esccode="", ob_class=Object,
                  ob_args=None, ignore=""):
         super().__init__([])
@@ -435,28 +466,28 @@ class Text(ObjectGroup):
         return self
 
     def __texter(self, text):
-        for text in text.split("\n"):
-            for i, char in enumerate(text):
+        for txt in text.split("\n"):
+            for char in txt:
                 if self.esccode != "":
                     char = self.esccode + char + "\033[0m"
                 self.obs.append(self.ob_class(char, self.state,
                                               arg_proto=self.ob_args))
-        for ob in self.obs:
-            ob.group = self
+        for obj in self.obs:
+            obj.group = self
 
-    def add(self, map, x, y):
+    def add(self, map_, x, y):
         """
         Adds the text to a certain coordinate on a certain map.
         """
         self.added = True
-        self.map = map
+        self.map = map_
         self.x = x
         self.y = y
         count = 0
         for l, text in enumerate(self.text.split("\n")):
-            for i, ob in enumerate(self.obs[count:count + len(text)]):
-                if ob.char != self.ignore:
-                    ob.add(map, x + i, y + l)
+            for i, obj in enumerate(self.obs[count:count + len(text)]):
+                if obj.char != self.ignore:
+                    obj.add(self.map, x + i, y + l)
             count += len(text)
 
     def remove(self):
@@ -464,8 +495,8 @@ class Text(ObjectGroup):
         Removes the text from the map.
         """
         self.added = False
-        for ob in self.obs:
-            ob.remove()
+        for obj in self.obs:
+            obj.remove()
 
     def rechar(self, text, esccode=""):
         """
@@ -473,8 +504,8 @@ class Text(ObjectGroup):
         """
         self.esccode = esccode
         if self.added:
-            for ob in self.obs:
-                ob.remove()
+            for obj in self.obs:
+                obj.remove()
         self.obs = []
         self.__texter(text)
         self.text = text
@@ -486,6 +517,7 @@ class Square(ObjectGroup):
     """
     A rectangle, that can be added to a map.
     """
+
     def __init__(self, char, width, height, state="solid", ob_class=Object,
                  ob_args=None, threads=False):
         super().__init__([])
@@ -503,37 +535,35 @@ class Square(ObjectGroup):
         self.__create()
 
     def __create(self):
-        for l in range(self.height):
+        for i in range(self.height):
             if self.threads:
                 threading.Thread(target=self.__one_line_create,
-                                 args=(l,), daemon=True).start()
+                                 args=(i,), daemon=True).start()
             else:
-                self.__one_line_create(l)
+                self.__one_line_create(i)
 
-    def __one_line_create(self, l):
-        for i in range(self.width):
-            exec(f"self.ob_{i}_{l} = self.ob_class(self.char, self.state,\
-arg_proto=self.ob_args)")
-            exec(f"self.obs.append(self.ob_{i}_{l})")
+    def __one_line_create(self, j):
+        for _ in range(self.width):
+            self.obs.append(self.ob_class(self.char, self.state,
+                                          arg_proto=self.ob_args))
 
-    def __one_line_add(self, l):
-        for i in range(self.width):
-            exec(f"self.exits.append(self.ob_{i}_{l}.add(self.map, self.x+i,\
-self.y+l))")
+    def __one_line_add(self, j):
+        for i, obj in enumerate(self.obs[j * self.width: (j + 1) * self.width]):
+            self.exits.append(obj.add(self.map, self.x + i, self.y + j))
 
-    def add(self, map, x, y):
+    def add(self, map_, x, y):
         """
         Adds the square to a certain coordinate on a certain map.
         """
         self.x = x
         self.y = y
-        self.map = map
-        for l in range(self.height):
+        self.map = map_
+        for i in range(self.height):
             if self.threads:
-                threading.Thread(target=self.__one_line_add, args=(l,),
+                threading.Thread(target=self.__one_line_add, args=(i,),
                                  daemon=True).start()
             else:
-                self.__one_line_add(l)
+                self.__one_line_add(i)
         self.added = True
         if 1 in self.exits:
             return 1
@@ -544,15 +574,15 @@ self.y+l))")
         Removes the square from the map.
         """
         self.added = False
-        for ob in self.obs:
-            ob.remove()
+        for obj in self.obs:
+            obj.remove()
 
     def rechar(self, char):
         """
         Changes the chars the Square is filled with.
         """
-        for ob in self.obs:
-            ob.rechar(char)
+        for obj in self.obs:
+            obj.rechar(char)
 
     def resize(self, width, height):
         """
@@ -560,14 +590,12 @@ self.y+l))")
         """
         self.width = width
         self.height = height
-        if self.added:
+        if added := self.added:
             self.remove()
-            self.obs = []
-            self.__create()
+        self.obs = []
+        self.__create()
+        if added:
             self.add(self.map, self.x, self.y)
-        else:
-            self.obs = []
-            self.__create()
 
 
 class Frame(ObjectGroup):
@@ -581,9 +609,11 @@ class Frame(ObjectGroup):
 
     That can be added to map.
     """
+
     def __init__(self, height, width, corner_chars=None,
                  horizontal_chars=None, vertical_chars=None,
                  state="solid", ob_class=Object, ob_args=None):
+        super().__init__([])
         if ob_args is None:
             ob_args = {}
         if vertical_chars is None:
@@ -601,33 +631,37 @@ class Frame(ObjectGroup):
         self.corner_chars = corner_chars
         self.horizontal_chars = horizontal_chars
         self.vertical_chars = vertical_chars
-        self.corners = [self.ob_class(i, arg_proto=self.ob_args,
-                                      state=self.state)
-                        for i, j in zip(corner_chars, range(4))]
-        self.horizontals = [Square(char=i, width=self.width - 2, height=1,
-                                   state=self.state, ob_class=Object, ob_args={})
-                            for i, j in zip(horizontal_chars, range(2))]
-        self.verticals = [Square(char=i, width=1, height=self.height - 2,
-                                 state=self.state, ob_class=Object, ob_args={})
-                          for i, j in zip(vertical_chars, range(2))]
+        self.__gen_obs()
         self.map = None
 
-    def __add_obs(self):
-        for ob, rx, ry in zip(self.corners, [0, self.width - 1, 0, self.width - 1],
-                              [0, 0, self.height - 1, self.height - 1]):
-            ob.add(self.map, self.x + rx, self.y + ry)
-        for ob, rx, ry in zip(self.horizontals, [1, 1], [0, self.height - 1]):
-            ob.add(self.map, self.x + rx, self.y + ry)
-        for ob, rx, ry in zip(self.verticals, [0, self.width - 1], [1, 1]):
-            ob.add(self.map, self.x + rx, self.y + ry)
+    def __gen_obs(self):
+        self.corners = [self.ob_class(i, arg_proto=self.ob_args,
+                                      state=self.state)
+                        for i, j in zip(self.corner_chars, range(4))]
+        self.horizontals = [Square(char=i, width=self.width - 2, height=1,
+                                   state=self.state, ob_class=Object,
+                                   ob_args={})
+                            for i, j in zip(self.horizontal_chars, range(2))]
+        self.verticals = [Square(char=i, width=1, height=self.height - 2,
+                                 state=self.state, ob_class=Object, ob_args={})
+                          for i, j in zip(self.vertical_chars, range(2))]
 
-    def add(self, map, x, y):
+    def __add_obs(self):
+        for obj, rx, ry in zip(self.corners, [0, self.width - 1, 0, self.width - 1],
+                               [0, 0, self.height - 1, self.height - 1]):
+            obj.add(self.map, self.x + rx, self.y + ry)
+        for obj, rx, ry in zip(self.horizontals, [1, 1], [0, self.height - 1]):
+            obj.add(self.map, self.x + rx, self.y + ry)
+        for obj, rx, ry in zip(self.verticals, [0, self.width - 1], [1, 1]):
+            obj.add(self.map, self.x + rx, self.y + ry)
+
+    def add(self, map_, x, y):
         """
         Adds the frame to a certain coordinate on a certain map.
         """
         self.x = x
         self.y = y
-        self.map = map
+        self.map = map_
         self.__add_obs()
         self.added = True
 
@@ -637,8 +671,8 @@ class Frame(ObjectGroup):
         """
         self.x = x
         self.y = y
-        for ob in self.corners + self.horizontals + self.verticals:
-            ob.remove()
+        for obj in self.corners + self.horizontals + self.verticals:
+            obj.remove()
         self.__add_obs()
 
     def rechar(self, corner_chars=None, horizontal_char="-",
@@ -648,56 +682,55 @@ class Frame(ObjectGroup):
         """
         if corner_chars is None:
             corner_chars = ["+", "+", "+", "+"]
-        for ob, c in zip(self.corners, corner_chars):
-            ob.rechar(c)
-        for ob in self.horizontals:
-            ob.rechar(horizontal_char)
-        for ob in self.verticals:
-            ob.rechar(vertical_char)
+        for obj, c in zip(self.corners, corner_chars):
+            obj.rechar(c)
+        for obj in self.horizontals:
+            obj.rechar(horizontal_char)
+        for obj in self.verticals:
+            obj.rechar(vertical_char)
 
     def remove(self):
         """
         Removes the frame from the map.
         """
-        for ob in self.corners + self.horizontals + self.verticals:
-            ob.remove()
+        for obj in self.corners + self.horizontals + self.verticals:
+            obj.remove()
         self.added = False
 
     def resize(self, height, width):
         """
         Changes the frames size.
         """
-        added = self.added
-        if added:
+        self.height = height
+        self.width = width
+        if added := self.added:
             self.remove()
-        self.__init__(height, width, corner_chars=self.corner_chars,
-                      horizontal_chars=self.horizontal_chars,
-                      vertical_chars=self.vertical_chars, state=self.state,
-                      ob_class=self.ob_class, ob_args=self.ob_args)
+        self.__gen_obs()
         if added:
             self.add(self.map, self.x, self.y)
 
 
 class Box(ObjectGroup):
     """
-    A datastucture used to group objects(groups) relative to a certain 
+    A datastucture used to group objects(groups) relative to a certain
     coordinate, that can be added to a map.
     """
+
     def __init__(self, height, width):
         super().__init__([])
         self.height = height
         self.width = width
         self.added = False
 
-    def add(self, map, x, y):
+    def add(self, map_, x, y):
         """
         Adds the box to a certain coordinate on a certain map.
         """
         self.x = x
         self.y = y
-        self.map = map
-        for ob in self.obs:
-            ob.add(self.map, ob.rx + self.x, ob.ry + self.y)
+        self.map = map_
+        for obj in self.obs:
+            obj.add(self.map, obj.rx + self.x, obj.ry + self.y)
         self.added = True
 
     def add_ob(self, ob, x, y):
@@ -723,8 +756,8 @@ class Box(ObjectGroup):
         """
         Removes the box from the map.
         """
-        for ob in self.obs:
-            ob.remove()
+        for obj in self.obs:
+            obj.remove()
         self.added = False
 
     def resize(self, height, width):
@@ -739,6 +772,7 @@ class Circle(Box):
     """
     A circle, that can be added to a map.
     """
+
     def __init__(self, char, radius, state="solid", ob_class=Object,
                  ob_args=None):
         super().__init__(0, 0)
@@ -763,28 +797,27 @@ class Circle(Box):
         Changes the chars the circle is filled with.
         """
         self.char = char
-        for ob in self.obs:
-            ob.rechar(char)
+        for obj in self.obs:
+            obj.rechar(char)
 
     def resize(self, radius):
         """
         Resizes the circle.
         """
-        if self.added:
+        if added := self.added:
             self.remove()
-            self.obs = []
-            self.__gen(radius)
+        self.obs = []
+        self.__gen(radius)
+        if added:
             self.add(self.map, self.x, self.y)
-        else:
-            self.obs = []
-            self.__gen(radius)
 
 
 class Line(Box):
     """
     A line described by a vector, that cam be added to map.
     """
-    def __init__(self, char, cx, cy, type="straight", state="solid",
+
+    def __init__(self, char, cx, cy, l_type="straight", state="solid",
                  ob_class=Object, ob_args=None):
         super().__init__(0, 0)
         if ob_args is None:
@@ -793,7 +826,7 @@ class Line(Box):
         self.ob_class = ob_class
         self.ob_args = ob_args
         self.state = state
-        self.type = type
+        self.type = l_type
         self.__gen(cx, cy)
 
     def __gen(self, cx, cy):
@@ -819,18 +852,16 @@ class Line(Box):
         Changes the chars the line is made from.
         """
         self.char = char
-        for ob in self.obs:
-            ob.rechar(char)
+        for obj in self.obs:
+            obj.rechar(char)
 
     def resize(self, cx, cy):
         """
         Resizes the line.
         """
-        if self.added:
+        if added := self.added:
             self.remove()
-            self.obs = []
-            self.__gen(cx, cy)
+        self.obs = []
+        self.__gen(cx, cy)
+        if added:
             self.add(self.map, self.x, self.y)
-        else:
-            self.obs = []
-            self.__gen(cx, cy)
