@@ -48,12 +48,12 @@ class CoordinateError(Exception):
     part of a map.
     """
 
-    def __init__(self, ob, map_, x, y):
-        self.ob = ob
+    def __init__(self, obj, map_, x, y):
+        self.ob = obj
         self.x = x
         self.y = y
         self.map = map_
-        super().__init__(f"The {ob}s coordinate ({x}|{y}) is \
+        super().__init__(f"The {obj}s coordinate ({x}|{y}) is \
 not in {self.map.width - 1}x{self.map.height - 1}")
 
 
@@ -62,8 +62,8 @@ class Map:
     The map, objects can be added to.
     """
 
-    def __init__(self, height=screen_height - 1, width=screen_width, background="#",
-                 dynfps=True):
+    def __init__(self, height=screen_height - 1, width=screen_width,
+                 background="#", dynfps=True):
         self.height = height
         self.width = width
         self.dynfps = dynfps
@@ -154,8 +154,8 @@ class Submap(Map):
         """
         self.map = self.__full_bg(self.bmap.background, self.width, self.height)
         self.map = self.__map_to_parent(self.height, self.width, self.y, self.x,
-                                      (tuple(line) for line in self.map),
-                                      (tuple(line) for line in self.bmap.map))
+                                        (tuple(line) for line in self.map),
+                                        (tuple(line) for line in self.bmap.map))
         for obj in self.obs:
             obj.redraw()
 
