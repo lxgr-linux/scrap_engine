@@ -32,12 +32,19 @@ You can contribute here: https://github.com/lxgr-linux/scrap_engine
 __author__ = "lxgr <lxgr@protonmail.com>"
 __version__ = "0.3.3"
 
-
 import math
 import os
 import threading
+import functools
+
+MAXCACHE_LINE = 512
+MAXCACHE_FRAME = 64
+
+# TODO: add comments or use more verbose var names (im looking at you "l")
 
 screen_width, screen_height = os.get_terminal_size()
+
+width, height = screen_width, screen_height  # backwards compatibility
 
 
 class CoordinateError(Exception):
@@ -45,6 +52,7 @@ class CoordinateError(Exception):
     An Error that is thrown, when an object is added to a non-existing
     part of a map.
     """
+
     def __init__(self, ob, map_, x, y):
         self.ob = ob
         self.x = x
@@ -58,6 +66,7 @@ class Map:
     """
     The map, objects can be added to.
     """
+
     def __init__(self, height=screen_height - 1, width=screen_width, background="#",
                  dynfps=True):
         self.height = height
@@ -89,15 +98,27 @@ class Map:
         """
         Prints the maps content.
         """
-        out = f"\r\u001b[{self.height}A"
-        for arr in self.map:
-            out_line = ""
-            for char in arr:
-                out_line += char
-            out += out_line
-        if self.out_old != out or not self.dynfps  or init:
+        map = tuple([tuple(arr) for arr in self.map])
+        out = self.show_map(self.height, self.show_line, map)
+        if self.out_old != out or self.dynfps is False or init:
             print(out + "\n\u001b[1000D", end="")
             self.out_old = out
+
+    @staticmethod
+    @functools.lru_cache(MAXCACHE_FRAME)
+    def show_map(height, show_line, map):
+        out = "\r\u001b[" + str(height) + "A"
+        for arr in map:
+            out += show_line(arr)
+        return out
+
+    @staticmethod
+    @functools.lru_cache(MAXCACHE_LINE)
+    def show_line(arr):
+        out_line = ""
+        for char in arr:
+            out_line += char
+        return out_line
 
     def resize(self, height, width, background="#"):
         """
@@ -122,6 +143,7 @@ class Submap(Map):
     """
     Behaves just like a map, but it self contains a part of another map.
     """
+
     def __init__(self, bmap, x, y, height=screen_height - 1,
                  width=screen_width, dynfps=True):
         super().__init__(height, width, dynfps=dynfps)
@@ -135,16 +157,39 @@ class Submap(Map):
         """
         Updates the map (rereads the map, the submap contains a part from)
         """
-        self.map = [[self.bmap.background for _ in range(self.width)]
-                    for _ in range(self.height)]
-        for sy, y in zip(range(0, self.height),
+        self.map = self.full_bg(self.bmap.background, self.width, self.height)
+        """for sy, y in zip(range(0, self.height),
                          range(self.y, self.y + self.height)):
             for sx, x in zip(range(0, self.width),
                              range(self.x, self.x + self.width)):
                 if y < self.bmap.height and x < self.bmap.width:
-                    self.map[sy][sx] = self.bmap.map[y][x]
+                    self.map[sy][sx] = self.bmap.map[y][x]"""
+        self.map = self.map_to_parent(self.height, self.width, self.y, self.x,
+                                      tuple([tuple(line) for line in self.map]),
+                                      tuple([tuple(line) for line in self.bmap.map]))
         for obj in self.obs:
             obj.redraw()
+
+    @staticmethod
+    @functools.lru_cache()
+    def map_to_parent(height, width, y_, x_, parent, child):
+        parent = [list(line) for line in parent]
+        child = [list(line) for line in child]
+        for sy, y in zip(range(0, height),
+                         range(y_, y_ + height)):
+            for sx, x in zip(range(0, width),
+                             range(x_, x_ + width)):
+                try:
+                    parent[sy][sx] = child[y][x]
+                except IndexError:
+                    continue
+        return parent
+
+    @staticmethod
+    @functools.lru_cache(1)
+    def full_bg(background, width, height):
+        return [[background for _ in range(width)]
+                for _ in range(height)]
 
     def set(self, x, y):
         """
@@ -169,6 +214,7 @@ class Object:
     """
     An object, containing a character, that can be added to a map.
     """
+
     def __init__(self, char, state="solid", arg_proto=None):
         if arg_proto is None:
             arg_proto = {}
@@ -334,6 +380,7 @@ class ObjectGroup:
     A datatype used to group objects together and do things with them
     simultaniuously.
     """
+
     def __init__(self, obs):
         self.y = None
         self.x = None
@@ -406,6 +453,7 @@ class Text(ObjectGroup):
     A datatype containing a string, that can be added to a map.
     Different Texts can be added together with the '+' operator.
     """
+
     def __init__(self, text, state="solid", esccode="", ob_class=Object,
                  ob_args=None, ignore=""):
         super().__init__([])
@@ -480,6 +528,7 @@ class Square(ObjectGroup):
     """
     A rectangle, that can be added to a map.
     """
+
     def __init__(self, char, width, height, state="solid", ob_class=Object,
                  ob_args=None, threads=False):
         super().__init__([])
@@ -507,11 +556,11 @@ class Square(ObjectGroup):
     def __one_line_create(self, j):
         for _ in range(self.width):
             self.obs.append(self.ob_class(self.char, self.state,
-                            arg_proto=self.ob_args))
+                                          arg_proto=self.ob_args))
 
     def __one_line_add(self, j):
-        for i, obj in enumerate(self.obs[j*self.width : (j+1)*self.width]):
-            self.exits.append(obj.add(self.map, self.x+i, self.y+j))
+        for i, obj in enumerate(self.obs[j * self.width: (j + 1) * self.width]):
+            self.exits.append(obj.add(self.map, self.x + i, self.y + j))
 
     def add(self, map_, x, y):
         """
@@ -571,6 +620,7 @@ class Frame(ObjectGroup):
 
     That can be added to map.
     """
+
     def __init__(self, height, width, corner_chars=None,
                  horizontal_chars=None, vertical_chars=None,
                  state="solid", ob_class=Object, ob_args=None):
@@ -607,10 +657,9 @@ class Frame(ObjectGroup):
                                  state=self.state, ob_class=Object, ob_args={})
                           for i, j in zip(self.vertical_chars, range(2))]
 
-
     def __add_obs(self):
         for obj, rx, ry in zip(self.corners, [0, self.width - 1, 0, self.width - 1],
-                              [0, 0, self.height - 1, self.height - 1]):
+                               [0, 0, self.height - 1, self.height - 1]):
             obj.add(self.map, self.x + rx, self.y + ry)
         for obj, rx, ry in zip(self.horizontals, [1, 1], [0, self.height - 1]):
             obj.add(self.map, self.x + rx, self.y + ry)
@@ -677,6 +726,7 @@ class Box(ObjectGroup):
     A datastucture used to group objects(groups) relative to a certain
     coordinate, that can be added to a map.
     """
+
     def __init__(self, height, width):
         super().__init__([])
         self.height = height
@@ -733,6 +783,7 @@ class Circle(Box):
     """
     A circle, that can be added to a map.
     """
+
     def __init__(self, char, radius, state="solid", ob_class=Object,
                  ob_args=None):
         super().__init__(0, 0)
@@ -776,6 +827,7 @@ class Line(Box):
     """
     A line described by a vector, that cam be added to map.
     """
+
     def __init__(self, char, cx, cy, l_type="straight", state="solid",
                  ob_class=Object, ob_args=None):
         super().__init__(0, 0)
