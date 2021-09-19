@@ -40,12 +40,7 @@ import functools
 MAXCACHE_LINE = 512
 MAXCACHE_FRAME = 64
 
-# TODO: add comments or use more verbose var names (im looking at you "l")
-
 screen_width, screen_height = os.get_terminal_size()
-
-width, height = screen_width, screen_height  # backwards compatibility
-
 
 class CoordinateError(Exception):
     """
@@ -98,23 +93,23 @@ class Map:
         """
         Prints the maps content.
         """
-        map = tuple([tuple(arr) for arr in self.map])
-        out = self.show_map(self.height, self.show_line, map)
-        if self.out_old != out or self.dynfps is False or init:
+        map = (tuple(arr) for arr in self.map)
+        out = self.__show_map(self.height, self.__show_line, map)
+        if self.out_old != out or not self.dynfps or init:
             print(out + "\n\u001b[1000D", end="")
             self.out_old = out
 
     @staticmethod
     @functools.lru_cache(MAXCACHE_FRAME)
-    def show_map(height, show_line, map):
-        out = "\r\u001b[" + str(height) + "A"
+    def __show_map(height, show_line, map):
+        out = f"\r\u001b[{height}A"
         for arr in map:
             out += show_line(arr)
         return out
 
     @staticmethod
     @functools.lru_cache(MAXCACHE_LINE)
-    def show_line(arr):
+    def __show_line(arr):
         out_line = ""
         for char in arr:
             out_line += char
@@ -157,22 +152,16 @@ class Submap(Map):
         """
         Updates the map (rereads the map, the submap contains a part from)
         """
-        self.map = self.full_bg(self.bmap.background, self.width, self.height)
-        """for sy, y in zip(range(0, self.height),
-                         range(self.y, self.y + self.height)):
-            for sx, x in zip(range(0, self.width),
-                             range(self.x, self.x + self.width)):
-                if y < self.bmap.height and x < self.bmap.width:
-                    self.map[sy][sx] = self.bmap.map[y][x]"""
-        self.map = self.map_to_parent(self.height, self.width, self.y, self.x,
-                                      tuple([tuple(line) for line in self.map]),
-                                      tuple([tuple(line) for line in self.bmap.map]))
+        self.map = self.__full_bg(self.bmap.background, self.width, self.height)
+        self.map = self.__map_to_parent(self.height, self.width, self.y, self.x,
+                                      (tuple(line) for line in self.map),
+                                      (tuple(line) for line in self.bmap.map))
         for obj in self.obs:
             obj.redraw()
 
     @staticmethod
     @functools.lru_cache()
-    def map_to_parent(height, width, y_, x_, parent, child):
+    def __map_to_parent(height, width, y_, x_, parent, child):
         parent = [list(line) for line in parent]
         child = [list(line) for line in child]
         for sy, y in zip(range(0, height),
@@ -187,7 +176,7 @@ class Submap(Map):
 
     @staticmethod
     @functools.lru_cache(1)
-    def full_bg(background, width, height):
+    def __full_bg(background, width, height):
         return [[background for _ in range(width)]
                 for _ in range(height)]
 
