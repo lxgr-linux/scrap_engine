@@ -40,7 +40,10 @@ import functools
 MAXCACHE_LINE = 512
 MAXCACHE_FRAME = 64
 
-screen_width, screen_height = os.get_terminal_size()
+try:
+    screen_width, screen_height = os.get_terminal_size()
+except OSError:
+    screen_width, screen_height = 100, 100
 
 class CoordinateError(Exception):
     """
