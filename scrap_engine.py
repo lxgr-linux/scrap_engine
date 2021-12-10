@@ -678,19 +678,24 @@ class Frame(ObjectGroup):
             obj.remove()
         self.__add_obs()
 
-    def rechar(self, corner_chars=None, horizontal_char="-",
-               vertical_char="|"):
+    def rechar(self, corner_chars=None, horizontal_chars=None,
+               vertical_chars=None):
         """
-        Changes the characters the frame is made from.
+        Rechars the frame.
         """
-        if corner_chars is None:
-            corner_chars = ["+", "+", "+", "+"]
-        for obj, c in zip(self.corners, corner_chars):
-            obj.rechar(c)
-        for obj in self.horizontals:
-            obj.rechar(horizontal_char)
-        for obj in self.verticals:
-            obj.rechar(vertical_char)
+        if corner_chars is not None:
+            self.corner_chars = corner_chars
+        if horizontal_chars is not None:
+            self.horizontal_chars = horizontal_chars
+        if vertical_chars is not None:
+            self.vertical_chars = vertical_chars
+
+        for obj, _c in zip(self.corners, self.corner_chars):
+            obj.rechar(_c)
+        for obj, _c in zip(self.horizontals, self.horizontal_chars):
+            obj.rechar(_c)
+        for obj, _c in zip(self.verticals, self.vertical_chars):
+            obj.rechar(_c)
 
     def remove(self):
         """
