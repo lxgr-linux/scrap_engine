@@ -30,7 +30,7 @@ You can contribute here: https://github.com/lxgr-linux/scrap_engine
 """
 
 __author__ = "lxgr <lxgr@protonmail.com>"
-__version__ = "0.3.3"
+__version__ = "1.1.0"
 
 import math
 import os
