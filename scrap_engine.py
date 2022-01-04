@@ -40,6 +40,8 @@ import functools
 MAXCACHE_LINE = 512
 MAXCACHE_FRAME = 64
 
+DEFAULT_STATE = "solid"
+
 try:
     screen_width, screen_height = os.get_terminal_size()
 except OSError:
@@ -216,7 +218,10 @@ class AddableObject:
         self.ry = None
         self.added = False
         self.group = None
-        self.state = state
+        if state is None:
+            self.state = DEFAULT_STATE
+        else:
+            self.state = state
         self.map = None
 
 
@@ -225,7 +230,7 @@ class Object(AddableObject):
     An object, containing a character, that can be added to a map.
     """
 
-    def __init__(self, char, state="solid", arg_proto=None):
+    def __init__(self, char, state=None, arg_proto=None):
         if arg_proto is None:
             arg_proto = {}
         super().__init__(state)
@@ -456,7 +461,7 @@ class Text(ObjectGroup):
     Different Texts can be added together with the '+' operator.
     """
 
-    def __init__(self, text, state="solid", esccode="", ob_class=Object,
+    def __init__(self, text, state=None, esccode="", ob_class=Object,
                  ob_args=None, ignore=""):
         super().__init__([], state)
         if ob_args is None:
@@ -529,7 +534,7 @@ class Square(ObjectGroup):
     A rectangle, that can be added to a map.
     """
 
-    def __init__(self, char, width, height, state="solid", ob_class=Object,
+    def __init__(self, char, width, height, state=None, ob_class=Object,
                  ob_args=None, threads=False):
         super().__init__([], state)
         if ob_args is None:
@@ -621,7 +626,7 @@ class Frame(ObjectGroup):
 
     def __init__(self, height, width, corner_chars=None,
                  horizontal_chars=None, vertical_chars=None,
-                 state="solid", ob_class=Object, ob_args=None):
+                 state=None, ob_class=Object, ob_args=None):
         super().__init__([], state)
         if ob_args is None:
             ob_args = {}
@@ -783,7 +788,7 @@ class Circle(Box):
     A circle, that can be added to a map.
     """
 
-    def __init__(self, char, radius, state="solid", ob_class=Object,
+    def __init__(self, char, radius, state=None, ob_class=Object,
                  ob_args=None):
         super().__init__(0, 0)
         if ob_args is None:
@@ -791,7 +796,8 @@ class Circle(Box):
         self.char = char
         self.ob_class = ob_class
         self.ob_args = ob_args
-        self.state = state
+        if state is not None:
+            self.state = state
         self.__gen(radius)
 
     def __gen(self, radius):
@@ -827,7 +833,7 @@ class Line(Box):
     A line described by a vector, that cam be added to map.
     """
 
-    def __init__(self, char, cx, cy, l_type="straight", state="solid",
+    def __init__(self, char, cx, cy, l_type="straight", state=None,
                  ob_class=Object, ob_args=None):
         super().__init__(0, 0)
         if ob_args is None:
@@ -835,7 +841,8 @@ class Line(Box):
         self.char = char
         self.ob_class = ob_class
         self.ob_args = ob_args
-        self.state = state
+        if state is not None:
+            self.state = state
         self.type = l_type
         self.__gen(cx, cy)
 
