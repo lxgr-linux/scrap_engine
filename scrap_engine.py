@@ -665,6 +665,7 @@ class Frame(ObjectGroup):
         self.verticals = [Square(char=i, width=1, height=self.height - 2,
                                  state=self.state, ob_class=Object, ob_args={})
                           for i, j in zip(self.vertical_chars, range(2))]
+        self.obs = self.corners + self.horizontals + self.verticals
 
     def __add_obs(self):
         for obj, rx, ry in zip(self.corners, [0, self.width - 1, 0, self.width - 1],
