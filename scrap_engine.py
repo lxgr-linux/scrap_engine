@@ -468,6 +468,20 @@ class Text(ObjectGroup):
         self.ob_args = ob_args
         self.__texter(text)
 
+    @property
+    def width(self):
+        """
+        The Texts peak width
+        """
+        return sorted(len(i) for i in self.text.split("\n"))[-1]
+
+    @property
+    def height(self):
+        """
+        The Texts height
+        """
+        return len(self.text.split("\n"))
+
     def __add__(self, other):
         self.text += other.text
         self.obs += other.obs
