@@ -262,17 +262,8 @@ class Object(AddableObject):
         """
         if not self.added:
             return 1
-        elif x > self.map.width - 1:
-            self.bump_right()
-            return 1
-        elif x < 0:
-            self.bump_left()
-            return 1
-        elif y > self.map.height - 1:
-            self.bump_bottom()
-            return 1
-        elif y < 0:
-            self.bump_top()
+        elif not (0 <= x < self.map.width and 0 <= y < self.map.height):
+            self.bump(None, self.x - x, self.y - y, side=True)
             return 1
         elif self.x > self.map.width - 1 or self.y > self.map.height - 1:
             self.pull_ob()
@@ -316,34 +307,10 @@ class Object(AddableObject):
         """
         return
 
-    def bump(self, ob, x, y):
+    def bump(self, ob, x, y, side=False):
         """
         This is triggered, when this object is tried to be set onto another
-        solid object.
-        """
-        return
-
-    def bump_right(self):
-        """
-        Same as bump, but is triggered when hitting the right side of the map.
-        """
-        return
-
-    def bump_left(self):
-        """
-        Same as bump, but is triggered when hitting the left side of the map.
-        """
-        return
-
-    def bump_top(self):
-        """
-        Same as bump, but is triggered when hitting the top side of the map.
-        """
-        return
-
-    def bump_bottom(self):
-        """
-        Same as bump, but is triggered when hitting the bottom side of the map.
+        solid object. Or it hits the side of the map, in which case `side == True`
         """
         return
 
