@@ -600,7 +600,7 @@ class Frame(ObjectGroup):
     +----+
     |    |
     |    |
-    +----*
+    +----+
 
     That can be added to map.
     """
