@@ -263,14 +263,14 @@ class Object(AddableObject):
         if not self.added:
             return 1
         elif not (0 <= x < self.map.width and 0 <= y < self.map.height):
-            self.bump(None, self.x - x, self.y - y, side=True)
+            self.bump(None, x - self.x, y - self.y, side=True)
             return 1
         elif self.x > self.map.width - 1 or self.y > self.map.height - 1:
             self.pull_ob()
             return 1
         for obj in self.map.obmap[y][x]:
             if obj.state == "solid":
-                self.bump(obj, self.x - x, self.y - y)
+                self.bump(obj, x - self.x, y - self.y)
                 return 1
         self.__backup_setter()
         self.map.obmap[y][x].append(self)
@@ -310,7 +310,8 @@ class Object(AddableObject):
     def bump(self, ob, x, y, side=False):
         """
         This is triggered, when this object is tried to be set onto another
-        solid object. Or it hits the side of the map, in which case `side == True`
+        solid object. Or it hits the side of the map, in which case `side == True`.
+        `x` and `ỳ` are the vectore self should have been set to.
         """
         return
 
