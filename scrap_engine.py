@@ -100,15 +100,15 @@ class Map:
         Prints the maps content.
         """
         _map = (tuple(arr) for arr in self.map)
-        out = self.__show_map(self.height, self.__show_line, _map)
+        out = self.__show_map(self.__show_line, _map)
         if self.out_old != out or not self.dynfps or init:
-            print(out + "\n\u001b[1000D", end="")
+            print(out + "\n\033[0E\033[2K", end="")
             self.out_old = out
 
     @staticmethod
     @functools.lru_cache(MAXCACHE_FRAME)
-    def __show_map(height, show_line, _map):
-        out = f"\r\u001b[{height}A"
+    def __show_map(show_line, _map):
+        out = "\033[H"
         for arr in _map:
             out += show_line(arr)
         return out
