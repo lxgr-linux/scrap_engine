@@ -458,6 +458,8 @@ class Text(ObjectGroup):
     def __add__(self, other):
         self.text += other.text
         self.obs += other.obs
+        for obj in self.obs:
+            obj.group = self
         if self.added:
             self.remove()
             self.add(self.map, self.x, self.y)
@@ -468,8 +470,11 @@ class Text(ObjectGroup):
             for char in txt:
                 if self.esccode != "":
                     char = self.esccode + char + "\033[0m"
-                self.obs.append(self.ob_class(char, self.state,
-                                              arg_proto=self.ob_args))
+                obj = self.ob_class(
+                    char, self.state, arg_proto=self.ob_args
+                )
+                obj.group = self
+                self.obs.append(obj)
         for obj in self.obs:
             obj.group = self
 
@@ -540,8 +545,11 @@ class Square(ObjectGroup):
 
     def __one_line_create(self):
         for _ in range(self.width):
-            self.obs.append(self.ob_class(self.char, self.state,
-                                          arg_proto=self.ob_args))
+            obj = self.ob_class(
+                self.char, self.state, arg_proto=self.ob_args
+            )
+            obj.group = self
+            self.obs.append(obj)
 
     def __one_line_add(self, j):
         for i, obj in enumerate(self.obs[j * self.width: (j + 1) * self.width]):
@@ -639,6 +647,8 @@ class Frame(ObjectGroup):
                                  state=self.state, ob_class=Object, ob_args={})
                           for i, j in zip(self.vertical_chars, range(2))]
         self.obs = self.corners + self.horizontals + self.verticals
+        for obj in self.obs:
+            obj.group = self
 
     def __add_obs(self):
         for obj, rx, ry in zip(self.corners, [0, self.width - 1, 0, self.width - 1],
@@ -738,6 +748,7 @@ class Box(ObjectGroup):
         self.obs.append(obj)
         obj.rx = x
         obj.ry = y
+        obj.group = self
         if self.added:
             obj.add(self.map, obj.rx + self.x, obj.ry + self.y)
 
