@@ -516,92 +516,6 @@ class Text(ObjectGroup):
             self.add(self.map, self.x, self.y)
 
 
-class Square(ObjectGroup):
-    """
-    A rectangle, that can be added to a map.
-    """
-
-    def __init__(self, char, width, height, state=None, ob_class=Object,
-                 ob_args=None, threads=False):
-        super().__init__([], state)
-        if ob_args is None:
-            ob_args = {}
-        self.ob_class = ob_class
-        self.width = width
-        self.height = height
-        self.char = char
-        self.exits = []
-        self.ob_args = ob_args
-        self.threads = threads
-        self.__create()
-
-    def __create(self):
-        for _ in range(self.height):
-            if self.threads:
-                threading.Thread(target=self.__one_line_create,
-                                 daemon=True).start()
-            else:
-                self.__one_line_create()
-
-    def __one_line_create(self):
-        for _ in range(self.width):
-            obj = self.ob_class(
-                self.char, self.state, arg_proto=self.ob_args
-            )
-            obj.group = self
-            self.obs.append(obj)
-
-    def __one_line_add(self, j):
-        for i, obj in enumerate(self.obs[j * self.width: (j + 1) * self.width]):
-            self.exits.append(obj.add(self.map, self.x + i, self.y + j))
-
-    def add(self, _map, x, y):
-        """
-        Adds the square to a certain coordinate on a certain map.
-        """
-        self.x = x
-        self.y = y
-        self.map = _map
-        for i in range(self.height):
-            if self.threads:
-                threading.Thread(target=self.__one_line_add, args=(i,),
-                                 daemon=True).start()
-            else:
-                self.__one_line_add(i)
-        self.added = True
-        if 1 in self.exits:
-            return 1
-        return 0
-
-    def remove(self):
-        """
-        Removes the square from the map.
-        """
-        self.added = False
-        for obj in self.obs:
-            obj.remove()
-
-    def rechar(self, char):
-        """
-        Changes the chars the Square is filled with.
-        """
-        for obj in self.obs:
-            obj.rechar(char)
-
-    def resize(self, width, height):
-        """
-        Resizes the rectangle to a certain size.
-        """
-        self.width = width
-        self.height = height
-        if added := self.added:
-            self.remove()
-        self.obs = []
-        self.__create()
-        if added:
-            self.add(self.map, self.x, self.y)
-
-
 class Box(ObjectGroup):
     """
     A datastucture used to group objects(groups) relative to a certain
@@ -658,6 +572,54 @@ class Box(ObjectGroup):
         """
         self.height = height
         self.width = width
+
+
+class Square(Box):
+    """
+    A rectangle, that can be added to a map.
+    """
+
+    def __init__(self, char, width, height, state=None, ob_class=Object,
+                 ob_args=None):
+        super().__init__(height, width)
+        if ob_args is None:
+            ob_args = {}
+        if state is not None:
+            self.state = state
+        self.ob_class = ob_class
+        self.char = char
+        self.ob_args = ob_args
+        self.__create()
+
+    def __create(self):
+        for ry in range(self.height):
+            for rx in range(self.width):
+                self.add_ob(
+                    self.ob_class(
+                        self.char, self.state, arg_proto=self.ob_args
+                    ),
+                    rx, ry
+                )
+
+    def rechar(self, char):
+        """
+        Changes the chars the Square is filled with.
+        """
+        self.char = char
+        for obj in self.obs:
+            obj.rechar(char)
+
+    def resize(self, width, height):
+        """
+        Resizes the rectangle to a certain size.
+        """
+        super().resize(height, width)
+        if added := self.added:
+            self.remove()
+        self.obs = []
+        self.__create()
+        if added:
+            self.add(self.map, self.x, self.y)
 
 
 class Frame(Box):
