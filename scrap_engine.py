@@ -501,6 +501,26 @@ class Text(ObjectGroup):
         for obj in self.obs:
             obj.remove()
 
+    def rem_ob(self, obj):
+        """
+        Removes an object from the group.
+        """
+        if obj in self.obs:
+            obj.group = None
+            index = self.obs.index(obj)
+            idx = 0
+            while idx < len(self.text):
+                if self.text[idx:idx+2] == "\n":
+                    idx += 2
+                    continue
+                if idx == index:
+                    self.text = self.text[:idx] + self.text[idx + 1:]
+                    break
+                idx += 1
+            self.obs.pop(index)
+            return 0
+        return 1
+
     def rechar(self, text, esccode=""):
         """
         Changes the string contained in the text.
