@@ -348,7 +348,7 @@ class Object(AddableObject):
 
     def set_state(self, state):
         """
-        Chnanges the objects state ('float' or 'solid')
+        Changes the objects state ('float' or 'solid')
         """
         self.state = state
 
@@ -458,6 +458,8 @@ class Text(ObjectGroup):
     def __add__(self, other):
         self.text += other.text
         self.obs += other.obs
+        for obj in self.obs:
+            obj.group = self
         if self.added:
             self.remove()
             self.add(self.map, self.x, self.y)
@@ -468,8 +470,11 @@ class Text(ObjectGroup):
             for char in txt:
                 if self.esccode != "":
                     char = self.esccode + char + "\033[0m"
-                self.obs.append(self.ob_class(char, self.state,
-                                              arg_proto=self.ob_args))
+                obj = self.ob_class(
+                    char, self.state, arg_proto=self.ob_args
+                )
+                obj.group = self
+                self.obs.append(obj)
         for obj in self.obs:
             obj.group = self
 
@@ -496,6 +501,26 @@ class Text(ObjectGroup):
         for obj in self.obs:
             obj.remove()
 
+    def rem_ob(self, obj):
+        """
+        Removes an object from the group.
+        """
+        if obj in self.obs:
+            obj.group = None
+            index = self.obs.index(obj)
+            idx = 0
+            while idx < len(self.text):
+                if self.text[idx:idx+2] == "\n":
+                    idx += 2
+                    continue
+                if idx == index:
+                    self.text = self.text[:idx] + self.text[idx + 1:]
+                    break
+                idx += 1
+            self.obs.pop(index)
+            return 0
+        return 1
+
     def rechar(self, text, esccode=""):
         """
         Changes the string contained in the text.
@@ -508,204 +533,6 @@ class Text(ObjectGroup):
         self.__texter(text)
         self.text = text
         if self.added:
-            self.add(self.map, self.x, self.y)
-
-
-class Square(ObjectGroup):
-    """
-    A rectangle, that can be added to a map.
-    """
-
-    def __init__(self, char, width, height, state=None, ob_class=Object,
-                 ob_args=None, threads=False):
-        super().__init__([], state)
-        if ob_args is None:
-            ob_args = {}
-        self.ob_class = ob_class
-        self.width = width
-        self.height = height
-        self.char = char
-        self.exits = []
-        self.ob_args = ob_args
-        self.threads = threads
-        self.__create()
-
-    def __create(self):
-        for _ in range(self.height):
-            if self.threads:
-                threading.Thread(target=self.__one_line_create,
-                                 daemon=True).start()
-            else:
-                self.__one_line_create()
-
-    def __one_line_create(self):
-        for _ in range(self.width):
-            self.obs.append(self.ob_class(self.char, self.state,
-                                          arg_proto=self.ob_args))
-
-    def __one_line_add(self, j):
-        for i, obj in enumerate(self.obs[j * self.width: (j + 1) * self.width]):
-            self.exits.append(obj.add(self.map, self.x + i, self.y + j))
-
-    def add(self, _map, x, y):
-        """
-        Adds the square to a certain coordinate on a certain map.
-        """
-        self.x = x
-        self.y = y
-        self.map = _map
-        for i in range(self.height):
-            if self.threads:
-                threading.Thread(target=self.__one_line_add, args=(i,),
-                                 daemon=True).start()
-            else:
-                self.__one_line_add(i)
-        self.added = True
-        if 1 in self.exits:
-            return 1
-        return 0
-
-    def remove(self):
-        """
-        Removes the square from the map.
-        """
-        self.added = False
-        for obj in self.obs:
-            obj.remove()
-
-    def rechar(self, char):
-        """
-        Changes the chars the Square is filled with.
-        """
-        for obj in self.obs:
-            obj.rechar(char)
-
-    def resize(self, width, height):
-        """
-        Resizes the rectangle to a certain size.
-        """
-        self.width = width
-        self.height = height
-        if added := self.added:
-            self.remove()
-        self.obs = []
-        self.__create()
-        if added:
-            self.add(self.map, self.x, self.y)
-
-
-class Frame(ObjectGroup):
-    """
-    A Frame made of ascii charactes:
-
-    +----+
-    |    |
-    |    |
-    +----+
-
-    That can be added to map.
-    """
-
-    def __init__(self, height, width, corner_chars=None,
-                 horizontal_chars=None, vertical_chars=None,
-                 state=None, ob_class=Object, ob_args=None):
-        super().__init__([], state)
-        if ob_args is None:
-            ob_args = {}
-        if vertical_chars is None:
-            vertical_chars = ["|", "|"]
-        if horizontal_chars is None:
-            horizontal_chars = ["-", "-"]
-        if corner_chars is None:
-            corner_chars = ["+", "+", "+", "+"]
-        self.height = height
-        self.width = width
-        self.ob_class = ob_class
-        self.ob_args = ob_args
-        self.corner_chars = corner_chars
-        self.horizontal_chars = horizontal_chars
-        self.vertical_chars = vertical_chars
-        self.__gen_obs()
-
-    def __gen_obs(self):
-        self.corners = [self.ob_class(i, arg_proto=self.ob_args,
-                                      state=self.state)
-                        for i, j in zip(self.corner_chars, range(4))]
-        self.horizontals = [Square(char=i, width=self.width - 2, height=1,
-                                   state=self.state, ob_class=Object,
-                                   ob_args={})
-                            for i, j in zip(self.horizontal_chars, range(2))]
-        self.verticals = [Square(char=i, width=1, height=self.height - 2,
-                                 state=self.state, ob_class=Object, ob_args={})
-                          for i, j in zip(self.vertical_chars, range(2))]
-        self.obs = self.corners + self.horizontals + self.verticals
-
-    def __add_obs(self):
-        for obj, rx, ry in zip(self.corners, [0, self.width - 1, 0, self.width - 1],
-                               [0, 0, self.height - 1, self.height - 1]):
-            obj.add(self.map, self.x + rx, self.y + ry)
-        for obj, rx, ry in zip(self.horizontals, [1, 1], [0, self.height - 1]):
-            obj.add(self.map, self.x + rx, self.y + ry)
-        for obj, rx, ry in zip(self.verticals, [0, self.width - 1], [1, 1]):
-            obj.add(self.map, self.x + rx, self.y + ry)
-
-    def add(self, _map, x, y):
-        """
-        Adds the frame to a certain coordinate on a certain map.
-        """
-        self.x = x
-        self.y = y
-        self.map = _map
-        self.__add_obs()
-        self.added = True
-
-    def set(self, x, y):
-        """
-        Sets the frame to a certain coordinate.
-        """
-        self.x = x
-        self.y = y
-        for obj in self.corners + self.horizontals + self.verticals:
-            obj.remove()
-        self.__add_obs()
-
-    def rechar(self, corner_chars=None, horizontal_chars=None,
-               vertical_chars=None):
-        """
-        Rechars the frame.
-        """
-        if corner_chars is not None:
-            self.corner_chars = corner_chars
-        if horizontal_chars is not None:
-            self.horizontal_chars = horizontal_chars
-        if vertical_chars is not None:
-            self.vertical_chars = vertical_chars
-
-        for obj, _c in zip(self.corners, self.corner_chars):
-            obj.rechar(_c)
-        for obj, _c in zip(self.horizontals, self.horizontal_chars):
-            obj.rechar(_c)
-        for obj, _c in zip(self.verticals, self.vertical_chars):
-            obj.rechar(_c)
-
-    def remove(self):
-        """
-        Removes the frame from the map.
-        """
-        for obj in self.corners + self.horizontals + self.verticals:
-            obj.remove()
-        self.added = False
-
-    def resize(self, height, width):
-        """
-        Changes the frames size.
-        """
-        self.height = height
-        self.width = width
-        if added := self.added:
-            self.remove()
-        self.__gen_obs()
-        if added:
             self.add(self.map, self.x, self.y)
 
 
@@ -738,6 +565,7 @@ class Box(ObjectGroup):
         self.obs.append(obj)
         obj.rx = x
         obj.ry = y
+        obj.group = self
         if self.added:
             obj.add(self.map, obj.rx + self.x, obj.ry + self.y)
 
@@ -764,6 +592,154 @@ class Box(ObjectGroup):
         """
         self.height = height
         self.width = width
+
+
+class Square(Box):
+    """
+    A rectangle, that can be added to a map.
+    """
+
+    def __init__(self, char, width, height, state=None, ob_class=Object,
+                 ob_args=None):
+        super().__init__(height, width)
+        if ob_args is None:
+            ob_args = {}
+        if state is not None:
+            self.state = state
+        self.ob_class = ob_class
+        self.char = char
+        self.ob_args = ob_args
+        self.__create()
+
+    def __create(self):
+        for ry in range(self.height):
+            for rx in range(self.width):
+                self.add_ob(
+                    self.ob_class(
+                        self.char, self.state, arg_proto=self.ob_args
+                    ),
+                    rx, ry
+                )
+
+    def rechar(self, char):
+        """
+        Changes the chars the Square is filled with.
+        """
+        self.char = char
+        for obj in self.obs:
+            obj.rechar(char)
+
+    def resize(self, width, height):
+        """
+        Resizes the rectangle to a certain size.
+        """
+        super().resize(height, width)
+        if added := self.added:
+            self.remove()
+        self.obs = []
+        self.__create()
+        if added:
+            self.add(self.map, self.x, self.y)
+
+
+class Frame(Box):
+    """
+    A Frame made of ascii charactes:
+
+    +----+
+    |    |
+    |    |
+    +----+
+
+    That can be added to map.
+    """
+
+    def __init__(self, height, width, corner_chars=None,
+                 horizontal_chars=None, vertical_chars=None,
+                 state=None, ob_class=Object, ob_args=None):
+        super().__init__(height, width)
+        if ob_args is None:
+            ob_args = {}
+        if vertical_chars is None:
+            vertical_chars = ["|", "|"]
+        if horizontal_chars is None:
+            horizontal_chars = ["-", "-"]
+        if corner_chars is None:
+            corner_chars = ["+", "+", "+", "+"]
+        if state is not None:
+            self.state = state
+        self.ob_class = ob_class
+        self.ob_args = ob_args
+        self.corner_chars = corner_chars
+        self.horizontal_chars = horizontal_chars
+        self.vertical_chars = vertical_chars
+        self.__gen_obs()
+
+    def __gen_obs(self):
+        # Corners
+        self.corners = [
+            self.ob_class(
+                i, arg_proto=self.ob_args, state=self.state
+            )
+            for i, j in zip(self.corner_chars, range(4))
+        ]
+        for obj, rx, ry in zip(
+            self.corners, [0, self.width - 1, 0, self.width - 1],
+            [0, 0, self.height - 1, self.height - 1]
+        ):
+            self.add_ob(obj, rx, ry)
+        # Horizontals
+        self.horizontals = [
+            Square(
+                char=i, width=self.width - 2, height=1,
+                state=self.state, ob_class=Object, ob_args=self.ob_args
+            )
+            for i, j in zip(self.horizontal_chars, range(2))
+        ]
+        for obj, rx, ry in zip(self.horizontals, [1, 1], [0, self.height - 1]):
+            self.add_ob(obj, rx, ry)
+        # Verticals
+        self.verticals = [
+            Square(
+                char=i, width=1, height=self.height - 2,
+                state=self.state, ob_class=Object, ob_args=self.ob_args
+            )
+            for i, j in zip(self.vertical_chars, range(2))
+        ]
+        for obj, rx, ry in zip(self.verticals, [0, self.width - 1], [1, 1]):
+            self.add_ob(obj, rx, ry)
+
+    def rechar(self, corner_chars=None, horizontal_chars=None,
+               vertical_chars=None):
+        """
+        Rechars the frame.
+        """
+        if corner_chars is not None:
+            self.corner_chars = corner_chars
+        if horizontal_chars is not None:
+            self.horizontal_chars = horizontal_chars
+        if vertical_chars is not None:
+            self.vertical_chars = vertical_chars
+
+        for obj, _c in zip(self.corners, self.corner_chars):
+            obj.rechar(_c)
+        for obj, _c in zip(self.horizontals, self.horizontal_chars):
+            obj.rechar(_c)
+        for obj, _c in zip(self.verticals, self.vertical_chars):
+            obj.rechar(_c)
+
+    def resize(self, height, width):
+        """
+        Changes the frames size.
+        """
+        super().resize(height, width)
+        if added := self.added:
+            self.remove()
+        self.obs = []
+        self.__gen_obs()
+        if added:
+            self.add(self.map, self.x, self.y)
+
 
 
 class Circle(Box):
