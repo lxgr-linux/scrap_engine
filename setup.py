@@ -8,7 +8,7 @@ setup(
     use_scm_version=True,
     include_package_data=True,
     name='scrap_engine',
-    version='0.1.1',
+    version='1.4.1',
     py_modules=['scrap_engine'],
     url='https://github.com/lxgr-linux/scrap_engine',
     license='GPL3',
