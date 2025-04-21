@@ -7,10 +7,10 @@ class Box(ObjectGroup):
     coordinate, that can be added to a map.
     """
 
-    def __init__(self, height, width):
+    def __init__(self, height:int, width:int):
         super().__init__([], DEFAULT_STATE)
-        self.height = height
-        self.width = width
+        self.height:int = height
+        self.width:int = width
 
     def add(self, _map, x:int, y:int):
         """

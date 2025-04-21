@@ -1,4 +1,5 @@
 import math
+from typing import Type
 
 from scrap_engine.addable.state import DEFAULT_STATE, State
 
@@ -14,7 +15,7 @@ class Line(Box):
     def __init__(
         self, char, cx, cy, l_type="straight",
         state:State=DEFAULT_STATE,
-        ob_class=Object, ob_args=None
+        ob_class:Type[Object]=Object, ob_args=None
     ):
         super().__init__(0, 0)
         if ob_args is None:

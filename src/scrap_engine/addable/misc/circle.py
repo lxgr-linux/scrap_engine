@@ -1,4 +1,5 @@
 import math
+from typing import Type
 
 from scrap_engine.addable.state import DEFAULT_STATE, State
 from .box import Box
@@ -10,8 +11,10 @@ class Circle(Box):
     A circle, that can be added to a map.
     """
 
-    def __init__(self, char, radius, state:State=DEFAULT_STATE, ob_class=Object,
-                 ob_args=None):
+    def __init__(
+        self, char, radius, state:State=DEFAULT_STATE,
+        ob_class:Type[Object]=Object, ob_args=None
+    ):
         super().__init__(0, 0)
         if ob_args is None:
             ob_args = {}
