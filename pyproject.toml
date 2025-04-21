@@ -7,7 +7,7 @@ name = "scrap_engine"
 authors = [{ name = "lxgr", email = "lxgr@protonmail.com" }]
 description = "A 2D ascii game engine for the terminal"
 keywords = ["game", "Ascii"]
-version = "1.4.3-rc1"
+version = "1.4.3"
 license = { text = "GPL-3.0-only" }
 readme = "README.md"
 requires-python = ">=3.11"
