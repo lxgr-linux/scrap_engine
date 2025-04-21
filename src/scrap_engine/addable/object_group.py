@@ -54,7 +54,7 @@ class ObjectGroup(Addable):
         for obj in self.obs:
             obj.remove()
 
-    def set(self, x, y):
+    def set(self, x:int, y:int):
         """
         Sets the group to a certain coordinate.
         !!! Just use this with inherited classes !!!
@@ -67,6 +67,6 @@ class ObjectGroup(Addable):
         """
         Sets all objects states to a certain state.
         """
-        self.state = state
+        super().set_state(state)
         for obj in self.obs:
             obj.set_state(state)

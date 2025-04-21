@@ -123,9 +123,3 @@ class Object(Addable):
         self.__backup_setter()
         del self.map.obs[self.map.obs.index(self)]
         return 0
-
-    def set_state(self, state: State):
-        """
-        Changes the objects state ('float' or 'solid')
-        """
-        self.state = state
