@@ -1,5 +1,7 @@
 import math
 
+from scrap_engine.addable.state import DEFAULT_STATE, State
+
 from .box import Box
 from ..object import Object
 
@@ -9,16 +11,18 @@ class Line(Box):
     A line described by a vector, that cam be added to map.
     """
 
-    def __init__(self, char, cx, cy, l_type="straight", state=None,
-                 ob_class=Object, ob_args=None):
+    def __init__(
+        self, char, cx, cy, l_type="straight",
+        state:State=DEFAULT_STATE,
+        ob_class=Object, ob_args=None
+    ):
         super().__init__(0, 0)
         if ob_args is None:
             ob_args = {}
         self.char = char
         self.ob_class = ob_class
         self.ob_args = ob_args
-        if state is not None:
-            self.state = state
+        self.state = state
         self.type = l_type
         self.__gen(cx, cy)
 

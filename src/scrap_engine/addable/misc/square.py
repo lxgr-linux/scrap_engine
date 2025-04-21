@@ -1,3 +1,4 @@
+from scrap_engine.addable.state import DEFAULT_STATE, State
 from .box import Box
 from ..object import Object
 
@@ -7,8 +8,10 @@ class Square(Box):
     A rectangle, that can be added to a map.
     """
 
-    def __init__(self, char, width, height, state=None, ob_class=Object,
-                 ob_args=None):
+    def __init__(
+        self, char, width, height, state:State=DEFAULT_STATE,
+        ob_class=Object, ob_args=None
+    ):
         super().__init__(height, width)
         if ob_args is None:
             ob_args = {}

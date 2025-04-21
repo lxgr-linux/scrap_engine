@@ -4,7 +4,6 @@ import os
 MAXCACHE_LINE = 512
 MAXCACHE_FRAME = 64
 
-DEFAULT_STATE = "solid"
 
 try:
     screen_width, screen_height = os.get_terminal_size()

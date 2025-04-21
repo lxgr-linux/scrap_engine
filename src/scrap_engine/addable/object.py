@@ -1,3 +1,5 @@
+from scrap_engine.addable.state import DEFAULT_STATE, State
+from scrap_engine.map.map import Map
 from .addable import Addable
 from ..error import CoordinateError
 
@@ -6,15 +8,15 @@ class Object(Addable):
     An object, containing a character, that can be added to a map.
     """
 
-    def __init__(self, char, state=None, arg_proto=None):
+    def __init__(self, char: str, state:State=DEFAULT_STATE, arg_proto=None):
         if arg_proto is None:
             arg_proto = {}
         super().__init__(state)
-        self.char = char
+        self.char: str = char
         self.arg_proto = arg_proto
         self.backup = None
 
-    def add(self, _map, x, y):
+    def add(self, _map:Map, x:int, y:int):
         """
         Adds the object to a certain coordinate on a certain map.
         """
@@ -32,7 +34,7 @@ class Object(Addable):
         self.added = True
         return 0
 
-    def set(self, x, y):
+    def set(self, x:int, y:int):
         """
         Sets the object to a certain coordinate.
         """
@@ -122,7 +124,7 @@ class Object(Addable):
         del self.map.obs[self.map.obs.index(self)]
         return 0
 
-    def set_state(self, state):
+    def set_state(self, state: State):
         """
         Changes the objects state ('float' or 'solid')
         """

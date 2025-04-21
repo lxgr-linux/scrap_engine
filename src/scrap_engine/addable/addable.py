@@ -1,14 +1,14 @@
 from typing import Optional
 
+from scrap_engine.addable.state import DEFAULT_STATE, State
 from scrap_engine.map.map import Map
-from scrap_engine.consts import DEFAULT_STATE
 
 class Addable:
     """
     The parent class of any object that can be added to a Map.
     """
 
-    def __init__(self, state=None):
+    def __init__(self, state:State=DEFAULT_STATE):
         self.x = None
         self.y = None
         # Those are the relativ coordinated used, when grouped
@@ -16,8 +16,5 @@ class Addable:
         self.ry = None
         self.added:bool = False
         self.group = None
-        if state is None:
-            self.state = DEFAULT_STATE
-        else:
-            self.state = state
+        self.state: State = state
         self.map: Optional[Map] = None

@@ -1,3 +1,4 @@
+from scrap_engine.addable.state import DEFAULT_STATE, State
 from .box import Box
 from .square import Square
 from ..object import Object
@@ -17,7 +18,7 @@ class Frame(Box):
 
     def __init__(self, height, width, corner_chars=None,
                  horizontal_chars=None, vertical_chars=None,
-                 state=None, ob_class=Object, ob_args=None):
+                 state:State=DEFAULT_STATE, ob_class=Object, ob_args=None):
         super().__init__(height, width)
         if ob_args is None:
             ob_args = {}
@@ -27,8 +28,7 @@ class Frame(Box):
             horizontal_chars = ["-", "-"]
         if corner_chars is None:
             corner_chars = ["+", "+", "+", "+"]
-        if state is not None:
-            self.state = state
+        self.state = state
         self.ob_class = ob_class
         self.ob_args = ob_args
         self.corner_chars = corner_chars
