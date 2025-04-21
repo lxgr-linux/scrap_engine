@@ -1,28 +1,34 @@
 import math
+from typing import Literal, Type
+
+from scrap_engine.addable.state import DEFAULT_STATE, State
 
 from .box import Box
 from ..object import Object
 
+LineType = Literal["straight", "crippled"]
 
 class Line(Box):
     """
     A line described by a vector, that cam be added to map.
     """
 
-    def __init__(self, char, cx, cy, l_type="straight", state=None,
-                 ob_class=Object, ob_args=None):
+    def __init__(
+        self, char:str, cx:int, cy:int, l_type:LineType="straight",
+        state:State=DEFAULT_STATE,
+        ob_class:Type[Object]=Object, ob_args=None
+    ):
         super().__init__(0, 0)
         if ob_args is None:
             ob_args = {}
         self.char = char
         self.ob_class = ob_class
         self.ob_args = ob_args
-        if state is not None:
-            self.state = state
-        self.type = l_type
+        self.state = state
+        self.type:LineType = l_type
         self.__gen(cx, cy)
 
-    def __gen(self, cx, cy):
+    def __gen(self, cx:int, cy:int):
         self.cx = cx
         self.cy = cy
         if cx ** 2 >= cy ** 2:
@@ -48,7 +54,7 @@ class Line(Box):
         for obj in self.obs:
             obj.rechar(char)
 
-    def resize(self, cx, cy):
+    def resize(self, cx:int, cy:int):
         """
         Resizes the line.
         """

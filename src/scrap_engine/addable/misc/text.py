@@ -1,3 +1,5 @@
+from typing import Type
+from scrap_engine.addable.state import DEFAULT_STATE, State
 from ..object_group import ObjectGroup
 from ..object import Object
 
@@ -8,8 +10,10 @@ class Text(ObjectGroup):
     Different Texts can be added together with the '+' operator.
     """
 
-    def __init__(self, text, state=None, esccode="", ob_class=Object,
-                 ob_args=None, ignore=""):
+    def __init__(
+        self, text, state:State=DEFAULT_STATE, esccode="",
+        ob_class:Type[Object]=Object, ob_args=None, ignore=""
+    ):
         super().__init__([], state)
         if ob_args is None:
             ob_args = {}

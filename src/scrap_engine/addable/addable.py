@@ -1,20 +1,36 @@
-from ..consts import DEFAULT_STATE
+from abc import ABC, abstractmethod
+from typing import Optional
 
-class Addable:
+from scrap_engine.addable.state import DEFAULT_STATE, State
+from scrap_engine.map.map import Map
+
+class Addable(ABC):
     """
     The parent class of any object that can be added to a Map.
     """
 
-    def __init__(self, state=None):
-        self.x = None
-        self.y = None
+    def __init__(self, state:State=DEFAULT_STATE):
+        self.x:int = -1
+        self.y:int = -1
         # Those are the relativ coordinated used, when grouped
         self.rx = None
         self.ry = None
-        self.added = False
+        self.added:bool = False
         self.group = None
-        if state is None:
-            self.state = DEFAULT_STATE
-        else:
-            self.state = state
-        self.map = None
+        self.state: State = state
+        self.map: Optional[Map] = None
+
+    def set_state(self, state: State):
+        self.state = state
+
+    @abstractmethod
+    def add(self, _map:Map, x:int, y:int):
+        ...
+
+    @abstractmethod
+    def remove(self):
+        ...
+
+    @abstractmethod
+    def set(self, x:int, y:int):
+        ...

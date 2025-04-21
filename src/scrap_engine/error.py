@@ -9,5 +9,7 @@ class CoordinateError(Exception):
         self.x = x
         self.y = y
         self.map = _map
-        super().__init__(f"The {obj}s coordinate ({x}|{y}) is \
-not in {self.map.width - 1}x{self.map.height - 1}")
+        super().__init__(
+            f"The {obj}s coordinate ({x}|{y}) is "
+            f"not in {self.map.width - 1}x{self.map.height - 1}"
+        )

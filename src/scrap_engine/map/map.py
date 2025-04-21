@@ -1,6 +1,3 @@
-import math
-import os
-import threading
 import functools
 
 from ..consts import screen_height, screen_width, MAXCACHE_FRAME, MAXCACHE_LINE
