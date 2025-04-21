@@ -12,7 +12,7 @@ class Circle(Box):
     """
 
     def __init__(
-        self, char, radius, state:State=DEFAULT_STATE,
+        self, char: str, radius:int, state:State=DEFAULT_STATE,
         ob_class:Type[Object]=Object, ob_args=None
     ):
         super().__init__(0, 0)

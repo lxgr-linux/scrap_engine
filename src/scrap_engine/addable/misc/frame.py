@@ -1,4 +1,4 @@
-from typing import Type
+from typing import Optional, Type
 from scrap_engine.addable.state import DEFAULT_STATE, State
 from .box import Box
 from .square import Square
@@ -17,9 +17,11 @@ class Frame(Box):
     That can be added to map.
     """
 
-    def __init__(self, height, width, corner_chars=None,
-                 horizontal_chars=None, vertical_chars=None,
-                 state:State=DEFAULT_STATE, ob_class:Type[Object]=Object, ob_args=None):
+    def __init__(
+        self, height:int, width:int, corner_chars:Optional[list[str]]=None,
+        horizontal_chars:Optional[list[str]]=None, vertical_chars:Optional[list[str]]=None,
+        state:State=DEFAULT_STATE, ob_class:Type[Object]=Object, ob_args=None
+    ):
         super().__init__(height, width)
         if ob_args is None:
             ob_args = {}
