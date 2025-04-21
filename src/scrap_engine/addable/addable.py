@@ -1,4 +1,7 @@
-from ..consts import DEFAULT_STATE
+from typing import Optional
+
+from scrap_engine.map.map import Map
+from scrap_engine.consts import DEFAULT_STATE
 
 class Addable:
     """
@@ -11,10 +14,10 @@ class Addable:
         # Those are the relativ coordinated used, when grouped
         self.rx = None
         self.ry = None
-        self.added = False
+        self.added:bool = False
         self.group = None
         if state is None:
             self.state = DEFAULT_STATE
         else:
             self.state = state
-        self.map = None
+        self.map: Optional[Map] = None
