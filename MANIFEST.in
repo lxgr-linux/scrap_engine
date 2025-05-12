@@ -1,5 +1,0 @@
-prune tests/
-prune examples/
-prune pics/
-prune docs/
-prune .gitignore

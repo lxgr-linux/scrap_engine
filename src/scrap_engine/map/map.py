@@ -1,20 +1,27 @@
 import functools
 
-from ..consts import screen_height, screen_width, MAXCACHE_FRAME, MAXCACHE_LINE
+from ..consts import MAXCACHE_FRAME, MAXCACHE_LINE, screen_height, screen_width
+
 
 class Map:
     """
     The map, objects can be added to.
     """
 
-    def __init__(self, height=screen_height - 1, width=screen_width,
-                 background="#", dynfps=True):
+    def __init__(
+        self,
+        height=screen_height - 1,
+        width=screen_width,
+        background="#",
+        dynfps=True,
+    ):
         self.height = height
         self.width = width
         self.dynfps = dynfps
         self.background = background
-        self.map = [[self.background for _ in range(width)]
-                    for _ in range(height)]
+        self.map = [
+            [self.background for _ in range(width)] for _ in range(height)
+        ]
         self.obmap = [[[] for _ in range(width)] for _ in range(height)]
         self.obs = []
         self.out_old = ""
@@ -26,9 +33,11 @@ class Map:
         for h in range(self.height):
             for w in range(self.width):
                 if blurmap.map[h][w] != " ":
-                    self.map[h][w] = (esccode +
-                                      blurmap.map[h][w].replace("\033[0m", "")[-1] +
-                                      "\033[0m")
+                    self.map[h][w] = (
+                        esccode
+                        + blurmap.map[h][w].replace("\033[0m", "")[-1]
+                        + "\033[0m"
+                    )
                 else:
                     self.map[h][w] = " "
         for obj in self.obs:
@@ -65,12 +74,13 @@ class Map:
         Resizes the map to a certain size.
         """
         self.background = background
-        self.map = [[self.background for _ in range(width)]
-                    for _ in range(height)]
-        self.obmap = [[[] for _ in range(width
-                                         if width > self.width else self.width)]
-                      for _ in range(height
-                                     if height > self.height else self.height)]
+        self.map = [
+            [self.background for _ in range(width)] for _ in range(height)
+        ]
+        self.obmap = [
+            [[] for _ in range(width if width > self.width else self.width)]
+            for _ in range(height if height > self.height else self.height)
+        ]
         self.width = width
         self.height = height
         for obj in self.obs:

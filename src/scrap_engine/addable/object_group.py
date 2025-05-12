@@ -1,5 +1,5 @@
-from scrap_engine.addable.state import DEFAULT_STATE, State
 from .addable import Addable
+from .state import DEFAULT_STATE, State
 
 
 class ObjectGroup(Addable):
@@ -8,7 +8,7 @@ class ObjectGroup(Addable):
     simultaniuously.
     """
 
-    def __init__(self, obs, state:State=DEFAULT_STATE):
+    def __init__(self, obs, state: State = DEFAULT_STATE):
         super().__init__(state)
         self.obs = obs
         for obj in obs:
@@ -54,7 +54,7 @@ class ObjectGroup(Addable):
         for obj in self.obs:
             obj.remove()
 
-    def set(self, x:int, y:int):
+    def set(self, x: int, y: int):
         """
         Sets the group to a certain coordinate.
         !!! Just use this with inherited classes !!!
@@ -63,7 +63,7 @@ class ObjectGroup(Addable):
         self.x = x
         self.y = y
 
-    def set_state(self, state:State):
+    def set_state(self, state: State):
         """
         Sets all objects states to a certain state.
         """

@@ -30,9 +30,9 @@ You can contribute here: https://github.com/lxgr-linux/scrap_engine
 """
 
 __author__ = "lxgr <lxgr@protonmail.com>"
-__version__ = "1.4.2"
+__version__ = "1.4.4"
 
-from .error import CoordinateError
-from .consts import *
 from .addable import *
+from .consts import *
+from .error import CoordinateError
 from .map import *

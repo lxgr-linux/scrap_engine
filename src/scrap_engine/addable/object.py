@@ -1,14 +1,15 @@
-from scrap_engine.addable.state import DEFAULT_STATE, State
-from scrap_engine.map.map import Map
-from .addable import Addable
 from ..error import CoordinateError
+from ..map.map import Map
+from .addable import Addable
+from .state import DEFAULT_STATE, State
+
 
 class Object(Addable):
     """
     An object, containing a character, that can be added to a map.
     """
 
-    def __init__(self, char: str, state:State=DEFAULT_STATE, arg_proto=None):
+    def __init__(self, char: str, state: State = DEFAULT_STATE, arg_proto=None):
         if arg_proto is None:
             arg_proto = {}
         super().__init__(state)
@@ -16,7 +17,7 @@ class Object(Addable):
         self.arg_proto = arg_proto
         self.backup = None
 
-    def add(self, _map:Map, x:int, y:int):
+    def add(self, _map: Map, x: int, y: int):
         """
         Adds the object to a certain coordinate on a certain map.
         """
@@ -34,7 +35,7 @@ class Object(Addable):
         self.added = True
         return 0
 
-    def set(self, x:int, y:int):
+    def set(self, x: int, y: int):
         """
         Sets the object to a certain coordinate.
         """
@@ -72,12 +73,18 @@ class Object(Addable):
         return 0
 
     def __backup_setter(self):
-        if (len(self.map.obmap[self.y][self.x])
-                > self.map.obmap[self.y][self.x].index(self) + 1):
-            self.map.obmap[self.y][self.x][self.map.obmap[self.y][self.x].index(self) + 1].backup = self.backup
+        if (
+            len(self.map.obmap[self.y][self.x])
+            > self.map.obmap[self.y][self.x].index(self) + 1
+        ):
+            self.map.obmap[self.y][self.x][
+                self.map.obmap[self.y][self.x].index(self) + 1
+            ].backup = self.backup
         else:
             self.map.map[self.y][self.x] = self.backup
-        del self.map.obmap[self.y][self.x][self.map.obmap[self.y][self.x].index(self)]
+        del self.map.obmap[self.y][self.x][
+            self.map.obmap[self.y][self.x].index(self)
+        ]
 
     def action(self, ob):
         """
