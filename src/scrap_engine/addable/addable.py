@@ -14,10 +14,10 @@ class Addable(ABC):
         self.x: int = -1
         self.y: int = -1
         # Those are the relativ coordinated used, when grouped
-        self.rx = None
-        self.ry = None
+        self.rx: int = -1
+        self.ry: int = -1
         self.added: bool = False
-        self.group = None
+        self.group: Optional[Addable] = None
         self.state: State = state
         self.map: Optional[Map] = None
 

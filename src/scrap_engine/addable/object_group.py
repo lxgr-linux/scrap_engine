@@ -8,27 +8,30 @@ class ObjectGroup(Addable):
     simultaniuously.
     """
 
-    def __init__(self, obs, state: State = DEFAULT_STATE):
+    def __init__(self, obs: list[Addable], state: State = DEFAULT_STATE):
         super().__init__(state)
-        self.obs = obs
+        self.obs: list[Addable] = obs
         for obj in obs:
             obj.group = self
 
-    def add_ob(self, obj):
+    def is_ob_added(self, obj: Addable) -> bool:
+        return obj in self.obs
+
+    def add_ob(self, obj: Addable):
         """
         Adds and object to the group.
         """
         self.obs.append(obj)
         obj.group = self
 
-    def add_obs(self, obs):
+    def add_obs(self, obs: list[Addable]):
         """
         Adds a list of objects to th group.
         """
         for obj in obs:
             self.add_ob(obj)
 
-    def rem_ob(self, obj):
+    def rem_ob(self, obj: Addable):
         """
         Removes an object from the group.
         """
@@ -38,7 +41,7 @@ class ObjectGroup(Addable):
             return 0
         return 1
 
-    def move(self, x=0, y=0):
+    def move(self, x: int = 0, y: int = 0):
         """
         Moves all objects in the group by a certain vector.
         """

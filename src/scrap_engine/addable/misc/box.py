@@ -1,5 +1,7 @@
+from scrap_engine.addable.addable import Addable
+from scrap_engine.addable.object_group import ObjectGroup
 from scrap_engine.addable.state import DEFAULT_STATE
-from ..object_group import ObjectGroup
+
 
 class Box(ObjectGroup):
     """
@@ -7,12 +9,12 @@ class Box(ObjectGroup):
     coordinate, that can be added to a map.
     """
 
-    def __init__(self, height:int, width:int):
+    def __init__(self, height: int, width: int):
         super().__init__([], DEFAULT_STATE)
-        self.height:int = height
-        self.width:int = width
+        self.height: int = height
+        self.width: int = width
 
-    def add(self, _map, x:int, y:int):
+    def add(self, _map, x: int, y: int):
         """
         Adds the box to a certain coordinate on a certain map.
         """
@@ -23,18 +25,20 @@ class Box(ObjectGroup):
             obj.add(self.map, obj.rx + self.x, obj.ry + self.y)
         self.added = True
 
-    def add_ob(self, obj, x:int, y:int):
+    def add_ob(self, obj: Addable, x: int, y: int):
         """
         Adds an object(group) to a certain coordinate relative to the box.
         """
-        self.obs.append(obj)
+        if self.is_ob_added(obj):
+            self.set_ob(obj, x, y)
+            return
         obj.rx = x
         obj.ry = y
-        obj.group = self
+        super().add_ob(obj)
         if self.added:
             obj.add(self.map, obj.rx + self.x, obj.ry + self.y)
 
-    def set_ob(self, obj, x, y):
+    def set_ob(self, obj: Addable, x: int, y: int):
         """
         Sets an object(group) to a certain coordinate relative to the box.
         """
@@ -51,7 +55,7 @@ class Box(ObjectGroup):
             obj.remove()
         self.added = False
 
-    def resize(self, height, width):
+    def resize(self, height: int, width: int):
         """
         Resizes the box.
         """
