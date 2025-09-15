@@ -1,8 +1,10 @@
 from typing import Optional, Type
+
 from scrap_engine.addable.state import DEFAULT_STATE, State
+
+from ..object import Object
 from .box import Box
 from .square import Square
-from ..object import Object
 
 
 class Frame(Box):
@@ -18,9 +20,15 @@ class Frame(Box):
     """
 
     def __init__(
-        self, height:int, width:int, corner_chars:Optional[list[str]]=None,
-        horizontal_chars:Optional[list[str]]=None, vertical_chars:Optional[list[str]]=None,
-        state:State=DEFAULT_STATE, ob_class:Type[Object]=Object, ob_args=None
+        self,
+        height: int,
+        width: int,
+        corner_chars: Optional[list[str]] = None,
+        horizontal_chars: Optional[list[str]] = None,
+        vertical_chars: Optional[list[str]] = None,
+        state: State = DEFAULT_STATE,
+        ob_class: Type[Object] = Object,
+        ob_args=None,
     ):
         super().__init__(height, width)
         if ob_args is None:
@@ -42,21 +50,24 @@ class Frame(Box):
     def __gen_obs(self):
         # Corners
         self.corners = [
-            self.ob_class(
-                i, arg_proto=self.ob_args, state=self.state
-            )
+            self.ob_class(i, arg_proto=self.ob_args, state=self.state)
             for i, j in zip(self.corner_chars, range(4))
         ]
         for obj, rx, ry in zip(
-            self.corners, [0, self.width - 1, 0, self.width - 1],
-            [0, 0, self.height - 1, self.height - 1]
+            self.corners,
+            [0, self.width - 1, 0, self.width - 1],
+            [0, 0, self.height - 1, self.height - 1],
         ):
             self.add_ob(obj, rx, ry)
         # Horizontals
         self.horizontals = [
             Square(
-                char=i, width=self.width - 2, height=1,
-                state=self.state, ob_class=Object, ob_args=self.ob_args
+                char=i,
+                width=self.width - 2,
+                height=1,
+                state=self.state,
+                ob_class=Object,
+                ob_args=self.ob_args,
             )
             for i, j in zip(self.horizontal_chars, range(2))
         ]
@@ -65,16 +76,21 @@ class Frame(Box):
         # Verticals
         self.verticals = [
             Square(
-                char=i, width=1, height=self.height - 2,
-                state=self.state, ob_class=Object, ob_args=self.ob_args
+                char=i,
+                width=1,
+                height=self.height - 2,
+                state=self.state,
+                ob_class=Object,
+                ob_args=self.ob_args,
             )
             for i, j in zip(self.vertical_chars, range(2))
         ]
         for obj, rx, ry in zip(self.verticals, [0, self.width - 1], [1, 1]):
             self.add_ob(obj, rx, ry)
 
-    def rechar(self, corner_chars=None, horizontal_chars=None,
-               vertical_chars=None):
+    def rechar(
+        self, corner_chars=None, horizontal_chars=None, vertical_chars=None
+    ):
         """
         Rechars the frame.
         """

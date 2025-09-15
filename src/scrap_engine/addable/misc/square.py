@@ -1,7 +1,9 @@
 from typing import Type
+
 from scrap_engine.addable.state import DEFAULT_STATE, State
-from .box import Box
+
 from ..object import Object
+from .box import Box
 
 
 class Square(Box):
@@ -10,8 +12,13 @@ class Square(Box):
     """
 
     def __init__(
-        self, char, width, height, state:State=DEFAULT_STATE,
-        ob_class:Type[Object]=Object, ob_args=None
+        self,
+        char,
+        width,
+        height,
+        state: State = DEFAULT_STATE,
+        ob_class: Type[Object] = Object,
+        ob_args=None,
     ):
         super().__init__(height, width)
         if ob_args is None:
@@ -30,7 +37,8 @@ class Square(Box):
                     self.ob_class(
                         self.char, self.state, arg_proto=self.ob_args
                     ),
-                    rx, ry
+                    rx,
+                    ry,
                 )
 
     def rechar(self, char):

@@ -2,8 +2,9 @@ import math
 from typing import Type
 
 from scrap_engine.addable.state import DEFAULT_STATE, State
-from .box import Box
+
 from ..object import Object
+from .box import Box
 
 
 class Circle(Box):
@@ -12,8 +13,12 @@ class Circle(Box):
     """
 
     def __init__(
-        self, char: str, radius:int, state:State=DEFAULT_STATE,
-        ob_class:Type[Object]=Object, ob_args=None
+        self,
+        char: str,
+        radius: int,
+        state: State = DEFAULT_STATE,
+        ob_class: Type[Object] = Object,
+        ob_args=None,
     ):
         super().__init__(0, 0)
         if ob_args is None:
@@ -28,9 +33,14 @@ class Circle(Box):
         self.radius = radius
         for i in range(-(int(radius) + 1), int(radius + 1) + 1):
             for j in range(-(int(radius) + 1), int(radius + 1) + 1):
-                if math.sqrt(i ** 2 + j ** 2) <= radius:
-                    self.add_ob(self.ob_class(self.char, state=self.state,
-                                              arg_proto=self.ob_args), i, j)
+                if math.sqrt(i**2 + j**2) <= radius:
+                    self.add_ob(
+                        self.ob_class(
+                            self.char, state=self.state, arg_proto=self.ob_args
+                        ),
+                        i,
+                        j,
+                    )
 
     def rechar(self, char):
         """

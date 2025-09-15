@@ -1,18 +1,27 @@
-from typing import Type
+from typing import Generic, TypeVar
+
 from scrap_engine.addable.state import DEFAULT_STATE, State
-from ..object_group import ObjectGroup
+
 from ..object import Object
+from ..object_group import ObjectGroup
+
+T = TypeVar("T", bound=Object)
 
 
-class Text(ObjectGroup):
+class Text(ObjectGroup[T], Generic[T]):
     """
     A datatype containing a string, that can be added to a map.
     Different Texts can be added together with the '+' operator.
     """
 
     def __init__(
-        self, text, state:State=DEFAULT_STATE, esccode="",
-        ob_class:Type[Object]=Object, ob_args=None, ignore=""
+        self,
+        text,
+        state: State = DEFAULT_STATE,
+        esccode="",
+        ob_class: type[T] = Object,
+        ob_args=None,
+        ignore="",
     ):
         super().__init__([], state)
         if ob_args is None:
@@ -53,9 +62,7 @@ class Text(ObjectGroup):
             for char in txt:
                 if self.esccode != "":
                     char = self.esccode + char + "\033[0m"
-                obj = self.ob_class(
-                    char, self.state, arg_proto=self.ob_args
-                )
+                obj = self.ob_class(char, self.state, arg_proto=self.ob_args)
                 obj.group = self
                 self.obs.append(obj)
         for obj in self.obs:
@@ -71,7 +78,7 @@ class Text(ObjectGroup):
         self.y = y
         count = 0
         for l, text in enumerate(self.text.split("\n")):
-            for i, obj in enumerate(self.obs[count:count + len(text)]):
+            for i, obj in enumerate(self.obs[count : count + len(text)]):
                 if obj.char != self.ignore:
                     obj.add(self.map, x + i, y + l)
             count += len(text)
@@ -84,7 +91,7 @@ class Text(ObjectGroup):
         for obj in self.obs:
             obj.remove()
 
-    def rem_ob(self, obj):
+    def rem_ob(self, obj: T):
         """
         Removes an object from the group.
         """
@@ -93,18 +100,18 @@ class Text(ObjectGroup):
             index = self.obs.index(obj)
             idx = 0
             while idx < len(self.text):
-                if self.text[idx:idx+2] == "\n":
+                if self.text[idx : idx + 2] == "\n":
                     idx += 2
                     continue
                 if idx == index:
-                    self.text = self.text[:idx] + self.text[idx + 1:]
+                    self.text = self.text[:idx] + self.text[idx + 1 :]
                     break
                 idx += 1
             self.obs.pop(index)
             return 0
         return 1
 
-    def rechar(self, text, esccode=""):
+    def rechar(self, text: str, esccode=""):
         """
         Changes the string contained in the text.
         """

@@ -3,7 +3,7 @@ from scrap_engine.addable.object_group import ObjectGroup
 from scrap_engine.addable.state import DEFAULT_STATE
 
 
-class Box(ObjectGroup):
+class Box(ObjectGroup[Addable]):
     """
     A datastucture used to group objects(groups) relative to a certain
     coordinate, that can be added to a map.

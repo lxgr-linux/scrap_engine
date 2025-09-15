@@ -7,10 +7,10 @@ name = "scrap_engine"
 authors = [{ name = "lxgr", email = "lxgr@protonmail.com" }]
 description = "A 2D ascii game engine for the terminal"
 keywords = ["game", "Ascii"]
-version = "1.4.5"
+version = "1.4.6"
 license = { text = "GPL-3.0-only" }
 readme = "README.md"
-requires-python = ">=3.11"
+requires-python = ">=3.13"
 classifiers = [
     "Programming Language :: Python :: 3",
     "Operating System :: OS Independent",

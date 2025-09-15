@@ -1,37 +1,41 @@
+from typing import Generic, TypeVar
+
 from .addable import Addable
 from .state import DEFAULT_STATE, State
 
+T = TypeVar("T", bound=Addable)
 
-class ObjectGroup(Addable):
+
+class ObjectGroup(Generic[T], Addable):
     """
     A datatype used to group objects together and do things with them
     simultaniuously.
     """
 
-    def __init__(self, obs: list[Addable], state: State = DEFAULT_STATE):
+    def __init__(self, obs: list[T], state: State = DEFAULT_STATE):
         super().__init__(state)
-        self.obs: list[Addable] = obs
+        self.obs: list[T] = obs
         for obj in obs:
             obj.group = self
 
-    def is_ob_added(self, obj: Addable) -> bool:
+    def is_ob_added(self, obj: T) -> bool:
         return obj in self.obs
 
-    def add_ob(self, obj: Addable):
+    def add_ob(self, obj: T):
         """
         Adds and object to the group.
         """
         self.obs.append(obj)
         obj.group = self
 
-    def add_obs(self, obs: list[Addable]):
+    def add_obs(self, obs: list[T]):
         """
         Adds a list of objects to th group.
         """
         for obj in obs:
             self.add_ob(obj)
 
-    def rem_ob(self, obj: Addable):
+    def rem_ob(self, obj: T):
         """
         Removes an object from the group.
         """
