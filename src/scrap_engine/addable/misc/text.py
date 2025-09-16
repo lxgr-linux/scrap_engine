@@ -1,5 +1,6 @@
 from typing import Generic, TypeVar
 
+from scrap_engine.addable.area import HasArea
 from scrap_engine.addable.state import DEFAULT_STATE, State
 
 from ..object import Object
@@ -8,7 +9,7 @@ from ..object_group import ObjectGroup
 T = TypeVar("T", bound=Object)
 
 
-class Text(ObjectGroup[T], Generic[T]):
+class Text(ObjectGroup[T], Generic[T], HasArea):
     """
     A datatype containing a string, that can be added to a map.
     Different Texts can be added together with the '+' operator.
@@ -34,14 +35,14 @@ class Text(ObjectGroup[T], Generic[T]):
         self.__texter(text)
 
     @property
-    def width(self):
+    def width(self) -> int:
         """
         The Texts peak width
         """
         return sorted(len(i) for i in self.text.split("\n"))[-1]
 
     @property
-    def height(self):
+    def height(self) -> int:
         """
         The Texts height
         """

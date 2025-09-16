@@ -1,9 +1,10 @@
 from scrap_engine.addable.addable import Addable
+from scrap_engine.addable.area import HasArea
 from scrap_engine.addable.object_group import ObjectGroup
 from scrap_engine.addable.state import DEFAULT_STATE
 
 
-class Box(ObjectGroup[Addable]):
+class Box(ObjectGroup[Addable], HasArea):
     """
     A datastucture used to group objects(groups) relative to a certain
     coordinate, that can be added to a map.
@@ -11,8 +12,16 @@ class Box(ObjectGroup[Addable]):
 
     def __init__(self, height: int, width: int):
         super().__init__([], DEFAULT_STATE)
-        self.height: int = height
-        self.width: int = width
+        self.__height: int = height
+        self.__width: int = width
+
+    @property
+    def height(self) -> int:
+        return self.__height
+
+    @property
+    def width(self) -> int:
+        return self.__width
 
     def add(self, _map, x: int, y: int):
         """
@@ -59,5 +68,5 @@ class Box(ObjectGroup[Addable]):
         """
         Resizes the box.
         """
-        self.height = height
-        self.width = width
+        self.__height = height
+        self.__width = width
