@@ -1,10 +1,11 @@
 from ..error import CoordinateError
 from ..map.map import Map
 from .addable import Addable
+from .area import HasArea
 from .state import DEFAULT_STATE, State
 
 
-class Object(Addable):
+class Object(HasArea, Addable):
     """
     An object, containing a character, that can be added to a map.
     """
@@ -71,6 +72,14 @@ class Object(Addable):
         self.backup = self.map.map[self.y][self.x]
         self.map.map[self.y][self.x] = self.char
         return 0
+
+    @property
+    def height(self) -> int:
+        return 1
+
+    @property
+    def width(self) -> int:
+        return 1
 
     def __backup_setter(self):
         if (
