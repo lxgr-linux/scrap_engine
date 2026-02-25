@@ -78,8 +78,8 @@ class Map:
             [self.background for _ in range(width)] for _ in range(height)
         ]
         self.obmap = [
-            [[] for _ in range(width if width > self.width else self.width)]
-            for _ in range(height if height > self.height else self.height)
+            [[] for _ in range(max(width, self.width))]
+            for _ in range(max(height, self.height))
         ]
         self.width = width
         self.height = height
