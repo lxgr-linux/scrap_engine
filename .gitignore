@@ -5,4 +5,5 @@ dist
 scrap_engine.egg-info
 submit.sh
 .eggs
-.idea/*
+.idea
+.ruff_cache
