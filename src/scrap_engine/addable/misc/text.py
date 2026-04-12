@@ -9,7 +9,7 @@ from ..object_group import ObjectGroup
 T = TypeVar("T", bound=Object)
 
 
-class Text(ObjectGroup[T], Generic[T], HasArea):
+class Text(HasArea, ObjectGroup[T], Generic[T]):
     """
     A datatype containing a string, that can be added to a map.
     Different Texts can be added together with the '+' operator.

@@ -1,14 +1,23 @@
-from abc import ABC, abstractmethod
-from typing import Optional
+from abc import abstractmethod
+from typing import Optional, Protocol
 
 from ..map.map import Map
 from .state import DEFAULT_STATE, State
 
 
-class Addable(ABC):
+class Addable(Protocol):
     """
     The parent class of any object that can be added to a Map.
     """
+
+    x: int
+    y: int
+    rx: int
+    ry: int
+    added: bool
+    group: Optional["Addable"]
+    state: State
+    map: Optional[Map]
 
     def __init__(self, state: State = DEFAULT_STATE):
         self.x: int = -1

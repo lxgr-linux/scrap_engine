@@ -51,7 +51,7 @@ if sys.platform == "linux":  # Use another (not on xserver relying) way to read 
                 termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
                 ev="exit"
 else:
-    from pynput.keyboard import Key, Listener
+    from pynput.keyboard import Listener
     def recogniser():
         global ev
         while True:
