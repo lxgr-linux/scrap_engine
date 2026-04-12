@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 import scrap_engine as se
-import time, os, threading, sys
+import time
+import os
+import threading
+import sys
 
 os.system("")
 width, height = os.get_terminal_size()

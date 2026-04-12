@@ -20,3 +20,7 @@ classifiers = [
 Homepage = "https://github.com/lxgr-linux/scrap_engine"
 Issues = "https://github.com/lxgr-linux/scrap_engine/issue"
 Repository = "https://github.com/lxgr-linux/scrap_engine.git"
+
+[tool.ruff]
+line-length = 88
+target-version = "py312"

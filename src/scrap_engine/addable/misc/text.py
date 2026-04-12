@@ -78,10 +78,10 @@ class Text(HasArea, ObjectGroup[T], Generic[T]):
         self.x = x
         self.y = y
         count = 0
-        for l, text in enumerate(self.text.split("\n")):
+        for line, text in enumerate(self.text.split("\n")):
             for i, obj in enumerate(self.obs[count : count + len(text)]):
                 if obj.char != self.ignore:
-                    obj.add(self.map, x + i, y + l)
+                    obj.add(self.map, x + i, y + line)
             count += len(text)
 
     def remove(self):
