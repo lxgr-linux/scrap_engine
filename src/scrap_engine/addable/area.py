@@ -1,11 +1,12 @@
-from abc import ABC, abstractmethod
+from abc import abstractmethod
+from typing import Protocol
 
 from scrap_engine.addable.addable import Addable
 
 type Area = tuple[tuple[int, int], tuple[int, int]]
 
 
-class HasArea(Addable, ABC):
+class HasArea(Addable, Protocol):
     @property
     @abstractmethod
     def height(self) -> int: ...

@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 import scrap_engine as se
-import time, os, threading, sys
+import time
+import os
+import threading
+import sys
 
 os.system("")
 width, height = os.get_terminal_size()
@@ -36,7 +39,7 @@ if sys.platform == "linux":  # Use another (not on xserver relying) way to read 
             else:
                 ev="'"+a.rstrip()+"'"
 else:
-    from pynput.keyboard import Key, Listener
+    from pynput.keyboard import Listener
     def recogniser():
         global ev
         while True:

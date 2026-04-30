@@ -32,7 +32,44 @@ You can contribute here: https://github.com/lxgr-linux/scrap_engine
 __author__ = "lxgr <lxgr@protonmail.com>"
 __version__ = "1.4.4"
 
-from .addable import *
-from .consts import *
+from .addable import (
+    DEFAULT_STATE,
+    Addable,
+    Area,
+    Box,
+    Circle,
+    Frame,
+    HasArea,
+    Line,
+    Object,
+    ObjectGroup,
+    Square,
+    State,
+    Text,
+)
+from .consts import MAXCACHE_FRAME, MAXCACHE_LINE, screen_height, screen_width
 from .error import CoordinateError
-from .map import *
+from .map import Map, Submap
+
+__all__ = [
+    "Addable",
+    "Area",
+    "HasArea",
+    "Object",
+    "ObjectGroup",
+    "DEFAULT_STATE",
+    "State",
+    "Box",
+    "Circle",
+    "Frame",
+    "Line",
+    "Square",
+    "Text",
+    "MAXCACHE_LINE",
+    "MAXCACHE_FRAME",
+    "screen_width",
+    "screen_height",
+    "CoordinateError",
+    "Map",
+    "Submap",
+]

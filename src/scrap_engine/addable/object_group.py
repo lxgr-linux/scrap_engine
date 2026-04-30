@@ -6,7 +6,7 @@ from .state import DEFAULT_STATE, State
 T = TypeVar("T", bound=Addable)
 
 
-class ObjectGroup(Generic[T], Addable):
+class ObjectGroup(Addable, Generic[T]):
     """
     A datatype used to group objects together and do things with them
     simultaniuously.

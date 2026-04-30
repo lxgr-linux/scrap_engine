@@ -4,3 +4,12 @@ from .frame import Frame
 from .line import Line
 from .square import Square
 from .text import Text
+
+__all__ = [
+    "Box",
+    "Circle",
+    "Frame",
+    "Line",
+    "Square",
+    "Text",
+]
