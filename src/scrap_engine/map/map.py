@@ -1,4 +1,7 @@
 import functools
+from typing import Callable
+
+from scrap_engine.interfaces import IObject
 
 from ..consts import MAXCACHE_FRAME, MAXCACHE_LINE, screen_height, screen_width
 
@@ -10,23 +13,25 @@ class Map:
 
     def __init__(
         self,
-        height=screen_height - 1,
-        width=screen_width,
-        background="#",
-        dynfps=True,
+        height: int = screen_height - 1,
+        width: int = screen_width,
+        background: str = "#",
+        dynfps: bool = True,
     ):
-        self.height = height
-        self.width = width
-        self.dynfps = dynfps
-        self.background = background
-        self.map = [
+        self.height: int = height
+        self.width: int = width
+        self.dynfps: bool = dynfps
+        self.background: str = background
+        self.map: list[list[str]] = [
             [self.background for _ in range(width)] for _ in range(height)
         ]
-        self.obmap = [[[] for _ in range(width)] for _ in range(height)]
-        self.obs = []
-        self.out_old = ""
+        self.obmap: list[list[list[IObject]]] = [
+            [[] for _ in range(width)] for _ in range(height)
+        ]
+        self.obs: list[IObject] = []
+        self.out_old: str = ""
 
-    def blur_in(self, blurmap, esccode="\033[37m"):
+    def blur_in(self, blurmap: "Map", esccode: str = "\033[37m"):
         """
         Sets another maps content as its background.
         """
@@ -43,7 +48,7 @@ class Map:
         for obj in self.obs:
             obj.redraw()
 
-    def show(self, init=False):
+    def show(self, init: bool = False):
         """
         Prints the maps content.
         """
@@ -55,7 +60,7 @@ class Map:
 
     @staticmethod
     @functools.lru_cache(MAXCACHE_FRAME)
-    def __show_map(show_line, _map):
+    def __show_map(show_line: Callable[[tuple[str]], str], _map: tuple[tuple[str]]):
         out = "\033[H"
         for arr in _map:
             out += show_line(arr)
@@ -63,20 +68,18 @@ class Map:
 
     @staticmethod
     @functools.lru_cache(MAXCACHE_LINE)
-    def __show_line(arr):
+    def __show_line(arr: tuple[str]) -> str:
         out_line = ""
         for char in arr:
             out_line += char
         return out_line
 
-    def resize(self, height, width, background="#"):
+    def resize(self, height: int, width: int, background: str = "#"):
         """
         Resizes the map to a certain size.
         """
         self.background = background
-        self.map = [
-            [self.background for _ in range(width)] for _ in range(height)
-        ]
+        self.map = [[self.background for _ in range(width)] for _ in range(height)]
         self.obmap = [
             [[] for _ in range(max(width, self.width))]
             for _ in range(max(height, self.height))

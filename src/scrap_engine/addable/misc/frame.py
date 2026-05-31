@@ -1,8 +1,8 @@
-from typing import Optional, Type
+from typing import Optional, Type, override
 
 from scrap_engine.addable.state import DEFAULT_STATE, State
 
-from ..object import Object
+from ..object import ArgProto, Object
 from .box import Box
 from .square import Square
 
@@ -28,7 +28,7 @@ class Frame(Box):
         vertical_chars: Optional[list[str]] = None,
         state: State = DEFAULT_STATE,
         ob_class: Type[Object] = Object,
-        ob_args=None,
+        ob_args: ArgProto = None,
     ):
         super().__init__(height, width)
         if ob_args is None:
@@ -83,13 +83,16 @@ class Frame(Box):
                 ob_class=Object,
                 ob_args=self.ob_args,
             )
-            for i, j in zip(self.vertical_chars, range(2))
+            for i, _ in zip(self.vertical_chars, range(2))
         ]
         for obj, rx, ry in zip(self.verticals, [0, self.width - 1], [1, 1]):
             self.add_ob(obj, rx, ry)
 
     def rechar(
-        self, corner_chars=None, horizontal_chars=None, vertical_chars=None
+        self,
+        corner_chars: Optional[list[str]] = None,
+        horizontal_chars: Optional[list[str]] = None,
+        vertical_chars: Optional[list[str]] = None,
     ):
         """
         Rechars the frame.
@@ -108,7 +111,8 @@ class Frame(Box):
         for obj, _c in zip(self.verticals, self.vertical_chars):
             obj.rechar(_c)
 
-    def resize(self, height, width):
+    @override
+    def resize(self, height: int, width: int):
         """
         Changes the frames size.
         """

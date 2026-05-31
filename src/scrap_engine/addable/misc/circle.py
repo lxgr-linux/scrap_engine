@@ -1,9 +1,9 @@
 import math
-from typing import Type
+from typing import Type, override
 
 from scrap_engine.addable.state import DEFAULT_STATE, State
 
-from ..object import Object
+from ..object import ArgProto, Object
 from .box import Box
 
 
@@ -18,18 +18,18 @@ class Circle(Box):
         radius: int,
         state: State = DEFAULT_STATE,
         ob_class: Type[Object] = Object,
-        ob_args=None,
+        ob_args: ArgProto = None,
     ):
         super().__init__(0, 0)
         if ob_args is None:
             ob_args = {}
-        self.char = char
+        self.char: str = char
         self.ob_class = ob_class
         self.ob_args = ob_args
         self.state = state
         self.__gen(radius)
 
-    def __gen(self, radius):
+    def __gen(self, radius: int):
         self.radius = radius
         for i in range(-(int(radius) + 1), int(radius + 1) + 1):
             for j in range(-(int(radius) + 1), int(radius + 1) + 1):
@@ -42,7 +42,7 @@ class Circle(Box):
                         j,
                     )
 
-    def rechar(self, char):
+    def rechar(self, char: str):
         """
         Changes the chars the circle is filled with.
         """
@@ -50,7 +50,8 @@ class Circle(Box):
         for obj in self.obs:
             obj.rechar(char)
 
-    def resize(self, radius):
+    @override
+    def resize(self, radius: int):
         """
         Resizes the circle.
         """

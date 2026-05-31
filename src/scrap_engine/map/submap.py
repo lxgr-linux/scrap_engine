@@ -11,18 +11,18 @@ class Submap(Map):
 
     def __init__(
         self,
-        bmap,
-        x,
-        y,
-        height=screen_height - 1,
-        width=screen_width,
-        dynfps=True,
+        bmap: Map,
+        x: int,
+        y: int,
+        height: int = screen_height - 1,
+        width: int = screen_width,
+        dynfps: bool = True,
     ):
         super().__init__(height, width, dynfps=dynfps)
         del self.background
-        self.y = y
-        self.x = x
-        self.bmap = bmap
+        self.y: int = y
+        self.x: int = x
+        self.bmap: Map = bmap
         self.remap()
 
     def remap(self):
@@ -59,7 +59,7 @@ class Submap(Map):
     def __full_bg(background, width, height):
         return [[background for _ in range(width)] for _ in range(height)]
 
-    def set(self, x, y):
+    def set(self, x: int, y: int):
         """
         Changes the coordinates on the map, the submap is at.
         """
@@ -70,7 +70,7 @@ class Submap(Map):
         self.remap()
         return 0
 
-    def full_show(self, init=False):
+    def full_show(self, init: bool = False):
         """
         Combines remap() and show().
         """

@@ -1,16 +1,25 @@
+from typing import Any, Literal, Optional, override
+
 from ..error import CoordinateError
 from ..map.map import Map
 from .addable import Addable
 from .area import HasArea
 from .state import DEFAULT_STATE, State
 
+type ArgProto = Optional[dict[str, Any]]  # pyright: ignore[reportExplicitAny]
 
-class Object(HasArea, Addable):
+
+class Object(Addable, HasArea):
     """
     An object, containing a character, that can be added to a map.
     """
 
-    def __init__(self, char: str, state: State = DEFAULT_STATE, arg_proto=None):
+    def __init__(
+        self,
+        char: str,
+        state: State = DEFAULT_STATE,
+        arg_proto: ArgProto = None,
+    ):
         if arg_proto is None:
             arg_proto = {}
         super().__init__(state)
@@ -18,6 +27,7 @@ class Object(HasArea, Addable):
         self.arg_proto = arg_proto
         self.backup = None
 
+    @override
     def add(self, _map: Map, x: int, y: int):
         """
         Adds the object to a certain coordinate on a certain map.
@@ -36,6 +46,7 @@ class Object(HasArea, Addable):
         self.added = True
         return 0
 
+    @override
     def set(self, x: int, y: int):
         """
         Sets the object to a certain coordinate.
@@ -63,7 +74,7 @@ class Object(HasArea, Addable):
                 obj.action(self)
         return 0
 
-    def redraw(self):
+    def redraw(self) -> Literal[0, 1]:
         """
         Redraws the object on the map.
         """
@@ -91,9 +102,7 @@ class Object(HasArea, Addable):
             ].backup = self.backup
         else:
             self.map.map[self.y][self.x] = self.backup
-        del self.map.obmap[self.y][self.x][
-            self.map.obmap[self.y][self.x].index(self)
-        ]
+        del self.map.obmap[self.y][self.x][self.map.obmap[self.y][self.x].index(self)]
 
     def action(self, ob):
         """
@@ -118,7 +127,7 @@ class Object(HasArea, Addable):
         """
         return
 
-    def rechar(self, char):
+    def rechar(self, char: str):
         """
         Changes the objects character.
         """
@@ -129,6 +138,7 @@ class Object(HasArea, Addable):
         self.redraw()
         return 0
 
+    @override
     def remove(self):
         """
         Removes the object from the map.
