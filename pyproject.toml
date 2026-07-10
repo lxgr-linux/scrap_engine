@@ -7,7 +7,7 @@ name = "scrap_engine"
 authors = [{ name = "lxgr", email = "lxgr@protonmail.com" }]
 description = "A 2D ascii game engine for the terminal"
 keywords = ["game", "Ascii"]
-version = "1.5.4"
+version = "1.5.5"
 license = { text = "GPL-3.0-only" }
 readme = "README.md"
 requires-python = ">=3.12"
@@ -20,6 +20,16 @@ classifiers = [
 Homepage = "https://github.com/lxgr-linux/scrap_engine"
 Issues = "https://github.com/lxgr-linux/scrap_engine/issue"
 Repository = "https://github.com/lxgr-linux/scrap_engine.git"
+
+[tool.basedpyright]
+reportMissingTypeStubs = false
+reportUnknownMemberType = false
+reportUnannotatedClassAttribute = false
+deprecateTypingAliases = false
+reportImplicitStringConcatenation = false
+executionEnvironments = [
+    { root = "src" },
+]
 
 [tool.ruff]
 line-length = 88
