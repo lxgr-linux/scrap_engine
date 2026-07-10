@@ -2,7 +2,7 @@ from typing import Type
 
 from scrap_engine.addable.state import DEFAULT_STATE, State
 
-from ..object import Object
+from ..object import ArgProto, Object
 from .box import Box
 
 
@@ -13,12 +13,12 @@ class Square(Box):
 
     def __init__(
         self,
-        char,
-        width,
-        height,
+        char: str,
+        width: int,
+        height: int,
         state: State = DEFAULT_STATE,
         ob_class: Type[Object] = Object,
-        ob_args=None,
+        ob_args: ArgProto = None,
     ):
         super().__init__(height, width)
         if ob_args is None:
@@ -34,9 +34,7 @@ class Square(Box):
         for ry in range(self.height):
             for rx in range(self.width):
                 self.add_ob(
-                    self.ob_class(
-                        self.char, self.state, arg_proto=self.ob_args
-                    ),
+                    self.ob_class(self.char, self.state, arg_proto=self.ob_args),
                     rx,
                     ry,
                 )
