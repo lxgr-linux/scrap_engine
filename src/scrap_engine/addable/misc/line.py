@@ -3,7 +3,7 @@ from typing import Literal, Type
 
 from scrap_engine.addable.state import DEFAULT_STATE, State
 
-from ..object import Object
+from ..object import ArgProto, Object
 from .box import Box
 
 LineType = Literal["straight", "crippled"]
