@@ -3,7 +3,7 @@ from typing import Generic, TypeVar
 from scrap_engine.addable.area import HasArea
 from scrap_engine.addable.state import DEFAULT_STATE, State
 
-from ..object import Object
+from ..object import ArgProto, Object
 from ..object_group import ObjectGroup
 
 T = TypeVar("T", bound=Object)
@@ -21,7 +21,7 @@ class Text(HasArea, ObjectGroup[T], Generic[T]):
         state: State = DEFAULT_STATE,
         esccode="",
         ob_class: type[T] = Object,
-        ob_args=None,
+        ob_args: ArgProto = None,
         ignore="",
     ):
         super().__init__([], state)

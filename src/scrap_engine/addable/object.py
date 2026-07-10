@@ -1,8 +1,12 @@
+from typing import Any, Optional, override
+
 from ..error import CoordinateError
 from ..map.map import Map
 from .addable import Addable
 from .area import HasArea
 from .state import DEFAULT_STATE, State
+
+type ArgProto = Optional[dict[str, Any]]  # pyright: ignore[reportExplicitAny]
 
 
 class Object(HasArea, Addable):
@@ -10,7 +14,9 @@ class Object(HasArea, Addable):
     An object, containing a character, that can be added to a map.
     """
 
-    def __init__(self, char: str, state: State = DEFAULT_STATE, arg_proto=None):
+    def __init__(
+        self, char: str, state: State = DEFAULT_STATE, arg_proto: ArgProto = None
+    ):
         if arg_proto is None:
             arg_proto = {}
         super().__init__(state)
@@ -74,10 +80,12 @@ class Object(HasArea, Addable):
         return 0
 
     @property
+    @override
     def height(self) -> int:
         return 1
 
     @property
+    @override
     def width(self) -> int:
         return 1
 
@@ -91,9 +99,7 @@ class Object(HasArea, Addable):
             ].backup = self.backup
         else:
             self.map.map[self.y][self.x] = self.backup
-        del self.map.obmap[self.y][self.x][
-            self.map.obmap[self.y][self.x].index(self)
-        ]
+        del self.map.obmap[self.y][self.x][self.map.obmap[self.y][self.x].index(self)]
 
     def action(self, ob):
         """
@@ -101,7 +107,7 @@ class Object(HasArea, Addable):
         """
         return
 
-    def bump(self, ob, x, y, side=False):
+    def bump(self, ob, x: int, y: int, side=False):
         """
         This is triggered, when this object is tried to be set onto another
         solid object. Or it hits the side of the map, in which case `side == True`.
@@ -118,7 +124,7 @@ class Object(HasArea, Addable):
         """
         return
 
-    def rechar(self, char):
+    def rechar(self, char: str):
         """
         Changes the objects character.
         """
@@ -129,6 +135,7 @@ class Object(HasArea, Addable):
         self.redraw()
         return 0
 
+    @override
     def remove(self):
         """
         Removes the object from the map.

@@ -22,7 +22,7 @@ class Line(Box):
         l_type: LineType = "straight",
         state: State = DEFAULT_STATE,
         ob_class: Type[Object] = Object,
-        ob_args=None,
+        ob_args: ArgProto = None,
     ):
         super().__init__(0, 0)
         if ob_args is None:

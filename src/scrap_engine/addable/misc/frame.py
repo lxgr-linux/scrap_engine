@@ -2,7 +2,7 @@ from typing import Optional, Type
 
 from scrap_engine.addable.state import DEFAULT_STATE, State
 
-from ..object import Object
+from ..object import ArgProto, Object
 from .box import Box
 from .square import Square
 
@@ -28,7 +28,7 @@ class Frame(Box):
         vertical_chars: Optional[list[str]] = None,
         state: State = DEFAULT_STATE,
         ob_class: Type[Object] = Object,
-        ob_args=None,
+        ob_args: ArgProto = None,
     ):
         super().__init__(height, width)
         if ob_args is None:
@@ -88,9 +88,7 @@ class Frame(Box):
         for obj, rx, ry in zip(self.verticals, [0, self.width - 1], [1, 1]):
             self.add_ob(obj, rx, ry)
 
-    def rechar(
-        self, corner_chars=None, horizontal_chars=None, vertical_chars=None
-    ):
+    def rechar(self, corner_chars=None, horizontal_chars=None, vertical_chars=None):
         """
         Rechars the frame.
         """
