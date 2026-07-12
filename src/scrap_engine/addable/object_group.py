@@ -1,4 +1,4 @@
-from typing import Generic, TypeVar
+from typing import Generic, TypeVar, override
 
 from .addable import Addable
 from .state import DEFAULT_STATE, State
@@ -54,6 +54,7 @@ class ObjectGroup(Addable, Generic[T]):
         for obj in self.obs:
             obj.add(self.map, obj.x + x, obj.y + y)
 
+    @override
     def remove(self):
         """
         Removes all objects from their maps.
@@ -61,6 +62,7 @@ class ObjectGroup(Addable, Generic[T]):
         for obj in self.obs:
             obj.remove()
 
+    @override
     def set(self, x: int, y: int):
         """
         Sets the group to a certain coordinate.
@@ -70,6 +72,7 @@ class ObjectGroup(Addable, Generic[T]):
         self.x = x
         self.y = y
 
+    @override
     def set_state(self, state: State):
         """
         Sets all objects states to a certain state.

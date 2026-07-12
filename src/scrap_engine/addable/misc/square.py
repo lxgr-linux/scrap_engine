@@ -2,7 +2,7 @@ from typing import Type
 
 from scrap_engine.addable.state import DEFAULT_STATE, State
 
-from ..object import Object
+from ..object import ArgProto, Object
 from .box import Box
 
 
@@ -13,18 +13,17 @@ class Square(Box):
 
     def __init__(
         self,
-        char,
-        width,
-        height,
+        char: str,
+        width: int,
+        height: int,
         state: State = DEFAULT_STATE,
         ob_class: Type[Object] = Object,
-        ob_args=None,
+        ob_args: ArgProto = None,
     ):
         super().__init__(height, width)
         if ob_args is None:
             ob_args = {}
-        if state is not None:
-            self.state = state
+        self.state = state
         self.ob_class = ob_class
         self.char = char
         self.ob_args = ob_args
@@ -34,14 +33,12 @@ class Square(Box):
         for ry in range(self.height):
             for rx in range(self.width):
                 self.add_ob(
-                    self.ob_class(
-                        self.char, self.state, arg_proto=self.ob_args
-                    ),
+                    self.ob_class(self.char, self.state, arg_proto=self.ob_args),
                     rx,
                     ry,
                 )
 
-    def rechar(self, char):
+    def rechar(self, char: str):
         """
         Changes the chars the Square is filled with.
         """
@@ -49,7 +46,7 @@ class Square(Box):
         for obj in self.obs:
             obj.rechar(char)
 
-    def resize(self, width, height):
+    def resize(self, width: int, height: int):
         """
         Resizes the rectangle to a certain size.
         """

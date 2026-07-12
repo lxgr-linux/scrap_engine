@@ -1,7 +1,8 @@
 from abc import abstractmethod
 from typing import Optional, Protocol
 
-from ..map.map import Map
+from scrap_engine.interfaces import IMap
+
 from .state import DEFAULT_STATE, State
 
 
@@ -17,7 +18,7 @@ class Addable(Protocol):
     added: bool
     group: Optional["Addable"]
     state: State
-    map: Optional[Map]
+    map: Optional[IMap]
 
     def __init__(self, state: State = DEFAULT_STATE):
         self.x: int = -1
@@ -28,13 +29,13 @@ class Addable(Protocol):
         self.added: bool = False
         self.group: Optional[Addable] = None
         self.state: State = state
-        self.map: Optional[Map] = None
+        self.map: Optional[IMap] = None
 
     def set_state(self, state: State):
         self.state = state
 
     @abstractmethod
-    def add(self, _map: Map, x: int, y: int): ...
+    def add(self, _map: IMap, x: int, y: int): ...
 
     @abstractmethod
     def remove(self): ...

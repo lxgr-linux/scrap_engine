@@ -1,37 +1,41 @@
+from typing import Any, Optional, Self, override
+
+from scrap_engine.interfaces import IMap, IObject
+
 from ..error import CoordinateError
-from ..map.map import Map
 from .addable import Addable
 from .area import HasArea
 from .state import DEFAULT_STATE, State
 
+type ArgProto = Optional[dict[str, Any]]  # pyright: ignore[reportExplicitAny]
 
-class Object(HasArea, Addable):
+
+class Object(HasArea, Addable, IObject):
     """
     An object, containing a character, that can be added to a map.
     """
 
-    def __init__(self, char: str, state: State = DEFAULT_STATE, arg_proto=None):
+    def __init__(
+        self, char: str, state: State = DEFAULT_STATE, arg_proto: ArgProto = None
+    ):
         if arg_proto is None:
             arg_proto = {}
         super().__init__(state)
         self.char: str = char
         self.arg_proto = arg_proto
-        self.backup = None
+        self.backup: str = ""
 
-    def add(self, _map: Map, x: int, y: int):
+    def add(self, _map: IMap, x: int, y: int):
         """
         Adds the object to a certain coordinate on a certain map.
         """
         if not 0 <= x < _map.width or not 0 <= y < _map.height:
             raise CoordinateError(self, _map, x, y)
-        if len(lis := _map.obmap[y][x]) != 0 and lis[-1].state == "solid":
+        if _map.check_collision(x, y):
             return 1
-        self.backup = _map.map[y][x]
         self.x = x
         self.y = y
-        _map.map[y][x] = self.char
-        _map.obmap[y][x].append(self)
-        _map.obs.append(self)
+        self.backup = _map.add_object_to_pos(self, x, y)
         self.map = _map
         self.added = True
         return 0
@@ -40,6 +44,7 @@ class Object(HasArea, Addable):
         """
         Sets the object to a certain coordinate.
         """
+        assert self.map
         if not self.added:
             return 1
         elif not (0 <= x < self.map.width and 0 <= y < self.map.height):
@@ -48,60 +53,47 @@ class Object(HasArea, Addable):
         elif self.x > self.map.width - 1 or self.y > self.map.height - 1:
             self.pull_ob()
             return 1
-        for obj in self.map.obmap[y][x]:
-            if obj.state == "solid":
-                self.bump(obj, x - self.x, y - self.y)
-                return 1
-        self.__backup_setter()
-        self.map.obmap[y][x].append(self)
-        self.backup = self.map.map[y][x]
+        for obj in self.map.get_collision_obs(x, y, "solid"):
+            self.bump(obj, x - self.x, y - self.y)
+            return 1
+        self.map.remove_ob_from_pos(self)
+        self.backup = self.map.set_object_to_pos(self, x, y)
         self.x = x
         self.y = y
-        self.map.map[y][x] = self.char
-        for obj in self.map.obmap[y][x]:
-            if obj.state == "float":
-                obj.action(self)
+        for obj in self.map.get_collision_obs(x, y, "float"):
+            obj.action(self)
         return 0
 
+    @override
     def redraw(self):
         """
         Redraws the object on the map.
         """
         if not self.added:
             return 1
-        self.backup = self.map.map[self.y][self.x]
-        self.map.map[self.y][self.x] = self.char
+        assert self.map
+        self.backup = self.map.get_char(self.x, self.y)
+        self.map.set_char(self.char, self.x, self.y)
         return 0
 
     @property
+    @override
     def height(self) -> int:
         return 1
 
     @property
+    @override
     def width(self) -> int:
         return 1
 
-    def __backup_setter(self):
-        if (
-            len(self.map.obmap[self.y][self.x])
-            > self.map.obmap[self.y][self.x].index(self) + 1
-        ):
-            self.map.obmap[self.y][self.x][
-                self.map.obmap[self.y][self.x].index(self) + 1
-            ].backup = self.backup
-        else:
-            self.map.map[self.y][self.x] = self.backup
-        del self.map.obmap[self.y][self.x][
-            self.map.obmap[self.y][self.x].index(self)
-        ]
-
-    def action(self, ob):
+    @override
+    def action(self, ob: Self):
         """
         This is triggered when another object is set over this one.
         """
         return
 
-    def bump(self, ob, x, y, side=False):
+    def bump(self, ob: Self, x: int, y: int, side=False):
         """
         This is triggered, when this object is tried to be set onto another
         solid object. Or it hits the side of the map, in which case `side == True`.
@@ -118,24 +110,30 @@ class Object(HasArea, Addable):
         """
         return
 
-    def rechar(self, char):
+    def rechar(self, char: str):
         """
         Changes the objects character.
         """
         self.char = char
         if not self.added:
             return 1
-        self.map.map[self.y][self.x] = self.backup
+        assert self.map
+        self.map.set_char(self.backup, self.x, self.y)
         self.redraw()
         return 0
 
+    @override
+    def __repr__(self) -> str:
+        return f"Object[{self.char}]"
+
+    @override
     def remove(self):
         """
         Removes the object from the map.
         """
         if not self.added:
             return 1
+        assert self.map
         self.added = False
-        self.__backup_setter()
-        del self.map.obs[self.map.obs.index(self)]
+        self.map.remove_ob(self)
         return 0
