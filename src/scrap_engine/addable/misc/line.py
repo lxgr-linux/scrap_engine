@@ -27,10 +27,10 @@ class Line(Box):
         super().__init__(0, 0)
         if ob_args is None:
             ob_args = {}
-        self.char = char
+        self.char: str = char
         self.ob_class = ob_class
         self.ob_args = ob_args
-        self.state = state
+        self.state: State = state
         self.type: LineType = l_type
         self.__gen(cx, cy)
 
@@ -70,7 +70,7 @@ class Line(Box):
                     j,
                 )
 
-    def rechar(self, char):
+    def rechar(self, char: str):
         """
         Changes the chars the line is made from.
         """

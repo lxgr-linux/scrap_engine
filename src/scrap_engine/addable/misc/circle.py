@@ -29,7 +29,7 @@ class Circle(Box):
         self.state = state
         self.__gen(radius)
 
-    def __gen(self, radius):
+    def __gen(self, radius: float):
         self.radius = radius
         for i in range(-(int(radius) + 1), int(radius + 1) + 1):
             for j in range(-(int(radius) + 1), int(radius + 1) + 1):
@@ -42,7 +42,7 @@ class Circle(Box):
                         j,
                     )
 
-    def rechar(self, char):
+    def rechar(self, char: str):
         """
         Changes the chars the circle is filled with.
         """
@@ -50,7 +50,7 @@ class Circle(Box):
         for obj in self.obs:
             obj.rechar(char)
 
-    def resize(self, radius):
+    def resize(self, radius: float):
         """
         Resizes the circle.
         """

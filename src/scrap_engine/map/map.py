@@ -1,13 +1,13 @@
 import functools
-from typing import Callable
+from typing import Callable, override
 
 from scrap_engine.addable.state import State
-from scrap_engine.interfaces import IObject
+from scrap_engine.interfaces import IMap, IObject
 
 from ..consts import MAXCACHE_FRAME, MAXCACHE_LINE, screen_height, screen_width
 
 
-class Map:
+class Map(IMap):
     """
     The map, objects can be added to.
     """
@@ -32,6 +32,7 @@ class Map:
         self.obs: list[IObject] = []
         self.out_old: str = ""
 
+    @override
     def remove_ob_from_pos(self, ob: IObject):
         if len(self.obmap[ob.y][ob.x]) > self.obmap[ob.y][ob.x].index(ob) + 1:
             self.obmap[ob.y][ob.x][
@@ -41,33 +42,41 @@ class Map:
             self.map[ob.y][ob.x] = ob.backup
         del self.obmap[ob.y][ob.x][self.obmap[ob.y][ob.x].index(ob)]
 
+    @override
     def get_char(self, x: int, y: int) -> str:
         return self.map[y][x]
 
+    @override
     def set_char(self, char: str, x: int, y: int):
         self.map[y][x] = char
 
+    @override
     def remove_ob(self, ob: IObject):
         self.remove_ob_from_pos(ob)
         del self.obs[self.obs.index(ob)]
 
+    @override
     def check_collision(self, x: int, y: int) -> bool:
         return len(lis := self.obmap[y][x]) != 0 and lis[-1].state == "solid"
 
+    @override
     def add_object_to_pos(self, ob: IObject, x: int, y: int) -> str:
         self.obs.append(ob)
         return self.set_object_to_pos(ob, x, y)
 
+    @override
     def get_collision_obs(self, x: int, y: int, state: State) -> list[IObject]:
         return [obj for obj in self.obmap[y][x] if obj.state == state]
 
+    @override
     def set_object_to_pos(self, ob: IObject, x: int, y: int) -> str:
         backup = self.map[y][x]
         self.map[y][x] = ob.char
         self.obmap[y][x].append(ob)
         return backup
 
-    def blur_in(self, blurmap, esccode: str = "\033[37m"):
+    @override
+    def blur_in(self, blurmap: "Map", esccode: str = "\033[37m"):
         """
         Sets another maps content as its background.
         """
@@ -84,7 +93,8 @@ class Map:
         for obj in self.obs:
             obj.redraw()
 
-    def show(self, init=False):
+    @override
+    def show(self, init: bool = False):
         """
         Prints the maps content.
         """
@@ -112,6 +122,7 @@ class Map:
             out_line += char
         return out_line
 
+    @override
     def resize(self, height: int, width: int, background: str = "#"):
         """
         Resizes the map to a certain size.

@@ -1,4 +1,4 @@
-from typing import Literal, Protocol
+from typing import Literal, Protocol, Self
 
 from scrap_engine.addable.state import State
 
@@ -12,7 +12,7 @@ class IObject(Protocol):
 
     def redraw(self) -> Literal[0, 1]: ...
 
-    def action(self, ob: "IObject"): ...
+    def action(self, ob: Self): ...
 
 
 class IMap(Protocol):
@@ -44,7 +44,7 @@ class IMap(Protocol):
 
     def blur_in(
         self,
-        blurmap: "IMap",
+        blurmap: Self,
         esccode: str = "\033[37m",
     ): ...
 

@@ -3,7 +3,6 @@ from typing import Optional, Protocol
 
 from scrap_engine.interfaces import IMap
 
-from ..map.map import Map
 from .state import DEFAULT_STATE, State
 
 
@@ -36,7 +35,7 @@ class Addable(Protocol):
         self.state = state
 
     @abstractmethod
-    def add(self, _map: Map, x: int, y: int): ...
+    def add(self, _map: IMap, x: int, y: int): ...
 
     @abstractmethod
     def remove(self): ...

@@ -13,9 +13,9 @@ class Square(Box):
 
     def __init__(
         self,
-        char,
-        width,
-        height,
+        char: str,
+        width: int,
+        height: int,
         state: State = DEFAULT_STATE,
         ob_class: Type[Object] = Object,
         ob_args: ArgProto = None,
@@ -23,8 +23,7 @@ class Square(Box):
         super().__init__(height, width)
         if ob_args is None:
             ob_args = {}
-        if state is not None:
-            self.state = state
+        self.state = state
         self.ob_class = ob_class
         self.char = char
         self.ob_args = ob_args
@@ -39,7 +38,7 @@ class Square(Box):
                     ry,
                 )
 
-    def rechar(self, char):
+    def rechar(self, char: str):
         """
         Changes the chars the Square is filled with.
         """
@@ -47,7 +46,7 @@ class Square(Box):
         for obj in self.obs:
             obj.rechar(char)
 
-    def resize(self, width, height):
+    def resize(self, width: int, height: int):
         """
         Resizes the rectangle to a certain size.
         """

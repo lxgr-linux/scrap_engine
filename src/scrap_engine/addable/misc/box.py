@@ -4,6 +4,7 @@ from scrap_engine.addable.addable import Addable
 from scrap_engine.addable.area import HasArea
 from scrap_engine.addable.object_group import ObjectGroup
 from scrap_engine.addable.state import DEFAULT_STATE
+from scrap_engine.interfaces import IMap
 
 
 class Box(ObjectGroup[Addable], HasArea):
@@ -28,7 +29,7 @@ class Box(ObjectGroup[Addable], HasArea):
         return self.__width
 
     @override
-    def add(self, _map, x: int, y: int):
+    def add(self, _map: IMap, x: int, y: int):
         """
         Adds the box to a certain coordinate on a certain map.
         """

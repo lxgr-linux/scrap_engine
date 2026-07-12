@@ -1,4 +1,4 @@
-from typing import Any, Optional, override
+from typing import Any, Optional, Self, override
 
 from scrap_engine.interfaces import IMap, IObject
 
@@ -10,7 +10,7 @@ from .state import DEFAULT_STATE, State
 type ArgProto = Optional[dict[str, Any]]  # pyright: ignore[reportExplicitAny]
 
 
-class Object(HasArea, Addable):
+class Object(HasArea, Addable, IObject):
     """
     An object, containing a character, that can be added to a map.
     """
@@ -64,6 +64,7 @@ class Object(HasArea, Addable):
             obj.action(self)
         return 0
 
+    @override
     def redraw(self):
         """
         Redraws the object on the map.
@@ -85,13 +86,14 @@ class Object(HasArea, Addable):
     def width(self) -> int:
         return 1
 
-    def action(self, ob: IObject):
+    @override
+    def action(self, ob: Self):
         """
         This is triggered when another object is set over this one.
         """
         return
 
-    def bump(self, ob, x: int, y: int, side=False):
+    def bump(self, ob: Self, x: int, y: int, side=False):
         """
         This is triggered, when this object is tried to be set onto another
         solid object. Or it hits the side of the map, in which case `side == True`.
