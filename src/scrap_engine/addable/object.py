@@ -1,4 +1,4 @@
-from typing import Any, Optional, Self, override
+from typing import Any, Literal, Optional, Self, override
 
 from scrap_engine.interfaces import IMap, IObject
 
@@ -25,7 +25,8 @@ class Object(HasArea, Addable, IObject):
         self.arg_proto = arg_proto
         self.backup: str = ""
 
-    def add(self, _map: IMap, x: int, y: int):
+    @override
+    def add(self, _map: IMap, x: int, y: int) -> Literal[0, 1]:
         """
         Adds the object to a certain coordinate on a certain map.
         """
@@ -40,6 +41,7 @@ class Object(HasArea, Addable, IObject):
         self.added = True
         return 0
 
+    @override
     def set(self, x: int, y: int):
         """
         Sets the object to a certain coordinate.
@@ -93,7 +95,7 @@ class Object(HasArea, Addable, IObject):
         """
         return
 
-    def bump(self, ob: Self, x: int, y: int, side=False):
+    def bump(self, ob: Optional[Self], x: int, y: int, side=False):
         """
         This is triggered, when this object is tried to be set onto another
         solid object. Or it hits the side of the map, in which case `side == True`.

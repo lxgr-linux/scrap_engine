@@ -1,5 +1,5 @@
 from abc import abstractmethod
-from typing import Optional, Protocol
+from typing import Literal, Optional, Protocol
 
 from scrap_engine.interfaces import IMap
 
@@ -35,10 +35,10 @@ class Addable(Protocol):
         self.state = state
 
     @abstractmethod
-    def add(self, _map: IMap, x: int, y: int): ...
+    def add(self, _map: IMap, x: int, y: int) -> Optional[Literal[0, 1]]: ...
 
     @abstractmethod
-    def remove(self): ...
+    def remove(self) -> Optional[Literal[0, 1]]: ...
 
     @abstractmethod
-    def set(self, x: int, y: int): ...
+    def set(self, x: int, y: int) -> Optional[Literal[0, 1]]: ...

@@ -1,7 +1,9 @@
-from typing import Generic, TypeVar
+from typing import Generic, Self, TypeVar, override
 
 from scrap_engine.addable.area import HasArea
 from scrap_engine.addable.state import DEFAULT_STATE, State
+from scrap_engine.error import CoordinateError
+from scrap_engine.interfaces import IMap
 
 from ..object import ArgProto, Object
 from ..object_group import ObjectGroup
@@ -17,24 +19,25 @@ class Text(HasArea, ObjectGroup[T], Generic[T]):
 
     def __init__(
         self,
-        text,
+        text: str,
         state: State = DEFAULT_STATE,
-        esccode="",
+        esccode: str = "",
         ob_class: type[T] = Object,
         ob_args: ArgProto = None,
-        ignore="",
+        ignore: str = "",
     ):
         super().__init__([], state)
         if ob_args is None:
             ob_args = {}
         self.ob_class = ob_class
-        self.text = text
-        self.esccode = esccode
-        self.ignore = ignore
+        self.text: str = text
+        self.esccode: str = esccode
+        self.ignore: str = ignore
         self.ob_args = ob_args
         self.__texter(text)
 
     @property
+    @override
     def width(self) -> int:
         """
         The Texts peak width
@@ -42,13 +45,14 @@ class Text(HasArea, ObjectGroup[T], Generic[T]):
         return sorted(len(i) for i in self.text.split("\n"))[-1]
 
     @property
+    @override
     def height(self) -> int:
         """
         The Texts height
         """
         return len(self.text.split("\n"))
 
-    def __add__(self, other):
+    def __add__(self, other: Self):
         self.text += other.text
         self.obs += other.obs
         for obj in self.obs:
@@ -58,7 +62,7 @@ class Text(HasArea, ObjectGroup[T], Generic[T]):
             self.add(self.map, self.x, self.y)
         return self
 
-    def __texter(self, text):
+    def __texter(self, text: str):
         for txt in text.split("\n"):
             for char in txt:
                 if self.esccode != "":
@@ -69,7 +73,8 @@ class Text(HasArea, ObjectGroup[T], Generic[T]):
         for obj in self.obs:
             obj.group = self
 
-    def add(self, _map, x, y):
+    @override
+    def add(self, _map: IMap, x: int, y: int, failsafe: bool = False):
         """
         Adds the text to a certain coordinate on a certain map.
         """
@@ -81,9 +86,14 @@ class Text(HasArea, ObjectGroup[T], Generic[T]):
         for line, text in enumerate(self.text.split("\n")):
             for i, obj in enumerate(self.obs[count : count + len(text)]):
                 if obj.char != self.ignore:
-                    obj.add(self.map, x + i, y + line)
+                    try:
+                        obj.add(self.map, x + i, y + line)
+                    except CoordinateError as e:
+                        if not failsafe:
+                            raise e
             count += len(text)
 
+    @override
     def remove(self):
         """
         Removes the text from the map.
@@ -112,7 +122,7 @@ class Text(HasArea, ObjectGroup[T], Generic[T]):
             return 0
         return 1
 
-    def rechar(self, text: str, esccode=""):
+    def rechar(self, text: str, esccode: str = "", failsafe: bool = False):
         """
         Changes the string contained in the text.
         """
@@ -124,4 +134,4 @@ class Text(HasArea, ObjectGroup[T], Generic[T]):
         self.__texter(text)
         self.text = text
         if self.added:
-            self.add(self.map, self.x, self.y)
+            self.add(self.map, self.x, self.y, failsafe=failsafe)

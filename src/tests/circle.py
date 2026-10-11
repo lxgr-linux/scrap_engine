@@ -1,6 +1,8 @@
-import scrap_engine as se
 import math
 import unittest
+
+import scrap_engine as se
+
 
 class CircleTest(unittest.TestCase):
     def test_circle(self):
@@ -9,9 +11,9 @@ class CircleTest(unittest.TestCase):
                 super().__init__(0, 0)
                 self.char = char
                 self.radius = radius
-                for i in range(-(int(radius)+1), int(radius+1)+1):
-                    for j in range(-(int(radius)+1), int(radius+1)+1):
-                        if math.sqrt((i)**2+(j)**2) <= radius:
+                for i in range(-(int(radius) + 1), int(radius + 1) + 1):
+                    for j in range(-(int(radius) + 1), int(radius + 1) + 1):
+                        if math.sqrt((i) ** 2 + (j) ** 2) <= radius:
                             self.add_ob(se.Object(char), i, j)
 
         map = se.Map(background=" ")
