@@ -1,4 +1,4 @@
-from typing import Generic, TypeVar, override
+from typing import TypeVar, override
 
 from .addable import Addable
 from .state import DEFAULT_STATE, State
@@ -6,7 +6,7 @@ from .state import DEFAULT_STATE, State
 T = TypeVar("T", bound=Addable)
 
 
-class ObjectGroup(Addable, Generic[T]):
+class ObjectGroup[T: Addable](Addable):
     """
     A datatype used to group objects together and do things with them
     simultaniuously.

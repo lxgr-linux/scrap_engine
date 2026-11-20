@@ -1,4 +1,4 @@
-from typing import Generic, Self, TypeVar, override
+from typing import Self, TypeVar, override
 
 from scrap_engine.addable.area import HasArea
 from scrap_engine.addable.state import DEFAULT_STATE, State
@@ -11,7 +11,7 @@ from ..object_group import ObjectGroup
 T = TypeVar("T", bound=Object)
 
 
-class Text(HasArea, ObjectGroup[T], Generic[T]):
+class Text[T: Object](HasArea, ObjectGroup[T]):
     """
     A datatype containing a string, that can be added to a map.
     Different Texts can be added together with the '+' operator.
@@ -42,7 +42,7 @@ class Text(HasArea, ObjectGroup[T], Generic[T]):
         """
         The Texts peak width
         """
-        return sorted(len(i) for i in self.text.split("\n"))[-1]
+        return max(len(i) for i in self.text.split("\n"))
 
     @property
     @override
@@ -88,9 +88,9 @@ class Text(HasArea, ObjectGroup[T], Generic[T]):
                 if obj.char != self.ignore:
                     try:
                         obj.add(self.map, x + i, y + line)
-                    except CoordinateError as e:
+                    except CoordinateError:
                         if not failsafe:
-                            raise e
+                            raise
             count += len(text)
 
     @override

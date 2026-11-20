@@ -5,6 +5,7 @@
 # Have fun!
 
 import os
+import sys
 import threading
 import time
 
@@ -148,7 +149,7 @@ menutext3.add(
     int(round(menumap.height / 2) + 4),
 )
 menutext2.add(
-    menumap, int(round(menumap.width / 2) - 2), int(round(menumap.height / 2))
+    menumap, int(round(menumap.width / 2) - 2), round(menumap.height / 2)
 )
 menuind.add(menumap, int(round(menumap.width / 2) - 4), menutext1.y)
 text.add(map, 11, 3)
@@ -188,7 +189,7 @@ def menu():
                 howtoplay()
                 menumap.show(init=True)
             elif menuind.y == menutext3.y:
-                exit()
+                sys.exit()
             ev = 0
         else:
             time.sleep(0.05)

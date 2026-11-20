@@ -85,10 +85,10 @@ while True:
     ):
         player.set(player.x, player.y + 1)
     t += 1
-    exec("point_%s=se.Object('*', 'float')" % t)
-    exec("point_%s.add(map, player.x, player.y-1)" % t)
+    exec(f"point_{t}=se.Object('*', 'float')")
+    exec(f"point_{t}.add(map, player.x, player.y-1)")
     if player.x < smap.x - 1:
-        exit()
+        sys.exit()
     h.rechar((2 - len(str(player.y))) * " " + str(player.y) + " " + str(map.height))
     time.sleep(0.05)
     smap.remap()
