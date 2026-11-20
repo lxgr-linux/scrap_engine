@@ -6,17 +6,17 @@ from .object_group import ObjectGroup
 from .state import DEFAULT_STATE, State
 
 __all__ = [
+    "DEFAULT_STATE",
     "Addable",
     "Area",
-    "HasArea",
-    "Object",
-    "ObjectGroup",
-    "DEFAULT_STATE",
-    "State",
     "Box",
     "Circle",
     "Frame",
+    "HasArea",
     "Line",
+    "Object",
+    "ObjectGroup",
     "Square",
+    "State",
     "Text",
 ]

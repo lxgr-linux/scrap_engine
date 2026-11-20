@@ -1,5 +1,6 @@
 import functools
-from typing import Callable, override
+from collections.abc import Callable
+from typing import override
 
 from scrap_engine.addable.state import State
 from scrap_engine.interfaces import IMap, IObject

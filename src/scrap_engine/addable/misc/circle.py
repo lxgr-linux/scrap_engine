@@ -1,5 +1,4 @@
 import math
-from typing import Type
 
 from scrap_engine.addable.state import DEFAULT_STATE, State
 
@@ -17,7 +16,7 @@ class Circle(Box):
         char: str,
         radius: int,
         state: State = DEFAULT_STATE,
-        ob_class: Type[Object] = Object,
+        ob_class: type[Object] = Object,
         ob_args: ArgProto = None,
     ):
         super().__init__(0, 0)

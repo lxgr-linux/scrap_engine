@@ -1,5 +1,3 @@
-from typing import Optional, Type
-
 from scrap_engine.addable.state import DEFAULT_STATE, State
 
 from ..object import ArgProto, Object
@@ -23,11 +21,11 @@ class Frame(Box):
         self,
         height: int,
         width: int,
-        corner_chars: Optional[list[str]] = None,
-        horizontal_chars: Optional[list[str]] = None,
-        vertical_chars: Optional[list[str]] = None,
+        corner_chars: list[str] | None = None,
+        horizontal_chars: list[str] | None = None,
+        vertical_chars: list[str] | None = None,
         state: State = DEFAULT_STATE,
-        ob_class: Type[Object] = Object,
+        ob_class: type[Object] = Object,
         ob_args: ArgProto = None,
     ):
         super().__init__(height, width)

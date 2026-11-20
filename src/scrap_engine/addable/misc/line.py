@@ -1,5 +1,5 @@
 import math
-from typing import Literal, Type
+from typing import Literal
 
 from scrap_engine.addable.state import DEFAULT_STATE, State
 
@@ -21,7 +21,7 @@ class Line(Box):
         cy: int,
         l_type: LineType = "straight",
         state: State = DEFAULT_STATE,
-        ob_class: Type[Object] = Object,
+        ob_class: type[Object] = Object,
         ob_args: ArgProto = None,
     ):
         super().__init__(0, 0)
@@ -47,7 +47,8 @@ class Line(Box):
                         state=self.state,
                         arg_proto={
                             **self.ob_args,
-                            **{"x": i, "y": cy * i / cx},
+                            "x": i,
+                            "y": cy * i / cx,
                         },
                     ),
                     i,
@@ -63,7 +64,8 @@ class Line(Box):
                         state=self.state,
                         arg_proto={
                             **self.ob_args,
-                            **{"x": cx * j / cy, "y": j},
+                            "x": cx * j / cy,
+                            "y": j,
                         },
                     ),
                     i,

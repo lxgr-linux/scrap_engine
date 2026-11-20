@@ -4,9 +4,9 @@ from .circler import CirclerTest
 from .stack_test import StackTest, StackTest2
 
 __all__ = [
-    "TextTest",
     "CircleTest",
     "CirclerTest",
     "StackTest",
     "StackTest2",
+    "TextTest",
 ]

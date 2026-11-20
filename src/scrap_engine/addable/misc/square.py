@@ -1,5 +1,3 @@
-from typing import Type
-
 from scrap_engine.addable.state import DEFAULT_STATE, State
 
 from ..object import ArgProto, Object
@@ -17,7 +15,7 @@ class Square(Box):
         width: int,
         height: int,
         state: State = DEFAULT_STATE,
-        ob_class: Type[Object] = Object,
+        ob_class: type[Object] = Object,
         ob_args: ArgProto = None,
     ):
         super().__init__(height, width)

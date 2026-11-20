@@ -1,4 +1,4 @@
-from typing import Any, Literal, Optional, Self, override
+from typing import Any, Literal, Self, override
 
 from scrap_engine.interfaces import IMap, IObject
 
@@ -7,7 +7,7 @@ from .addable import Addable
 from .area import HasArea
 from .state import DEFAULT_STATE, State
 
-type ArgProto = Optional[dict[str, Any]]  # pyright: ignore[reportExplicitAny]
+type ArgProto = dict[str, Any] | None  # pyright: ignore[reportExplicitAny]
 
 
 class Object(HasArea, Addable, IObject):
@@ -95,7 +95,7 @@ class Object(HasArea, Addable, IObject):
         """
         return
 
-    def bump(self, ob: Optional[Self], x: int, y: int, side=False):
+    def bump(self, ob: Self | None, x: int, y: int, side=False):
         """
         This is triggered, when this object is tried to be set onto another
         solid object. Or it hits the side of the map, in which case `side == True`.

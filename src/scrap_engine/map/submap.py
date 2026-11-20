@@ -42,12 +42,12 @@ class Submap(Map):
             obj.redraw()
 
     @staticmethod
-    @functools.lru_cache()
+    @functools.lru_cache
     def __map_to_parent(height, width, _y, _x, parent, child):
         parent = [list(line) for line in parent]
         child = [list(line) for line in child]
-        for sy, y in zip(range(0, height), range(_y, _y + height)):
-            for sx, x in zip(range(0, width), range(_x, _x + width)):
+        for sy, y in zip(range(height), range(_y, _y + height)):
+            for sx, x in zip(range(width), range(_x, _x + width)):
                 try:
                     parent[sy][sx] = child[y][x]
                 except IndexError:

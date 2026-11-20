@@ -18,7 +18,7 @@ class Addable(Protocol):
     added: bool
     group: Optional["Addable"]
     state: State
-    map: Optional[IMap]
+    map: IMap | None
 
     def __init__(self, state: State = DEFAULT_STATE):
         self.x: int = -1
@@ -27,18 +27,18 @@ class Addable(Protocol):
         self.rx: int = -1
         self.ry: int = -1
         self.added: bool = False
-        self.group: Optional[Addable] = None
+        self.group: Addable | None = None
         self.state: State = state
-        self.map: Optional[IMap] = None
+        self.map: IMap | None = None
 
     def set_state(self, state: State):
         self.state = state
 
     @abstractmethod
-    def add(self, _map: IMap, x: int, y: int) -> Optional[Literal[0, 1]]: ...
+    def add(self, _map: IMap, x: int, y: int) -> Literal[0, 1] | None: ...
 
     @abstractmethod
-    def remove(self) -> Optional[Literal[0, 1]]: ...
+    def remove(self) -> Literal[0, 1] | None: ...
 
     @abstractmethod
-    def set(self, x: int, y: int) -> Optional[Literal[0, 1]]: ...
+    def set(self, x: int, y: int) -> Literal[0, 1] | None: ...
