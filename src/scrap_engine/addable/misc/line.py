@@ -1,5 +1,5 @@
 import math
-from typing import Literal
+from typing import Literal, override
 
 from scrap_engine.addable.state import DEFAULT_STATE, State
 
@@ -34,7 +34,7 @@ class Line(Box):
         self.type: LineType = l_type
         self.__gen(cx, cy)
 
-    def __gen(self, cx: int, cy: int):
+    def __gen(self, cx: int, cy: int) -> None:
         self.cx = cx
         self.cy = cy
         if cx**2 >= cy**2:
@@ -72,7 +72,7 @@ class Line(Box):
                     j,
                 )
 
-    def rechar(self, char: str):
+    def rechar(self, char: str) -> None:
         """
         Changes the chars the line is made from.
         """
@@ -80,7 +80,8 @@ class Line(Box):
         for obj in self.obs:
             obj.rechar(char)
 
-    def resize(self, cx: int, cy: int):
+    @override
+    def resize(self, cx: int, cy: int) -> None:
         """
         Resizes the line.
         """

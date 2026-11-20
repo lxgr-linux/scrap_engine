@@ -34,7 +34,7 @@ class Map(IMap):
         self.out_old: str = ""
 
     @override
-    def remove_ob_from_pos(self, ob: IObject):
+    def remove_ob_from_pos(self, ob: IObject) -> None:
         if len(self.obmap[ob.y][ob.x]) > self.obmap[ob.y][ob.x].index(ob) + 1:
             self.obmap[ob.y][ob.x][
                 self.obmap[ob.y][ob.x].index(ob) + 1
@@ -48,11 +48,11 @@ class Map(IMap):
         return self.map[y][x]
 
     @override
-    def set_char(self, char: str, x: int, y: int):
+    def set_char(self, char: str, x: int, y: int) -> None:
         self.map[y][x] = char
 
     @override
-    def remove_ob(self, ob: IObject):
+    def remove_ob(self, ob: IObject) -> None:
         self.remove_ob_from_pos(ob)
         del self.obs[self.obs.index(ob)]
 
@@ -77,7 +77,7 @@ class Map(IMap):
         return backup
 
     @override
-    def blur_in(self, blurmap: "Map", esccode: str = "\033[37m"):
+    def blur_in(self, blurmap: "Map", esccode: str = "\033[37m") -> None:
         """
         Sets another maps content as its background.
         """
@@ -95,7 +95,7 @@ class Map(IMap):
             obj.redraw()
 
     @override
-    def show(self, init: bool = False):
+    def show(self, init: bool = False) -> None:
         """
         Prints the maps content.
         """
@@ -124,7 +124,7 @@ class Map(IMap):
         return out_line
 
     @override
-    def resize(self, height: int, width: int, background: str = "#"):
+    def resize(self, height: int, width: int, background: str = "#") -> None:
         """
         Resizes the map to a certain size.
         """

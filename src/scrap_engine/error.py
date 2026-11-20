@@ -1,10 +1,13 @@
+from typing import Any
+
+
 class CoordinateError(Exception):
     """
     An Error that is thrown, when an object is added to a non-existing
     part of a map.
     """
 
-    def __init__(self, obj, _map, x, y):
+    def __init__(self, obj: Any, _map: Any, x: int, y: int) -> None:
         self.ob = obj
         self.x = x
         self.y = y

@@ -11,13 +11,13 @@ class Submap(Map):
 
     def __init__(
         self,
-        bmap,
-        x,
-        y,
-        height=screen_height - 1,
-        width=screen_width,
-        dynfps=True,
-    ):
+        bmap: Map,
+        x: int,
+        y: int,
+        height: int = screen_height - 1,
+        width: int = screen_width,
+        dynfps: bool = True,
+    ) -> None:
         super().__init__(height, width, dynfps=dynfps)
         del self.background
         self.y = y
@@ -25,7 +25,7 @@ class Submap(Map):
         self.bmap = bmap
         self.remap()
 
-    def remap(self):
+    def remap(self) -> None:
         """
         Updates the map (rereads the map, the submap contains a part from)
         """
@@ -43,7 +43,14 @@ class Submap(Map):
 
     @staticmethod
     @functools.lru_cache
-    def __map_to_parent(height, width, _y, _x, parent, child):
+    def __map_to_parent(
+        height: int,
+        width: int,
+        _y: int,
+        _x: int,
+        parent: tuple[tuple[str], ...],
+        child: tuple[tuple[str], ...],
+    ) -> list[list[str]]:
         parent = [list(line) for line in parent]
         child = [list(line) for line in child]
         for sy, y in zip(range(height), range(_y, _y + height)):
@@ -56,10 +63,10 @@ class Submap(Map):
 
     @staticmethod
     @functools.lru_cache(1)
-    def __full_bg(background, width, height):
+    def __full_bg(background: str, width: int, height: int) -> list[list[str]]:
         return [[background for _ in range(width)] for _ in range(height)]
 
-    def set(self, x, y):
+    def set(self, x: int, y: int) -> int:
         """
         Changes the coordinates on the map, the submap is at.
         """
@@ -70,7 +77,7 @@ class Submap(Map):
         self.remap()
         return 0
 
-    def full_show(self, init=False):
+    def full_show(self, init: bool = False) -> None:
         """
         Combines remap() and show().
         """

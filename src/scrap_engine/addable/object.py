@@ -42,7 +42,7 @@ class Object(HasArea, Addable, IObject):
         return 0
 
     @override
-    def set(self, x: int, y: int):
+    def set(self, x: int, y: int) -> Literal[0, 1]:
         """
         Sets the object to a certain coordinate.
         """
@@ -67,7 +67,7 @@ class Object(HasArea, Addable, IObject):
         return 0
 
     @override
-    def redraw(self):
+    def redraw(self) -> Literal[0, 1]:
         """
         Redraws the object on the map.
         """
@@ -89,13 +89,13 @@ class Object(HasArea, Addable, IObject):
         return 1
 
     @override
-    def action(self, ob: Self):
+    def action(self, ob: Self) -> None:
         """
         This is triggered when another object is set over this one.
         """
         return
 
-    def bump(self, ob: Self | None, x: int, y: int, side=False):
+    def bump(self, ob: Self | None, x: int, y: int, side: bool = False) -> None:
         """
         This is triggered, when this object is tried to be set onto another
         solid object. Or it hits the side of the map, in which case `side == True`.
@@ -103,7 +103,7 @@ class Object(HasArea, Addable, IObject):
         """
         return
 
-    def pull_ob(self):
+    def pull_ob(self) -> None:
         """
         This is triggered, when trying to set an object from a non existing
         spot on the map to an existing one.
@@ -112,7 +112,7 @@ class Object(HasArea, Addable, IObject):
         """
         return
 
-    def rechar(self, char: str):
+    def rechar(self, char: str) -> Literal[0, 1]:
         """
         Changes the objects character.
         """
@@ -129,7 +129,7 @@ class Object(HasArea, Addable, IObject):
         return f"Object[{self.char}]"
 
     @override
-    def remove(self):
+    def remove(self) -> Literal[0, 1]:
         """
         Removes the object from the map.
         """

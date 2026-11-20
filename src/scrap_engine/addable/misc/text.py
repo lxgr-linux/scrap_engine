@@ -52,7 +52,7 @@ class Text[T: Object](HasArea, ObjectGroup[T]):
         """
         return len(self.text.split("\n"))
 
-    def __add__(self, other: Self):
+    def __add__(self, other: Self) -> Self:
         self.text += other.text
         self.obs += other.obs
         for obj in self.obs:
@@ -62,7 +62,7 @@ class Text[T: Object](HasArea, ObjectGroup[T]):
             self.add(self.map, self.x, self.y)
         return self
 
-    def __texter(self, text: str):
+    def __texter(self, text: str) -> None:
         for txt in text.split("\n"):
             for char in txt:
                 if self.esccode != "":
@@ -74,7 +74,7 @@ class Text[T: Object](HasArea, ObjectGroup[T]):
             obj.group = self
 
     @override
-    def add(self, _map: IMap, x: int, y: int, failsafe: bool = False):
+    def add(self, _map: IMap, x: int, y: int, failsafe: bool = False) -> None:
         """
         Adds the text to a certain coordinate on a certain map.
         """
@@ -94,7 +94,7 @@ class Text[T: Object](HasArea, ObjectGroup[T]):
             count += len(text)
 
     @override
-    def remove(self):
+    def remove(self) -> None:
         """
         Removes the text from the map.
         """
@@ -102,7 +102,7 @@ class Text[T: Object](HasArea, ObjectGroup[T]):
         for obj in self.obs:
             obj.remove()
 
-    def rem_ob(self, obj: T):
+    def rem_ob(self, obj: T) -> int:
         """
         Removes an object from the group.
         """
@@ -122,7 +122,7 @@ class Text[T: Object](HasArea, ObjectGroup[T]):
             return 0
         return 1
 
-    def rechar(self, text: str, esccode: str = "", failsafe: bool = False):
+    def rechar(self, text: str, esccode: str = "", failsafe: bool = False) -> None:
         """
         Changes the string contained in the text.
         """

@@ -31,7 +31,7 @@ class Addable(Protocol):
         self.state: State = state
         self.map: IMap | None = None
 
-    def set_state(self, state: State):
+    def set_state(self, state: State) -> None:
         self.state = state
 
     @abstractmethod

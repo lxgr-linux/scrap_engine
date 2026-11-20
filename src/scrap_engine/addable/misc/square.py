@@ -1,3 +1,5 @@
+from typing import override
+
 from scrap_engine.addable.state import DEFAULT_STATE, State
 
 from ..object import ArgProto, Object
@@ -27,7 +29,7 @@ class Square(Box):
         self.ob_args = ob_args
         self.__create()
 
-    def __create(self):
+    def __create(self) -> None:
         for ry in range(self.height):
             for rx in range(self.width):
                 self.add_ob(
@@ -36,7 +38,7 @@ class Square(Box):
                     ry,
                 )
 
-    def rechar(self, char: str):
+    def rechar(self, char: str) -> None:
         """
         Changes the chars the Square is filled with.
         """
@@ -44,7 +46,8 @@ class Square(Box):
         for obj in self.obs:
             obj.rechar(char)
 
-    def resize(self, width: int, height: int):
+    @override
+    def resize(self, width: int, height: int) -> None:
         """
         Resizes the rectangle to a certain size.
         """
