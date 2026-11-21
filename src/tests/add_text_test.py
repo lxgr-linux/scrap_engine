@@ -1,7 +1,7 @@
-#!/usr/bin/python3
-
 import unittest
+
 import scrap_engine as se
+
 
 class TextTest(unittest.TestCase):
     def test_text(self):
@@ -11,6 +11,6 @@ class TextTest(unittest.TestCase):
         t.add(map, 0, 0)
 
         k = se.Text(" You", esccode="\033[31m")
-        t+=k
+        t += k
 
         map.show()

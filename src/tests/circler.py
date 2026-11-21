@@ -19,7 +19,7 @@ class CirclerTest(unittest.TestCase):
                     if math.sqrt((i - y) ** 2 + (j - x) ** 2) <= radius:
                         try:
                             se.Object("a").add(map, j, i)
-                        except:  # noqa: E722
+                        except:  # noqa: E722 S112
                             continue
 
         map.show(init=True)

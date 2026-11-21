@@ -371,7 +371,9 @@ This is just a simple example program that adds a an "a" to the coordinate (10|5
 ```python
 import scrap_engine as se  # imports scrap_engine
 
-mymap = se.Map(background=" ")  # defines mymap as a map as big as the terminal window with the background " "
+mymap = se.Map(
+    background=" "
+)  # defines mymap as a map as big as the terminal window with the background " "
 myob = se.Object("a")  # defines myob as an object with "a" as character
 
 myob.add(mymap, 10, 5)  # adds myob to mymap at (10|5)
@@ -383,26 +385,38 @@ Another small example that moves the a in a line over the screen.
 import scrap_engine as se  # imports scrap_engine
 import time
 
-mymap = se.Map(background=" ")  # defines mymap as a map as big as the terminal window with the background " "
+mymap = se.Map(
+    background=" "
+)  # defines mymap as a map as big as the terminal window with the background " "
 myob = se.Object("a")  # defines myob as an object with "a" as character
 
 myob.add(mymap, 10, 5)  # adds myob to mymap at (10|5)
 mymap.show()  # shows mymap
 
 for i in range(5):
-  time.sleep(0.3)  # waiting 0.3 seconds
-  myob.set(myob.x+1, 5)  # sets myob to its own x coordinate +1 and y coordinate 5
-  mymap.show()  # shows mymap
+    time.sleep(0.3)  # waiting 0.3 seconds
+    myob.set(myob.x + 1, 5)  # sets myob to its own x coordinate +1 and y coordinate 5
+    mymap.show()  # shows mymap
 ```
 
 An example of the Text, Square and Frame class.
 ```python
 import scrap_engine as se  # imports scrap_engine
 
-mymap = se.Map(background=" ")  # defines mymap as a map as big as the terminal window with the background " "
+mymap = se.Map(
+    background=" "
+)  # defines mymap as a map as big as the terminal window with the background " "
 mytext = se.Text("Hello world")  # defines a text as "Hello world"
-myrectangle = se.Square(height=5, width=6, char="#")  # defines a rectangle width height 5, width 6 and the character "#"
-myframe = se.Frame(height=7, width=8, corner_chars=["┌", "┐", "└", "┘"], horizontal_chars=["─", "─"], vertical_chars=["│", "│"])  # defines a frame see scrap_engine.Frame
+myrectangle = se.Square(
+    height=5, width=6, char="#"
+)  # defines a rectangle width height 5, width 6 and the character "#"
+myframe = se.Frame(
+    height=7,
+    width=8,
+    corner_chars=["┌", "┐", "└", "┘"],
+    horizontal_chars=["─", "─"],
+    vertical_chars=["│", "│"],
+)  # defines a frame see scrap_engine.Frame
 
 mytext.add(mymap, 0, 0)  # adds mytext to (0|0)
 myrectangle.add(mymap, 2, 2)  # adds myrectangle to (2|2)
@@ -417,16 +431,20 @@ import scrap_engine as se
 import time
 
 map = se.Map(background=" ")
-line = se.Line("a", 10, 5, type="straight")  # makes a straight line described by the vector (10 5) with "a" as its char
+line = se.Line(
+    "a", 10, 5, type="straight"
+)  # makes a straight line described by the vector (10 5) with "a" as its char
 
 line.add(map, 0, 0)  # addes line to (0|0)
 
 map.show()
 
-for i in range(len(line.obs)):  # list.obs is the list of all Objects that are part of the line
+for i in range(
+    len(line.obs)
+):  # list.obs is the list of all Objects that are part of the line
     line.obs[i].rechar("#")  # rechars the Object to "#"
     if i != 0:
-        line.obs[i-1].rechar(line.char)  # line.char is the default char of the line
+        line.obs[i - 1].rechar(line.char)  # line.char is the default char of the line
     time.sleep(0.4)
     map.show()
 ```
@@ -443,10 +461,9 @@ map.show()
 
 # loops i until 360 and resizes the line with the vector (sin(i)*10 cos(i)*10)
 for i in range(360):
-    line.resize(math.sin(math.radians(i))*10, math.cos(math.radians(i))*10)
+    line.resize(math.sin(math.radians(i)) * 10, math.cos(math.radians(i)) * 10)
     time.sleep(0.05)
     map.show()
-
 ```
 
 An example that shows how Texts are added.
@@ -458,8 +475,7 @@ text1 = se.Text("Hey")
 text2 = se.Text(" You!")
 
 text1 += text2
-text1.add(map, 0, 0) # Those two steps can even be switched
+text1.add(map, 0, 0)  # Those two steps can even be switched
 
-#>>> Hey You!
-
+# >>> Hey You!
 ```

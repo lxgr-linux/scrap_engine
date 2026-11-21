@@ -1,9 +1,9 @@
 import math
-from typing import Literal, Type
+from typing import Literal, override
 
 from scrap_engine.addable.state import DEFAULT_STATE, State
 
-from ..object import Object
+from ..object import ArgProto, Object
 from .box import Box
 
 LineType = Literal["straight", "crippled"]
@@ -21,20 +21,20 @@ class Line(Box):
         cy: int,
         l_type: LineType = "straight",
         state: State = DEFAULT_STATE,
-        ob_class: Type[Object] = Object,
-        ob_args=None,
+        ob_class: type[Object] = Object,
+        ob_args: ArgProto = None,
     ):
         super().__init__(0, 0)
         if ob_args is None:
             ob_args = {}
-        self.char = char
+        self.char: str = char
         self.ob_class = ob_class
         self.ob_args = ob_args
-        self.state = state
+        self.state: State = state
         self.type: LineType = l_type
         self.__gen(cx, cy)
 
-    def __gen(self, cx: int, cy: int):
+    def __gen(self, cx: int, cy: int) -> None:
         self.cx = cx
         self.cy = cy
         if cx**2 >= cy**2:
@@ -47,7 +47,8 @@ class Line(Box):
                         state=self.state,
                         arg_proto={
                             **self.ob_args,
-                            **{"x": i, "y": cy * i / cx},
+                            "x": i,
+                            "y": cy * i / cx,
                         },
                     ),
                     i,
@@ -63,14 +64,15 @@ class Line(Box):
                         state=self.state,
                         arg_proto={
                             **self.ob_args,
-                            **{"x": cx * j / cy, "y": j},
+                            "x": cx * j / cy,
+                            "y": j,
                         },
                     ),
                     i,
                     j,
                 )
 
-    def rechar(self, char):
+    def rechar(self, char: str) -> None:
         """
         Changes the chars the line is made from.
         """
@@ -78,7 +80,8 @@ class Line(Box):
         for obj in self.obs:
             obj.rechar(char)
 
-    def resize(self, cx: int, cy: int):
+    @override
+    def resize(self, cx: int, cy: int) -> None:
         """
         Resizes the line.
         """

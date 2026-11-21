@@ -27,12 +27,12 @@ class Panel(se.Square):
 
 def genpanel():
     global panelindex, test
-    exec("panel_%s=Panel('#', 10, 1, ob_class=PanelItem)" % panelindex)
+    exec(f"panel_{panelindex}=Panel('#', 10, 1, ob_class=PanelItem)")
     exec(
         "panel_%s.add(map, map.width-11, map.height-%i)"
         % (panelindex, random.randint(8, 20))
     )
-    exec("panel_%s.init()" % panelindex)
+    exec(f"panel_{panelindex}.init()")
     panelindex += 1
 
 
@@ -123,7 +123,7 @@ def main():
         for mov in moving:
             mov.set(mov.x - 1, mov.y)
         if player.x < smap.x - 1:
-            exit()
+            sys.exit()
         h.rechar(
             (2 - len(str(player.y))) * " "
             + str(player.y)

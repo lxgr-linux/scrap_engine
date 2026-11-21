@@ -1,15 +1,17 @@
-from typing import Generic, TypeVar
+from typing import Self, TypeVar, override
 
 from scrap_engine.addable.area import HasArea
 from scrap_engine.addable.state import DEFAULT_STATE, State
+from scrap_engine.error import CoordinateError
+from scrap_engine.interfaces import IMap
 
-from ..object import Object
+from ..object import ArgProto, Object
 from ..object_group import ObjectGroup
 
 T = TypeVar("T", bound=Object)
 
 
-class Text(HasArea, ObjectGroup[T], Generic[T]):
+class Text[T: Object](HasArea, ObjectGroup[T]):
     """
     A datatype containing a string, that can be added to a map.
     Different Texts can be added together with the '+' operator.
@@ -17,38 +19,40 @@ class Text(HasArea, ObjectGroup[T], Generic[T]):
 
     def __init__(
         self,
-        text,
+        text: str,
         state: State = DEFAULT_STATE,
-        esccode="",
+        esccode: str = "",
         ob_class: type[T] = Object,
-        ob_args=None,
-        ignore="",
+        ob_args: ArgProto = None,
+        ignore: str = "",
     ):
         super().__init__([], state)
         if ob_args is None:
             ob_args = {}
         self.ob_class = ob_class
-        self.text = text
-        self.esccode = esccode
-        self.ignore = ignore
+        self.text: str = text
+        self.esccode: str = esccode
+        self.ignore: str = ignore
         self.ob_args = ob_args
         self.__texter(text)
 
     @property
+    @override
     def width(self) -> int:
         """
         The Texts peak width
         """
-        return sorted(len(i) for i in self.text.split("\n"))[-1]
+        return max(len(i) for i in self.text.split("\n"))
 
     @property
+    @override
     def height(self) -> int:
         """
         The Texts height
         """
         return len(self.text.split("\n"))
 
-    def __add__(self, other):
+    def __add__(self, other: Self) -> Self:
         self.text += other.text
         self.obs += other.obs
         for obj in self.obs:
@@ -58,7 +62,7 @@ class Text(HasArea, ObjectGroup[T], Generic[T]):
             self.add(self.map, self.x, self.y)
         return self
 
-    def __texter(self, text):
+    def __texter(self, text: str) -> None:
         for txt in text.split("\n"):
             for char in txt:
                 if self.esccode != "":
@@ -69,7 +73,8 @@ class Text(HasArea, ObjectGroup[T], Generic[T]):
         for obj in self.obs:
             obj.group = self
 
-    def add(self, _map, x, y):
+    @override
+    def add(self, _map: IMap, x: int, y: int, failsafe: bool = False) -> None:
         """
         Adds the text to a certain coordinate on a certain map.
         """
@@ -81,10 +86,15 @@ class Text(HasArea, ObjectGroup[T], Generic[T]):
         for line, text in enumerate(self.text.split("\n")):
             for i, obj in enumerate(self.obs[count : count + len(text)]):
                 if obj.char != self.ignore:
-                    obj.add(self.map, x + i, y + line)
+                    try:
+                        obj.add(self.map, x + i, y + line)
+                    except CoordinateError:
+                        if not failsafe:
+                            raise
             count += len(text)
 
-    def remove(self):
+    @override
+    def remove(self) -> None:
         """
         Removes the text from the map.
         """
@@ -92,7 +102,7 @@ class Text(HasArea, ObjectGroup[T], Generic[T]):
         for obj in self.obs:
             obj.remove()
 
-    def rem_ob(self, obj: T):
+    def rem_ob(self, obj: T) -> int:
         """
         Removes an object from the group.
         """
@@ -112,7 +122,7 @@ class Text(HasArea, ObjectGroup[T], Generic[T]):
             return 0
         return 1
 
-    def rechar(self, text: str, esccode=""):
+    def rechar(self, text: str, esccode: str = "", failsafe: bool = False) -> None:
         """
         Changes the string contained in the text.
         """
@@ -124,4 +134,4 @@ class Text(HasArea, ObjectGroup[T], Generic[T]):
         self.__texter(text)
         self.text = text
         if self.added:
-            self.add(self.map, self.x, self.y)
+            self.add(self.map, self.x, self.y, failsafe=failsafe)

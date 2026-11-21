@@ -5,6 +5,7 @@
 # Have fun!
 
 import os
+import sys
 import threading
 import time
 
@@ -28,9 +29,7 @@ obcount = 0
 map = se.Map(
     width=200, background=" "
 )  # Maps are kind of the "playground" which you can add Objects and Groups to
-smap = se.Submap(
-    map, 0, 0
-)  # This one is just a small part of the real (map) Map
+smap = se.Submap(map, 0, 0)  # This one is just a small part of the real (map) Map
 menumap = se.Map(background=" ")
 howtomap = se.Map(background=" ")
 
@@ -150,7 +149,7 @@ menutext3.add(
     int(round(menumap.height / 2) + 4),
 )
 menutext2.add(
-    menumap, int(round(menumap.width / 2) - 2), int(round(menumap.height / 2))
+    menumap, int(round(menumap.width / 2) - 2), round(menumap.height / 2)
 )
 menuind.add(menumap, int(round(menumap.width / 2) - 4), menutext1.y)
 text.add(map, 11, 3)
@@ -167,9 +166,7 @@ def menu():
     global ev
     ev = 0
     menuind.index = 1
-    menumap.blur_in(
-        smap
-    )  # Blurs in the map Map into the background of the menumap Map
+    menumap.blur_in(smap)  # Blurs in the map Map into the background of the menumap Map
     menumap.show(init=True)
     while True:
         if ev == "'m'":
@@ -192,7 +189,7 @@ def menu():
                 howtoplay()
                 menumap.show(init=True)
             elif menuind.y == menutext3.y:
-                exit()
+                sys.exit()
             ev = 0
         else:
             time.sleep(0.05)
@@ -244,9 +241,7 @@ while True:
         ev = 0
     elif ev == "'a'":
         player.direction = "l"
-        player.set(
-            player.x - 1, player.y
-        )  # Doing something different on keypress a
+        player.set(player.x - 1, player.y)  # Doing something different on keypress a
         ev = 0
     elif ev == "'s'":
         player.direction = "b"
@@ -266,9 +261,7 @@ while True:
         ev2 = 0
     elif ev2 == "Key.left":
         player0.direction = "l"
-        player0.set(
-            player0.x - 1, player0.y
-        )  # Doing something different on keypress a
+        player0.set(player0.x - 1, player0.y)  # Doing something different on keypress a
         ev2 = 0
     elif ev2 == "Key.down":
         player0.direction = "b"
